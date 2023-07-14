@@ -41,7 +41,7 @@
     <!-- /Packages>
     <!-- The following section is for .zip archive. You can enable it by setting Zip="true" in the PapyrusProject -->
     <ZipFiles Output=".">
-        <ZipFile Name="MantellaMod" RootDir="." Compression="deflate">
+        <ZipFile Name="Mantella Mod" RootDir="." Compression="deflate">
             <Include>@ModName.esp</Include>
             <Include NoRecurse="true">*.bsa</Include>
             <Match In="Scripts">*.pex</Match>
