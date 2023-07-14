@@ -16,6 +16,9 @@ event OnEffectStart(Actor target, Actor caster)
         MiscUtil.WriteToFile("current_actor.txt", actorName, append=false)
         Debug.Notification("Starting conversation with " + actorName)
 
+        String actorSex = target.getactorbase().getsex()
+        MiscUtil.WriteToFile("actor_sex.txt", actorSex, append=false)
+
         ; Get current location and save to current_location.txt for Python to read
         String currLoc = (caster.GetCurrentLocation() as form).getname()
         if currLoc == ""
