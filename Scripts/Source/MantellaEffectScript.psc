@@ -12,6 +12,9 @@ event OnEffectStart(Actor target, Actor caster)
         ; end any other conversations before starting this one (doesn't work)
         ;MiscUtil.WriteToFile("end_conversation.txt", "True",  append=false)
 
+        String actorId = (target.getactorbase() as form).getformid()
+        MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
+
         ; Get NPC's name and save name to current_actor.txt for Pyton to read
         String actorName = (target.getactorbase() as form).getname()
         MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
@@ -50,7 +53,11 @@ event OnEffectStart(Actor target, Actor caster)
             sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
             if sayLine == "True"
                 subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-                Debug.Notification(subtitle)
+                if subtitle != ""
+                    String[] subtitles = SplitSubtitleIntoParts(subtitle)
+                endIf
+                
+                ;Debug.Notification(subtitle)
 
                 target.Say(MantellaDialogueLine)
                 ; Set sayLine back to False once the voiceline has been triggered
@@ -82,10 +89,19 @@ event OnEffectStart(Actor target, Actor caster)
 	Debug.Notification("Conversation ended.")
 endEvent
 
-int Function GetCurrentHourOfDay()
+int function GetCurrentHourOfDay()
 	float Time = Utility.GetCurrentGameTime()
 	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
 	Time *= 24 ; Convert from fraction of a day to number of hours
 	int Hour = Math.Floor(Time) ; Get whole hour
-	Return Hour
-EndFunction
+	return Hour
+endFunction
+
+function SplitSubtitleIntoParts(String subtitle)
+    String[] subtitles = PapyrusUtil.StringSplit(subtitle, ",")
+    int subtitleNo = 0
+    while (subtitleNo < subtitles.Length)
+        Debug.Notification(subtitles[subtitleNo])
+        subtitleNo += 1
+    endwhile
+endFunction
