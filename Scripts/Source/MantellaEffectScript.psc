@@ -8,10 +8,8 @@ event OnEffectStart(Actor target, Actor caster)
 	; only run script if actor is not already selected (doesn't work)
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
     Utility.Wait(0.5)
-	if currentActor == ""
-        ; end any other conversations before starting this one (doesn't work)
-        ;MiscUtil.WriteToFile("end_conversation.txt", "True",  append=false)
 
+	if currentActor == ""
         String actorId = (target.getactorbase() as form).getformid()
         MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
 
@@ -57,8 +55,6 @@ event OnEffectStart(Actor target, Actor caster)
                     String[] subtitles = SplitSubtitleIntoParts(subtitle)
                 endIf
                 
-                ;Debug.Notification(subtitle)
-
                 target.Say(MantellaDialogueLine)
                 ; Set sayLine back to False once the voiceline has been triggered
                 MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
@@ -76,6 +72,12 @@ event OnEffectStart(Actor target, Actor caster)
                 MiscUtil.WriteToFile("_mantella_thinking.txt", "False",  append=false)
             endIf
 
+            String exe_error = MiscUtil.ReadFromFile("_mantella_error_check.txt") as String
+            if exe_error == "True"
+                Debug.Notification("Error with Mantella.exe. Please check MantellaSoftware/logging.log")
+                MiscUtil.WriteToFile("_mantella_error_check.txt", "False",  append=false)
+            endIf
+
             ; Update time (this may be too frequent)
             Time = GetCurrentHourOfDay()
             MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
@@ -89,6 +91,7 @@ event OnEffectStart(Actor target, Actor caster)
 	Debug.Notification("Conversation ended.")
 endEvent
 
+
 int function GetCurrentHourOfDay()
 	float Time = Utility.GetCurrentGameTime()
 	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
@@ -96,6 +99,7 @@ int function GetCurrentHourOfDay()
 	int Hour = Math.Floor(Time) ; Get whole hour
 	return Hour
 endFunction
+
 
 function SplitSubtitleIntoParts(String subtitle)
     String[] subtitles = PapyrusUtil.StringSplit(subtitle, ",")
