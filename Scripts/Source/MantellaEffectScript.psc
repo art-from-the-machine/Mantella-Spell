@@ -105,8 +105,12 @@ event OnEffectStart(Actor target, Actor caster)
             ; Wait for Python / the "ChatAIEndConversationScript" script to give the green light to end the conversation
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
 
-            bool targetDead = target.IsDead()
-            if targetDead == true
+            if target.IsDead()
+                MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+                endConversation = "True"
+            endIf
+
+            if game.getplayer().IsDead()
                 MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
                 endConversation = "True"
             endIf
