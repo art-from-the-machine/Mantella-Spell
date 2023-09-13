@@ -7,6 +7,10 @@ event OnEffectStart(Actor target, Actor caster)
     MiscUtil.WriteToFile("_mantella__skyrim_folder.txt", "Set the folder this file is in as your skyrim_folder path in MantellaSoftware/config.ini", append=false)
 	; only run script if actor is not already selected
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
+
+    MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+    MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
+
     Utility.Wait(0.5)
 
 	if currentActor == ""
@@ -52,6 +56,7 @@ event OnEffectStart(Actor target, Actor caster)
         ;Topic helloTopicTopic = Game.GetFormFromFile(0x01001D8A, "Mantella.esp") as Topic ;  0x01001D8B 0x01001827
 
         String sayLine = "False"
+        String playerResponse = "False"
         String subtitle = ""
         String endConversation = "False"
         String sayFinalLine = "False"
@@ -62,8 +67,12 @@ event OnEffectStart(Actor target, Actor caster)
 
         ; Start conversation
         While endConversation == "False"
-            ; Wait for Python to give the green light to say the voiceline
-            ;Utility.Wait(0.1)
+            playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+            if playerResponse == "True"
+                GetPlayerInput()
+                Utility.Wait(2)
+            endIf
+
             sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
             if sayLine == "True"
                 subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
@@ -71,7 +80,7 @@ event OnEffectStart(Actor target, Actor caster)
                     String[] subtitles = SplitSubtitleIntoParts(subtitle)
                 endIf
                 
-                target.Say(MantellaDialogueLine, abSpeakInPlayersHead=true)
+                target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
                 ; Set sayLine back to False once the voiceline has been triggered
                 MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
             endIf
@@ -138,4 +147,15 @@ function SplitSubtitleIntoParts(String subtitle)
         Debug.Notification(subtitles[subtitleNo])
         subtitleNo += 1
     endwhile
+endFunction
+
+
+function GetPlayerInput()
+    UIExtensions.InitMenu("UITextEntryMenu")
+    UIExtensions.OpenMenu("UITextEntryMenu")
+
+    string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
+
+    MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+    MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
 endFunction
