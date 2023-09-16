@@ -76,11 +76,10 @@ event OnEffectStart(Actor target, Actor caster)
             sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
             if sayLine == "True"
                 subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-                if subtitle != ""
-                    String[] subtitles = SplitSubtitleIntoParts(subtitle)
-                endIf
                 
+                MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
                 target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
+
                 ; Set sayLine back to False once the voiceline has been triggered
                 MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
             endIf
