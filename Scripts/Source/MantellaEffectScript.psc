@@ -110,11 +110,6 @@ event OnEffectStart(Actor target, Actor caster)
                 MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
                 endConversation = "True"
             endIf
-
-            if game.getplayer().IsDead()
-                MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
-                endConversation = "True"
-            endIf
         endWhile
     else
         MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
