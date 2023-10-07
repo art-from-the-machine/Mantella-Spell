@@ -1,6 +1,7 @@
 Scriptname MantellaEffectScript extends activemagiceffect
 
 Topic property MantellaDialogueLine auto
+ReferenceAlias property TargetRefAlias auto
 
 event OnEffectStart(Actor target, Actor caster)
     MiscUtil.WriteToFile("_mantella__skyrim_folder.txt", "Set the folder this file is in as your skyrim_folder path in MantellaSoftware/config.ini", append=false)
@@ -13,6 +14,8 @@ event OnEffectStart(Actor target, Actor caster)
     Utility.Wait(0.5)
 
 	if currentActor == ""
+        TargetRefAlias.ForceRefTo(target)
+
         String actorId = (target.getactorbase() as form).getformid()
         MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
 
@@ -105,11 +108,6 @@ event OnEffectStart(Actor target, Actor caster)
 
             ; Wait for Python / the script to give the green light to end the conversation
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
-
-            if target.IsDead()
-                MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
-                endConversation = "True"
-            endIf
         endWhile
     else
         MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
