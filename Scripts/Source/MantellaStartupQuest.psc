@@ -1,1 +1,0 @@
-Scriptname MantellaStartupQuest extends Quest  

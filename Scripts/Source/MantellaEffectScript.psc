@@ -1,9 +1,9 @@
 Scriptname MantellaEffectScript extends activemagiceffect
 
 Topic property MantellaDialogueLine auto
+ReferenceAlias property TargetRefAlias auto
 
 event OnEffectStart(Actor target, Actor caster)
-    ;MiscUtil.WriteToFile("dialogue_id.txt", MantellaDialogueLine, append=false)
     MiscUtil.WriteToFile("_mantella__skyrim_folder.txt", "Set the folder this file is in as your skyrim_folder path in MantellaSoftware/config.ini", append=false)
 	; only run script if actor is not already selected
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
@@ -14,11 +14,13 @@ event OnEffectStart(Actor target, Actor caster)
     Utility.Wait(0.5)
 
 	if currentActor == ""
+        TargetRefAlias.ForceRefTo(target)
+
         String actorId = (target.getactorbase() as form).getformid()
         MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
 
-        ; Get NPC's name and save name to current_actor.txt for Pyton to read
-        String actorName = (target.getleveledactorbase() as form).getname()
+        ; Get NPC's name and save name to _mantella_current_actor.txt for Python to read
+        String actorName = target.getdisplayname()
         MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
         Debug.Notification("Starting conversation with " + actorName)
 
@@ -28,8 +30,8 @@ event OnEffectStart(Actor target, Actor caster)
         String actorRace = target.getrace()
         MiscUtil.WriteToFile("_mantella_actor_race.txt", actorRace, append=false)
 
-        ;String actorRelationship = target.getrelationshiprank(game.getplayer())
-        ;MiscUtil.WriteToFile("_mantella_actor_relationship.txt", actorRelationship, append=false)
+        String actorRelationship = target.getrelationshiprank(game.getplayer())
+        MiscUtil.WriteToFile("_mantella_actor_relationship.txt", actorRelationship, append=false)
 
         String actorVoiceType = target.GetVoiceType()
         MiscUtil.WriteToFile("_mantella_actor_voice.txt", actorVoiceType, append=false)
@@ -40,20 +42,15 @@ event OnEffectStart(Actor target, Actor caster)
         endIf
         MiscUtil.WriteToFile("_mantella_actor_is_enemy.txt", isEnemy, append=false)
 
-        ; Get current location and save to current_location.txt for Python to read
         String currLoc = (caster.GetCurrentLocation() as form).getname()
         if currLoc == ""
             currLoc = "Skyrim"
         endIf
         MiscUtil.WriteToFile("_mantella_current_location.txt", currLoc, append=false)
-        ;Debug.MessageBox("Current location is " + currLoc)
 
         int Time
         Time = GetCurrentHourOfDay()
         MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
-        ;Debug.MessageBox("Current time is " + Time)
-
-        ;Topic helloTopicTopic = Game.GetFormFromFile(0x01001D8A, "Mantella.esp") as Topic ;  0x01001D8B 0x01001827
 
         String sayLine = "False"
         String playerResponse = "False"
@@ -62,7 +59,7 @@ event OnEffectStart(Actor target, Actor caster)
         String sayFinalLine = "False"
         String listening = "False"
 
-        ; Wait for first voiceline to play to avoid old conversation playiing
+        ; Wait for first voiceline to play to avoid old conversation playing
         Utility.Wait(0.5)
 
         ; Start conversation
@@ -70,14 +67,13 @@ event OnEffectStart(Actor target, Actor caster)
             playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
             if playerResponse == "True"
                 GetPlayerInput()
-                Utility.Wait(2)
+                Utility.Wait(3)
             endIf
 
             sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
             if sayLine == "True"
-                subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-                
-                MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
+                subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as string
+
                 target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
 
                 ; Set sayLine back to False once the voiceline has been triggered
@@ -110,18 +106,8 @@ event OnEffectStart(Actor target, Actor caster)
                 endConversation = "True"
             endIf
 
-            ; Wait for Python / the "ChatAIEndConversationScript" script to give the green light to end the conversation
+            ; Wait for Python / the script to give the green light to end the conversation
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
-
-            if target.IsDead()
-                MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
-                endConversation = "True"
-            endIf
-
-            if game.getplayer().IsDead()
-                MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
-                endConversation = "True"
-            endIf
         endWhile
     else
         MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
