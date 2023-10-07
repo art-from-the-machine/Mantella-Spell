@@ -20,7 +20,7 @@ event OnEffectStart(Actor target, Actor caster)
         MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
 
         ; Get NPC's name and save name to _mantella_current_actor.txt for Python to read
-        String actorName = (target.getleveledactorbase() as form).getname()
+        String actorName = target.getdisplayname()
         MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
         Debug.Notification("Starting conversation with " + actorName)
 

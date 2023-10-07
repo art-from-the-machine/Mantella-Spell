@@ -49,7 +49,6 @@ Int timesHitSameAggressorSource = 0
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
     string aggressor = akAggressor.getdisplayname()
     string hitSource = akSource.getname()
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
 
     ; avoid writing events too often (continuous spells record very frequently)
     ; if the actor and weapon hasn't changed, only record the event every 5 hits
@@ -62,7 +61,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
             ;Debug.MessageBox(aggressor + " punched the player.")
             MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " punched the player.\n")
         else
-            ;Debug.MessageBox(aggressor + " hit "+selfName+" with a(n) " + hitSource)
+            ;Debug.MessageBox(aggressor + " hit the player with " + hitSource+".\n")
             MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " hit the player with " + hitSource+".\n")
         endIf
     else

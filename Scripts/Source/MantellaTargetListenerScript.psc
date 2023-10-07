@@ -1,7 +1,7 @@
 Scriptname MantellaTargetListenerScript extends ReferenceAlias
 
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     string itemName = akBaseItem.GetName()
     string itemPickedUpMessage = selfName+" picked up " + itemName + ".\n"
     
@@ -13,7 +13,7 @@ EndEvent
 
 
 Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akDestContainer)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     string itemName = akBaseItem.GetName()
     string itemDroppedMessage = selfName+" dropped " + itemName + ".\n"
     
@@ -25,7 +25,7 @@ endEvent
 
 
 Event OnSpellCast(Form akSpell)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     string spellCast = (akSpell as form).getname()
     if spellCast
         ;Debug.Notification(selfName+" casted the spell "+ spellCast)
@@ -45,7 +45,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
         aggressor = akAggressor.getdisplayname()
     endif
     string hitSource = akSource.getname()
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
 
     ; avoid writing events too often (continuous spells record very frequently)
     ; if the actor and weapon hasn't changed, only record the event every 5 hits
@@ -58,7 +58,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
             ;Debug.MessageBox(aggressor + " punched "+selfName+".")
             MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " punched "+selfName+".\n")
         elseif hitSource == "Mantella"
-            ; Do not write
+            ; Do not save event if Mantella itself is cast
         else
             ;Debug.MessageBox(aggressor + " hit "+selfName+" with a(n) " + hitSource)
             MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " hit "+selfName+" with " + hitSource+".\n")
@@ -70,13 +70,12 @@ EndEvent
 
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
+    String selfName = self.GetActorReference().getdisplayname()
     String targetName
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
-    
     if akTarget == Game.GetPlayer()
         targetName = "the player"
     else
-        targetName = (akTarget.getleveledactorbase() as form).getname()
+        targetName = akTarget.getdisplayname()
     endif
 
     if (aeCombatState == 0)
@@ -93,7 +92,7 @@ endEvent
 
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     string itemEquipped = akBaseObject.getname()
     ;Debug.MessageBox(selfName+" equipped " + itemEquipped)
     MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" equipped " + itemEquipped + ".\n")
@@ -101,7 +100,7 @@ endEvent
 
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     string itemUnequipped = akBaseObject.getname()
     ;Debug.MessageBox(selfName+" unequipped " + itemUnequipped)
     MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" unequipped " + itemUnequipped + ".\n")
@@ -109,14 +108,14 @@ endEvent
 
 
 Event OnSit(ObjectReference akFurniture)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     ;Debug.MessageBox(selfName+" sat down.")
     MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" sat down.\n")
 endEvent
 
 
 Event OnGetUp(ObjectReference akFurniture)
-    String selfName = (self.GetActorReference().getleveledactorbase() as form).getname()
+    String selfName = self.GetActorReference().getdisplayname()
     ;Debug.MessageBox(selfName+" stood up.")
     MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" stood up.\n")
 EndEvent
