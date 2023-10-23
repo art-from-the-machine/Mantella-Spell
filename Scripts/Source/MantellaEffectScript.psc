@@ -98,6 +98,19 @@ event OnEffectStart(Actor target, Actor caster)
                 MiscUtil.WriteToFile("_mantella_error_check.txt", "False",  append=false)
             endIf
 
+            String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
+            if aggro == "0"
+                Debug.Notification(actorName + " forgave you.")
+                target.StopCombat()
+                MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+            elseIf aggro == "1"
+                Debug.Notification(actorName + " did not like that.")
+                ;target.UnsheatheWeapon()
+                ;target.SendTrespassAlarm(caster)
+                target.StartCombat(caster)
+                MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+            endIf
+
             ; Update time (this may be too frequent)
             Time = GetCurrentHourOfDay()
             MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
