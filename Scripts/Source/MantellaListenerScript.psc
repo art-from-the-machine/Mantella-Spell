@@ -4,7 +4,7 @@ Spell property MantellaSpell auto
 
 event OnInit()
     Game.GetPlayer().AddSpell(MantellaSpell)
-    Debug.MessageBox("Mantella spell added. Please save and reload to activate the mod.")
+    Debug.Notification("Mantella spell added. Please save and reload to activate the mod.")
 endEvent
 
 
