@@ -1,10 +1,47 @@
 Scriptname MantellaListenerScript extends ReferenceAlias
 
 Spell property MantellaSpell auto
+int conversationHotkey
 
 event OnInit()
     Game.GetPlayer().AddSpell(MantellaSpell)
     Debug.Notification("Mantella spell added. Please save and reload to activate the mod.")
+endEvent
+
+
+Event OnPlayerLoadGame()
+	;this will load the selected hotkey for the conversation press.
+	conversationHotkey = MiscUtil.ReadFromFile("_mantella_conversation_hotkey.txt") as int
+	RegisterForKey(conversationHotkey)
+EndEvent
+
+
+Event OnKeyDown(int KeyCode)
+	;this ensures the right key is pressed and only activated while not in menu mode
+    If KeyCode == conversationHotkey && !utility.IsInMenuMode()  
+		String conversationEndedCheck = "false"
+		String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
+		if	currentActor == ""
+				Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
+				if targetRef
+					MantellaSpell.cast(Game.GetPlayer(), targetRef)
+					Utility.Wait(0.5)
+				endIf
+		elseif currentActor != ""
+			String playerResponse = "False"
+			playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+			if playerResponse == "True"
+				;Debug.Notification("Forcing Conversation Through Hotkey")
+				UIExtensions.InitMenu("UITextEntryMenu")
+				UIExtensions.OpenMenu("UITextEntryMenu")
+				string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
+				if result != ""
+					MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+					MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
+				endIf
+			endIf
+		endIf
+    EndIf
 endEvent
 
 
