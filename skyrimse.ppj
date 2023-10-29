@@ -46,6 +46,7 @@
             <Include NoRecurse="true">*.bsa</Include>
             <Match In="Scripts">*.pex</Match>
             <Match In="Scripts/Source">*.psc</Match>
+            <Match In="SKSE">*.dll</Match>
             <Match In="Sound/Voice/Mantella.esp">*.wav</Match>
             <Match In="Sound/Voice/Mantella.esp">*.lip</Match>
         </ZipFile>
