@@ -2,8 +2,14 @@ Scriptname MantellaEffectScript extends activemagiceffect
 
 Topic property MantellaDialogueLine auto
 ReferenceAlias property TargetRefAlias auto
+int localMenuTimer = 0
 
 event OnEffectStart(Actor target, Actor caster)
+	; these three lines below is to ensure that no leftover Mantella effects are running
+	MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+	Utility.Wait(0.5)
+	MiscUtil.WriteToFile("_mantella_end_conversation.txt", "False",  append=false)
+    
     MiscUtil.WriteToFile("_mantella__skyrim_folder.txt", "Set the folder this file is in as your skyrim_folder path in MantellaSoftware/config.ini", append=false)
 	; only run script if actor is not already selected
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
@@ -17,13 +23,27 @@ event OnEffectStart(Actor target, Actor caster)
         TargetRefAlias.ForceRefTo(target)
 
         String actorId = (target.getactorbase() as form).getformid()
-        MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
+		if caster.IsSneaking() == 1
+			UIExtensions.InitMenu("UITextEntryMenu")
+			UIExtensions.OpenMenu("UITextEntryMenu")
+			string result1 = UIExtensions.GetMenuResultString("UITextEntryMenu")
+			MiscUtil.WriteToFile("_mantella_current_actor_id.txt", result1, append=false)
+		else
+		    MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
+		endIf
 
         ; Get NPC's name and save name to _mantella_current_actor.txt for Python to read
         String actorName = target.getdisplayname()
-        MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
-        Debug.Notification("Starting conversation with " + actorName)
-
+		if caster.IsSneaking() == 1
+			UIExtensions.InitMenu("UITextEntryMenu")
+			UIExtensions.OpenMenu("UITextEntryMenu")
+			string result2 = UIExtensions.GetMenuResultString("UITextEntryMenu")
+			MiscUtil.WriteToFile("_mantella_current_actor.txt", result2, append=false)
+		else
+			MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
+		endIf
+		Debug.Notification("Starting conversation with " + actorName)
+		
         String actorSex = target.getleveledactorbase().getsex()
         MiscUtil.WriteToFile("_mantella_actor_sex.txt", actorSex, append=false)
 
@@ -64,21 +84,22 @@ event OnEffectStart(Actor target, Actor caster)
 
         ; Start conversation
         While endConversation == "False"
-            playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+			playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
             if playerResponse == "True"
-                GetPlayerInput()
-                Utility.Wait(3)
+                StartTimer()
+                Utility.Wait(2)
             endIf
 
             sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
             if sayLine == "True"
-                subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as string
-
+                subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
+                
                 MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
                 target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
 
                 ; Set sayLine back to False once the voiceline has been triggered
                 MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
+				localMenuTimer = -1
             endIf
 
             listening = MiscUtil.ReadFromFile("_mantella_listening.txt") as String
@@ -118,6 +139,7 @@ event OnEffectStart(Actor target, Actor caster)
 
             if sayFinalLine == "True"
                 endConversation = "True"
+				localMenuTimer = -1
             endIf
 
             ; Wait for Python / the script to give the green light to end the conversation
@@ -148,6 +170,45 @@ function SplitSubtitleIntoParts(String subtitle)
     endwhile
 endFunction
 
+
+function StartTimer()
+	localMenuTimer=180
+	localMenuTimer = MiscUtil.ReadFromFile("_mantella_response_timer.txt") as int
+	Debug.Notification("Awaiting player input for "+localMenuTimer+" seconds")
+	String Monitorplayerresponse
+	String timerCheckEndConversation
+	;Debug.Notification("Timer is "+localMenuTimer)
+	While localMenuTimer >= 0
+		;Debug.Notification("Timer is "+localMenuTimer)
+		Monitorplayerresponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+		timerCheckEndConversation = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
+		;the next if clause checks if another conversation is already running and ends it.
+		if timerCheckEndConversation == "true"
+			localMenuTimer = -1
+			MiscUtil.WriteToFile("_mantella_say_line.txt", "False", append=false)
+			return
+		endif
+		if Monitorplayerresponse == "False"
+			localMenuTimer = -1
+		endif
+		If localMenuTimer > 0
+			Utility.Wait(1)
+			if !utility.IsInMenuMode()
+				localMenuTimer = localMenuTimer - 1
+			endif
+			;Debug.Notification("Timer is "+localMenuTimer)
+		elseif localMenuTimer == 0
+			Monitorplayerresponse = "False"
+			;added this as a safety check in case the player stays in a menu a long time.
+			Monitorplayerresponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+			if Monitorplayerresponse == "True"
+				;Debug.Notification("opening menu now")
+				GetPlayerInput()
+			endIf
+			localMenuTimer = -1
+		endIf
+	endWhile
+endFunction
 
 function GetPlayerInput()
     UIExtensions.InitMenu("UITextEntryMenu")
