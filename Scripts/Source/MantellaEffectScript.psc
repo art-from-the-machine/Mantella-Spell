@@ -2,6 +2,8 @@ Scriptname MantellaEffectScript extends activemagiceffect
 
 Topic property MantellaDialogueLine auto
 ReferenceAlias property TargetRefAlias auto
+Faction property DunPlayerAllyFactionProperty auto
+Faction property PotentialFollowerFactionProperty auto
 int localMenuTimer = 0
 
 event OnEffectStart(Actor target, Actor caster)
@@ -131,6 +133,14 @@ event OnEffectStart(Actor target, Actor caster)
                 ;target.SendTrespassAlarm(caster)
                 target.StartCombat(caster)
                 MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+            elseif aggro == "2"
+                if actorRelationship != "4"
+                    Debug.Notification(actorName + " is willing to follow you.")
+                    target.setrelationshiprank(caster, 4)
+                    target.addtofaction(DunPlayerAllyFactionProperty)
+                    target.addtofaction(PotentialFollowerFactionProperty)
+                    MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+                endIf
             endIf
 
             ; Update time (this may be too frequent)
