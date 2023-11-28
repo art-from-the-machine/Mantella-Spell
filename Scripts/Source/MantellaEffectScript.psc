@@ -17,15 +17,15 @@ event OnEffectStart(Actor target, Actor caster)
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
     String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
 
-    MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-    MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
-
     Utility.Wait(0.5)
 
     String actorName = target.getdisplayname()
     int index = StringUtil.Find(activeActors, actorName)
 	if index == -1 ; if actor not already loaded
         TargetRefAlias.ForceRefTo(target)
+
+        MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+        MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
 
         String actorId = (target.getactorbase() as form).getformid()
         if caster.IsSneaking() == 1
@@ -45,7 +45,7 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_current_actor.txt", result2, append=false)
         else
             MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
-            MiscUtil.WriteToFile("_mantella_active_actors.txt", actorName, append=true)
+            MiscUtil.WriteToFile("_mantella_active_actors.txt", " "+actorName+" ", append=true)
         endIf
         Debug.Notification("Starting conversation with " + actorName)
         

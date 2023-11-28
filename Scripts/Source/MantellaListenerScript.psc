@@ -20,14 +20,15 @@ Event OnKeyDown(int KeyCode)
 	;this ensures the right key is pressed and only activated while not in menu mode
     If KeyCode == conversationHotkey && !utility.IsInMenuMode()  
 		String conversationEndedCheck = "false"
-		String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
-		if	currentActor == ""
-				Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
-				if targetRef
-					MantellaSpell.cast(Game.GetPlayer(), targetRef)
-					Utility.Wait(0.5)
-				endIf
-		elseif currentActor != ""
+        ;String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
+        String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
+        Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
+        String actorName = targetRef.getdisplayname()
+        int index = StringUtil.Find(activeActors, actorName)
+	    if index == -1 ; if actor not already loaded
+            MantellaSpell.cast(Game.GetPlayer(), targetRef)
+            Utility.Wait(0.5)
+		else
 			String playerResponse = "False"
 			playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
 			if playerResponse == "True"
