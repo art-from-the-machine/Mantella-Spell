@@ -16,16 +16,14 @@ event OnEffectStart(Actor target, Actor caster)
 	; only run script if actor is not already selected
 	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
     String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
+    String character_selection_enabled = MiscUtil.ReadFromFile("_mantella_character_selection.txt") as String
 
     Utility.Wait(0.5)
 
     String actorName = target.getdisplayname()
     int index = StringUtil.Find(activeActors, actorName)
-	if index == -1 ; if actor not already loaded
+	if (index == -1) && (character_selection_enabled == "True") ; if actor not already loaded and character selection is enabled
         TargetRefAlias.ForceRefTo(target)
-
-        MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-        MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
 
         String actorId = (target.getactorbase() as form).getformid()
         if caster.IsSneaking() == 1
@@ -46,6 +44,7 @@ event OnEffectStart(Actor target, Actor caster)
         else
             MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
             MiscUtil.WriteToFile("_mantella_active_actors.txt", " "+actorName+" ", append=true)
+            MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
         endIf
         Debug.Notification("Starting conversation with " + actorName)
         
@@ -81,6 +80,11 @@ event OnEffectStart(Actor target, Actor caster)
         actorCount += 1
         MiscUtil.WriteToFile("_mantella_actor_count.txt", actorCount, append=false)
 
+        if actorCount == 1 ; reset player input if this is the first actor selected
+            MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+            MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
+        endif
+
         ;String sayLine = "False"
         ;String playerResponse = "False"
         ;String subtitle = ""
@@ -94,11 +98,9 @@ event OnEffectStart(Actor target, Actor caster)
         ; Start conversation
         While endConversation == "False"
             if actorCount == 1
-                ConversationLoop(target, caster, actorName, actorRelationship)
-            elseif actorCount == 2
-                ConversationLoop2(target, actorName)
-            elseif actorCount == 3
-                ConversationLoop3(target, actorName)
+                MainConversationLoop(target, caster, actorName, actorRelationship)
+            else
+                ConversationLoop(target, actorName, actorCount)
             endif
             
             if sayFinalLine == "True"
@@ -109,14 +111,14 @@ event OnEffectStart(Actor target, Actor caster)
             ; Wait for Python / the script to give the green light to end the conversation
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
         endWhile
-    ;else
-    ;    MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+        Debug.Notification("Conversation ended.")
+    else
+        Debug.Notification("NPC not added. Please try again after your next response.")
     endIf
-	Debug.Notification("Conversation ended.")
 endEvent
 
 
-function ConversationLoop(Actor target, Actor caster, String actorName, String actorRelationship)
+function MainConversationLoop(Actor target, Actor caster, String actorName, String actorRelationship)
     String playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
     if playerResponse == "True"
         StartTimer()
@@ -125,7 +127,7 @@ function ConversationLoop(Actor target, Actor caster, String actorName, String a
 
     String sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
     if sayLine == "True"
-        Debug.Notification("Actor 1 (" + actorName + ") speaking...")
+        ;Debug.Notification("Actor 1 (" + actorName + ") speaking...")
         String subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
         
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
@@ -181,33 +183,17 @@ function ConversationLoop(Actor target, Actor caster, String actorName, String a
 endFunction
 
 
-function ConversationLoop2(Actor target, String actorName)
-    String sayLine = MiscUtil.ReadFromFile("_mantella_say_line_2.txt") as String
+function ConversationLoop(Actor target, String actorName, Int actorCount)
+    String say_line_file = "_mantella_say_line_"+actorCount+".txt"
+    String sayLine = MiscUtil.ReadFromFile(say_line_file) as String
     if sayLine == "True"
-        Debug.Notification("Actor 1 (" + actorName + ") speaking...")
         String subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
         
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
 
         ; Set sayLine back to False once the voiceline has been triggered
-        MiscUtil.WriteToFile("_mantella_say_line_2.txt", "False",  append=false)
-        localMenuTimer = -1
-    endIf
-endFunction
-
-
-function ConversationLoop3(Actor target, String actorName)
-    String sayLine = MiscUtil.ReadFromFile("_mantella_say_line_3.txt") as String
-    if sayLine == "True"
-        Debug.Notification("Actor 2 (" + actorName + ") speaking...")
-        String subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-        
-        MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
-        target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
-
-        ; Set sayLine back to False once the voiceline has been triggered
-        MiscUtil.WriteToFile("_mantella_say_line_3.txt", "False",  append=false)
+        MiscUtil.WriteToFile(say_line_file, "False",  append=false)
         localMenuTimer = -1
     endIf
 endFunction
