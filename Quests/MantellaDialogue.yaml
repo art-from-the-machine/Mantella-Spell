@@ -1,0 +1,7 @@
+FormKey: 001827:Mantella.esp
+EditorID: MantellaDialogue
+Flags:
+- StartGameEnabled
+- 0x10
+Type: Misc
+Filter: MantellaDialogue\

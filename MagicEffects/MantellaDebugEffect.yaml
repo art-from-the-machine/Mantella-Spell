@@ -1,0 +1,17 @@
+FormKey: 011B10:Mantella.esp
+EditorID: MantellaDebugEffect
+Name:
+  TargetLanguage: English
+  Value: MantellaDebugEffect
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''

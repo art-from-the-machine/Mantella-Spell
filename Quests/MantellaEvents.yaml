@@ -1,0 +1,21 @@
+FormKey: 020E11:Mantella.esp
+EditorID: MantellaEvents
+VirtualMachineAdapter:
+  FileName: ''
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 020E11:Mantella.esp
+      Alias: 0
+    Scripts:
+    - Name: MantellaTargetListenerScript
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Type: Misc
+Filter: MantellaEvents\
+Aliases:
+- Name: TargetRef
+  Flags: []
+  VoiceTypes: Null

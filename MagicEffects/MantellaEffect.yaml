@@ -1,0 +1,34 @@
+FormKey: 0022EE:Mantella.esp
+EditorID: MantellaEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaEffectScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: DunPlayerAllyFactionProperty
+      Object: 05A1A4:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: TargetRefAlias
+      Object: 020E11:Mantella.esp
+      Alias: 0
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDialogueLine
+      Object: 001D8A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PotentialFollowerFactionProperty
+      Object: 05C84D:Skyrim.esm
+Name:
+  TargetLanguage: English
+  Value: MantellaEffect
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Starts a conversation with the target. The conversation can be ended by casting a second time on the target, or by simply saying the word "goodbye".
