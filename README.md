@@ -5,6 +5,6 @@
 
 This repository is for the Mantella spell mod, which handles the Skyrim-side logic of Mantella. For the main Mantella repository, see [here](https://github.com/art-from-the-machine/Mantella).
 
-The source code for the subtitles plugin can be found here: https://github.com/swwu/Mantella-Subtitles-Plugin-NG
+The source code for the subtitles plugin can be found [here](https://github.com/swwu/Mantella-Subtitles-Plugin-NG).
 
 The .esp is converted to version-control-friendly .yaml files using [Spriggit](https://github.com/Mutagen-Modding/Spriggit).
