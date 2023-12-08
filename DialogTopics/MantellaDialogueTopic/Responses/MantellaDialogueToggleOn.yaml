@@ -1,0 +1,34 @@
+FormKey: 000801:Mantella.esp
+EditorID: MantellaDialogueToggleOn
+VirtualMachineAdapter:
+  Scripts:
+  - Name: gia_castMantellaSpell
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: gia_MantellaSpell
+      Object: 0022EF:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Mantella
+      Object: 000803:Mantella.esp
+  ScriptFragments:
+    MutagenObjectType: ScriptFragments
+    FileName: gia_castMantellaSpell
+    OnEnd:
+      ExtraBindDataVersion: 1
+      ScriptName: gia_castMantellaSpell
+      FragmentName: Fragment_0
+Flags:
+  Flags:
+  - Goodbye
+  - ForceSubtitle
+PreviousDialog: Null
+FavorLevel: None
+ResponseData: 0DBA22:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  CompareOperator: GreaterThan
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetRelationshipRankConditionData
+    TargetNpc: 000014:Skyrim.esm
+  ComparisonValue: -1

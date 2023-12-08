@@ -1,0 +1,16 @@
+FormKey: 000805:Mantella.esp
+EditorID: MantellaPwr
+Name:
+  TargetLanguage: English
+  Value: Mantella Power
+MenuDisplayObject: 10A046:Skyrim.esm
+EquipmentType: 025BEE:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Type: Power
+CastType: FireAndForget
+Effects:
+- BaseEffect: 000804:Mantella.esp
+  Data:
+    Magnitude: 999
