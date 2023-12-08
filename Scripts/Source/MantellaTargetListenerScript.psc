@@ -107,20 +107,6 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
 endEvent
 
 
-Event OnSit(ObjectReference akFurniture)
-    String selfName = self.GetActorReference().getdisplayname()
-    ;Debug.MessageBox(selfName+" sat down.")
-    MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" sat down.\n")
-endEvent
-
-
-Event OnGetUp(ObjectReference akFurniture)
-    String selfName = self.GetActorReference().getdisplayname()
-    ;Debug.MessageBox(selfName+" stood up.")
-    MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" stood up.\n")
-EndEvent
-
-
 Event OnDying(Actor akKiller)
     MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
 EndEvent
