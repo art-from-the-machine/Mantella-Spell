@@ -85,12 +85,10 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
         endif
 
-        ;String sayLine = "False"
-        ;String playerResponse = "False"
-        ;String subtitle = ""
         String endConversation = "False"
         String sayFinalLine = "False"
-        ;String listening = "False"
+        String sayLineFile = "_mantella_say_line_"+actorCount+".txt"
+        Int loopCount = 0
 
         ; Wait for first voiceline to play to avoid old conversation playing
         Utility.Wait(0.5)
@@ -98,9 +96,10 @@ event OnEffectStart(Actor target, Actor caster)
         ; Start conversation
         While endConversation == "False"
             if actorCount == 1
-                MainConversationLoop(target, caster, actorName, actorRelationship)
+                MainConversationLoop(target, caster, actorName, actorRelationship, loopCount)
+                loopCount += 1
             else
-                ConversationLoop(target, actorName, actorCount)
+                ConversationLoop(target, actorName, sayLineFile)
             endif
             
             if sayFinalLine == "True"
@@ -118,82 +117,68 @@ event OnEffectStart(Actor target, Actor caster)
 endEvent
 
 
-function MainConversationLoop(Actor target, Actor caster, String actorName, String actorRelationship)
-    String playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
-    if playerResponse == "True"
-        StartTimer()
-        Utility.Wait(2)
-    endIf
-
+function MainConversationLoop(Actor target, Actor caster, String actorName, String actorRelationship, Int loopCount)
     String sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
-    if sayLine == "True"
-        ;Debug.Notification("Actor 1 (" + actorName + ") speaking...")
-        String subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-        
-        MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
+    if sayLine != "False"
+        MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
 
         ; Set sayLine back to False once the voiceline has been triggered
         MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
         localMenuTimer = -1
-    endIf
 
-    String listening = MiscUtil.ReadFromFile("_mantella_listening.txt") as String
-    if listening == "True"
-        Debug.Notification("Listening...")
-        MiscUtil.WriteToFile("_mantella_listening.txt", "False",  append=false)
-    endIf
-
-    String thinking = MiscUtil.ReadFromFile("_mantella_thinking.txt") as String
-    if thinking == "True"
-        Debug.Notification("Thinking...")
-        MiscUtil.WriteToFile("_mantella_thinking.txt", "False",  append=false)
-    endIf
-
-    String exe_error = MiscUtil.ReadFromFile("_mantella_error_check.txt") as String
-    if exe_error == "True"
-        Debug.Notification("Error with Mantella.exe. Please check MantellaSoftware/logging.log")
-        MiscUtil.WriteToFile("_mantella_error_check.txt", "False",  append=false)
-    endIf
-
-    String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
-    if aggro == "0"
-        Debug.Notification(actorName + " forgave you.")
-        target.StopCombat()
-        MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
-    elseIf aggro == "1"
-        Debug.Notification(actorName + " did not like that.")
-        ;target.UnsheatheWeapon()
-        ;target.SendTrespassAlarm(caster)
-        target.StartCombat(caster)
-        MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
-    elseif aggro == "2"
-        if actorRelationship != "4"
-            Debug.Notification(actorName + " is willing to follow you.")
-            target.setrelationshiprank(caster, 4)
-            target.addtofaction(DunPlayerAllyFactionProperty)
-            target.addtofaction(PotentialFollowerFactionProperty)
+        ; Check aggro status after every line spoken
+        String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
+        if aggro == "0"
+            Debug.Notification(actorName + " forgave you.")
+            target.StopCombat()
             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+        elseIf aggro == "1"
+            Debug.Notification(actorName + " did not like that.")
+            ;target.UnsheatheWeapon()
+            ;target.SendTrespassAlarm(caster)
+            target.StartCombat(caster)
+            MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+        elseif aggro == "2"
+            if actorRelationship != "4"
+                Debug.Notification(actorName + " is willing to follow you.")
+                target.setrelationshiprank(caster, 4)
+                target.addtofaction(DunPlayerAllyFactionProperty)
+                target.addtofaction(PotentialFollowerFactionProperty)
+                MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
+            endIf
+        endIf
+
+        ; Update time (this may be too frequent)
+        int Time = GetCurrentHourOfDay()
+        MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
+    endIf
+
+    ; Run these checks every 5 loops
+    if loopCount % 5 == 0
+        String status = MiscUtil.ReadFromFile("_mantella_status.txt") as String
+        if status != "False"
+            Debug.Notification(status)
+            MiscUtil.WriteToFile("_mantella_status.txt", "False",  append=false)
+        endIf
+
+        String playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+        if playerResponse == "True"
+            StartTimer()
+            Utility.Wait(2)
         endIf
     endIf
-
-    ; Update time (this may be too frequent)
-    int Time = GetCurrentHourOfDay()
-    MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
 endFunction
 
 
-function ConversationLoop(Actor target, String actorName, Int actorCount)
-    String say_line_file = "_mantella_say_line_"+actorCount+".txt"
-    String sayLine = MiscUtil.ReadFromFile(say_line_file) as String
-    if sayLine == "True"
-        String subtitle = MiscUtil.ReadFromFile("_mantella_subtitle.txt") as String
-        
-        MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, subtitle)
+function ConversationLoop(Actor target, String actorName, String sayLineFile)
+    String sayLine = MiscUtil.ReadFromFile(sayLineFile) as String
+    if sayLine != "False"
+        MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
 
         ; Set sayLine back to False once the voiceline has been triggered
-        MiscUtil.WriteToFile(say_line_file, "False",  append=false)
+        MiscUtil.WriteToFile(sayLineFile, "False",  append=false)
         localMenuTimer = -1
     endIf
 endFunction
