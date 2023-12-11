@@ -48,6 +48,7 @@
             <Match In="Scripts/Source">*.psc</Match>
             <Match In="SKSE">*.dll</Match>
             <Match In="Seq">*.seq</Match>
+            <Match In="interface/Mantella">*.dds</Match>
             <Match In="Sound/Voice/Mantella.esp">*.wav</Match>
             <Match In="Sound/Voice/Mantella.esp">*.lip</Match>
         </ZipFile>
