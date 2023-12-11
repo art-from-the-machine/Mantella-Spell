@@ -8,3 +8,5 @@ This repository is for the Mantella spell mod, which handles the Skyrim-side log
 The source code for the subtitles plugin can be found [here](https://github.com/swwu/Mantella-Subtitles-Plugin-NG).
 
 The .esp is converted to version-control-friendly .yaml files using [Spriggit](https://github.com/Mutagen-Modding/Spriggit).
+
+The SkyUI SDK is required to work with MCM menu code, which can be found [here](https://github.com/schlangster/skyui/wiki).
