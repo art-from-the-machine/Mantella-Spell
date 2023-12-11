@@ -4,7 +4,10 @@ Topic property MantellaDialogueLine auto
 ReferenceAlias property TargetRefAlias auto
 Faction property DunPlayerAllyFactionProperty auto
 Faction property PotentialFollowerFactionProperty auto
-int localMenuTimer = 0
+;#############
+float localMenuTimer = 0.0
+;#############
+MantellaRepository property repository auto
 
 event OnEffectStart(Actor target, Actor caster)
 	; these three lines below is to ensure that no leftover Mantella effects are running
@@ -26,28 +29,36 @@ event OnEffectStart(Actor target, Actor caster)
         TargetRefAlias.ForceRefTo(target)
 
         String actorId = (target.getactorbase() as form).getformid()
-        if caster.IsSneaking() == 1
-            UIExtensions.InitMenu("UITextEntryMenu")
-            UIExtensions.OpenMenu("UITextEntryMenu")
-            string result1 = UIExtensions.GetMenuResultString("UITextEntryMenu")
-            MiscUtil.WriteToFile("_mantella_current_actor_id.txt", result1, append=false)
-        else
-            MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
-        endIf
+        ;if debug select mode is active this will allow the user to enter in the RefID of the NPC bio/voice to have a conversation with
+		if repository.NPCdebugSelectModeEnabled==true
+            Debug.Messagebox("Enter the actor's RefID(in base 10) that you wish to speak to")
+            Utility.Wait(0.1)
+			UIExtensions.InitMenu("UITextEntryMenu")
+			UIExtensions.OpenMenu("UITextEntryMenu")
+			string result1 = UIExtensions.GetMenuResultString("UITextEntryMenu")
+			MiscUtil.WriteToFile("_mantella_current_actor_id.txt", result1, append=false)
+		else
+		    MiscUtil.WriteToFile("_mantella_current_actor_id.txt", actorId, append=false)
+		endIf
 
         ; Get NPC's name and save name to _mantella_current_actor.txt for Python to read
-        if caster.IsSneaking() == 1
-            UIExtensions.InitMenu("UITextEntryMenu")
-            UIExtensions.OpenMenu("UITextEntryMenu")
-            string result2 = UIExtensions.GetMenuResultString("UITextEntryMenu")
-            MiscUtil.WriteToFile("_mantella_current_actor.txt", result2, append=false)
-        else
-            MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
+        ;if debug select mode is active this will allow the user to enter in the RefID of the NPC bio/voice to have a conversation with
+		if repository.NPCdebugSelectModeEnabled==true
+            Debug.Messagebox("Enter the name of the actor that you wish to speak to")
+            Utility.Wait(0.1)
+			UIExtensions.InitMenu("UITextEntryMenu")
+			UIExtensions.OpenMenu("UITextEntryMenu")
+			string result2 = UIExtensions.GetMenuResultString("UITextEntryMenu")
+			MiscUtil.WriteToFile("_mantella_current_actor.txt", result2, append=false)
             MiscUtil.WriteToFile("_mantella_active_actors.txt", " "+actorName+" ", append=true)
             MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
-        endIf
-        Debug.Notification("Starting conversation with " + actorName)
-        
+		else
+			MiscUtil.WriteToFile("_mantella_current_actor.txt", actorName, append=false)
+            MiscUtil.WriteToFile("_mantella_active_actors.txt", " "+actorName+" ", append=true)
+            MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
+		endIf
+		Debug.Notification("Starting conversation with " + actorName)
+		
         String actorSex = target.getleveledactorbase().getsex()
         MiscUtil.WriteToFile("_mantella_actor_sex.txt", actorSex, append=false)
 
@@ -205,8 +216,11 @@ endFunction
 
 function StartTimer()
 	localMenuTimer=180
-	localMenuTimer = MiscUtil.ReadFromFile("_mantella_response_timer.txt") as int
-	Debug.Notification("Awaiting player input for "+localMenuTimer+" seconds")
+    ;#################################################
+	localMenuTimer = repository.MantellaEffectResponseTimer
+    ;################################################
+    int localMenuTimerInt = Math.Floor(localMenuTimer)
+	Debug.Notification("Awaiting player input for "+localMenuTimerInt+" seconds")
 	String Monitorplayerresponse
 	String timerCheckEndConversation
 	;Debug.Notification("Timer is "+localMenuTimer)

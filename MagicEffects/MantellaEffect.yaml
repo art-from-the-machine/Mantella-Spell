@@ -17,6 +17,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: PotentialFollowerFactionProperty
       Object: 05C84D:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
 Name:
   TargetLanguage: English
   Value: MantellaEffect
