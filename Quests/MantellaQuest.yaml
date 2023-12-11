@@ -1,6 +1,12 @@
 FormKey: 000D62:Mantella.esp
 EditorID: MantellaQuest
 VirtualMachineAdapter:
+  Scripts:
+  - Name: mantellarepository
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaSpell
+      Object: 0022EF:Mantella.esp
   FileName: ''
   Aliases:
   - Property:
@@ -13,6 +19,9 @@ VirtualMachineAdapter:
       - MutagenObjectType: ScriptObjectProperty
         Name: MantellaSpell
         Object: 0022EF:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
 Flags:
 - StartGameEnabled
 - 0x10
