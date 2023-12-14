@@ -2,8 +2,10 @@ Scriptname MantellaEffectScript extends activemagiceffect
 
 Topic property MantellaDialogueLine auto
 ReferenceAlias property TargetRefAlias auto
-Faction property DunPlayerAllyFactionProperty auto
-Faction property PotentialFollowerFactionProperty auto
+;Faction property DunPlayerAllyFactionProperty auto
+;Faction property PotentialFollowerFactionProperty auto
+Faction Property gia_FollowerFaction  Auto ;gia
+quest property gia_FollowerQst auto ;gia
 ;#############
 float localMenuTimer = 0.0
 ;#############
@@ -58,7 +60,7 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
 		endIf
 		Debug.Notification("Starting conversation with " + actorName)
-		
+        
         String actorSex = target.getleveledactorbase().getsex()
         MiscUtil.WriteToFile("_mantella_actor_sex.txt", actorSex, append=false)
 
@@ -152,10 +154,18 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
         elseif aggro == "2"
             if actorRelationship != "4"
-                Debug.Notification(actorName + " is willing to follow you.")
-                target.setrelationshiprank(caster, 4)
-                target.addtofaction(DunPlayerAllyFactionProperty)
-                target.addtofaction(PotentialFollowerFactionProperty)
+                ;Debug.Notification(actorName + " is willing to follow you.")
+                ;target.setrelationshiprank(caster, 4)
+                ;target.addtofaction(DunPlayerAllyFactionProperty)
+                ;target.addtofaction(PotentialFollowerFactionProperty)
+                Debug.Notification(actorName + " is following you.");gia
+                target.SetFactionRank(gia_FollowerFaction, 1);gia
+                gia_FollowerQst.reset();gia
+                gia_FollowerQst.stop();gia
+                Utility.Wait(0.5);gia
+                gia_FollowerQst.start();gia
+                target.EvaluatePackage();gia
+
                 MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
             endIf
         endIf
@@ -216,7 +226,7 @@ endFunction
 
 function StartTimer()
 	localMenuTimer=180
-    ;#################################################
+	;#################################################
 	localMenuTimer = repository.MantellaEffectResponseTimer
     ;################################################
     int localMenuTimerInt = Math.Floor(localMenuTimer)

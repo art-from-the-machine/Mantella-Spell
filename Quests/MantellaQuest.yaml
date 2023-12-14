@@ -17,6 +17,9 @@ VirtualMachineAdapter:
     - Name: MantellaListenerScript
       Properties:
       - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaPower
+        Object: 000805:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
         Name: MantellaSpell
         Object: 0022EF:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty

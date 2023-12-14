@@ -1,0 +1,382 @@
+FormKey: 021211:Mantella.esp
+EditorID: gia_FollowerQst
+Name:
+  TargetLanguage: English
+  Value: gia_FollowerQst
+Flags:
+- StartGameEnabled
+- 0x10
+- 0x1000
+Priority: 100
+DialogConditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 003806:Mantella.esp
+  ComparisonValue: 1
+EventConditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 003806:Mantella.esp
+  ComparisonValue: 1
+Aliases:
+- ID: 125
+  Name: gia_FollowerAlias020
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 124
+  Name: gia_FollowerAlias019
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 123
+  Name: gia_FollowerAlias018
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 122
+  Name: gia_FollowerAlias017
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 121
+  Name: gia_FollowerAlias016
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 120
+  Name: gia_FollowerAlias015
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 119
+  Name: gia_FollowerAlias014
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 118
+  Name: gia_FollowerAlias013
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 117
+  Name: gia_FollowerAlias012
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 116
+  Name: gia_FollowerAlias011
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 115
+  Name: gia_FollowerAlias010
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 114
+  Name: gia_FollowerAlias009
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 113
+  Name: gia_FollowerAlias008
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 112
+  Name: gia_FollowerAlias007
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 111
+  Name: gia_FollowerAlias006
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 110
+  Name: gia_FollowerAlias005
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 109
+  Name: gia_FollowerAlias004
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 108
+  Name: gia_FollowerAlias003
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 107
+  Name: gia_FollowerAlias002
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 106
+  Name: gia_FollowerAlias001
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null
+- ID: 105
+  Name: gia_FollowerAlias000
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  - ClearNamesWhenRemoved
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 003806:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 003804:Mantella.esp
+  VoiceTypes: Null

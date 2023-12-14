@@ -12,6 +12,12 @@ VirtualMachineAdapter:
       Object: 020E11:Mantella.esp
       Alias: 0
     - MutagenObjectType: ScriptObjectProperty
+      Name: gia_FollowerFaction
+      Object: 003806:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: gia_FollowerQst
+      Object: 021211:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaDialogueLine
       Object: 001D8A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty

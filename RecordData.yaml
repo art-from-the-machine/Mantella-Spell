@@ -1,14 +1,13 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.11.0
+  Version: 0.13.0
 ModKey: Mantella.esp
 GameRelease: SkyrimSE
 ModHeader:
   Stats:
-    NumRecords: 14
-    NextFormID: 217619
-  Author: DEFAULT
-  Description: ' ESPFE+'
+    NumRecords: 33
+    NextFormID: 4278275082
+  Author: ''
   MasterReferences:
   - Master: Skyrim.esm
     FileSize: 0

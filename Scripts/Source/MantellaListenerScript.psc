@@ -1,11 +1,14 @@
 Scriptname MantellaListenerScript extends ReferenceAlias
 
 Spell property MantellaSpell auto
+Spell property MantellaPower auto;gia
 MantellaRepository property repository auto
 
 event OnInit()
     Game.GetPlayer().AddSpell(MantellaSpell)
-    Debug.Notification("Mantella spell added. Please save and reload to activate the mod.")
+    Game.GetPlayer().AddSpell(MantellaPower);gia
+    Debug.Notification("Mantella spell added.")
+    Debug.Notification("IMPORTANT: Please save and reload to activate the mod.")
 endEvent
 
 ; ##################
