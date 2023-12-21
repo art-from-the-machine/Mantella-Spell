@@ -8,6 +8,11 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
         string itemPickedUpMessage = selfName+" picked up " + itemName + ".\n"
+
+        string sourceName = akSourceContainer.getbaseobject().getname()
+        if sourceName != ""
+            itemPickedUpMessage = selfName+" picked up " + itemName + " from " + sourceName + ".\n"
+        endIf
         
         if (itemName != "Iron Arrow") && (itemName != "") ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
@@ -22,6 +27,11 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
         string itemDroppedMessage = selfName+" dropped " + itemName + ".\n"
+
+        string destName = akDestContainer.getbaseobject().getname()
+        if destName != ""
+            itemDroppedMessage = selfName+" placed " + itemName + " in/on " + destName + ".\n"
+        endIf
         
         if  (itemName != "Iron Arrow") && (itemName != "") ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
@@ -128,7 +138,11 @@ Event OnSit(ObjectReference akFurniture)
     if repository.targetTrackingOnSit
         String selfName = self.GetActorReference().getdisplayname()
         ;Debug.MessageBox(selfName+" sat down.")
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" sat down.\n")
+        String furnitureName = akFurniture.getbaseobject().getname()
+        ; only save event if actor is sitting / resting on furniture (and not just, for example, leaning on a bar table)
+        if furnitureName != ""
+            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" sat down / rested on a(n) "+furnitureName+".\n")
+        endIf
     endif
 endEvent
 
@@ -137,7 +151,11 @@ Event OnGetUp(ObjectReference akFurniture)
     if  repository.targetTrackingOnGetUp
         String selfName = self.GetActorReference().getdisplayname()
         ;Debug.MessageBox(selfName+" stood up.")
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" stood up.\n")
+        String furnitureName = akFurniture.getbaseobject().getname()
+        ; only save event if actor is sitting / resting on furniture (and not just, for example, leaning on a bar table)
+        if furnitureName != ""
+            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" stood up from a(n) "+furnitureName+".\n")
+        endIf
     endif
 EndEvent
 
