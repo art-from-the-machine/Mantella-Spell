@@ -20,8 +20,19 @@ VirtualMachineAdapter:
         Name: MantellaSpell
         Object: 0022EF:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor1
+        Object: 03A314:Mantella.esp
+        Alias: 0
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor2
+        Object: 03A314:Mantella.esp
+        Alias: 2
+      - MutagenObjectType: ScriptObjectProperty
         Name: repository
         Object: 000D62:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaActorList
+        Object: 03A314:Mantella.esp
 Flags:
 - StartGameEnabled
 - 0x10

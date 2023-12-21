@@ -27,6 +27,10 @@ int property MantellaListenerTextHotkey auto
 int property MantellaCustomGameEventHotkey auto
 bool property microphoneEnabled auto
 bool property NPCdebugSelectModeEnabled auto
+;variables below used by MCM_RadiantDialogue
+bool property radiantEnabled auto
+float property radiantDistance auto
+float property radiantFrequency auto
 
 event OnInit()
     ;variables below used by MCM_TargetTrackingSettings
@@ -58,6 +62,11 @@ event OnInit()
     MantellaCustomGameEventHotkey = -1
     microphoneEnabled = true
     NPCdebugSelectModeEnabled = false
+
+    ;variables below used by MCM_RadiantDialogue
+    radiantEnabled = false
+    radiantDistance = 20
+    radiantFrequency = 10
 endEvent
 
 function BindPromptHotkey(int keyCode)
@@ -77,32 +86,32 @@ endfunction
 Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
-    ;###############
-    If (KeyCode == MantellaListenerTextHotkey) && !utility.IsInMenuMode()  
-    ;##############
-		String conversationEndedCheck = "false"
+    If (KeyCode == MantellaListenerTextHotkey) && !utility.IsInMenuMode()
+        String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
+
 		;String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
         String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
         Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
         String actorName = targetRef.getdisplayname()
         int index = StringUtil.Find(activeActors, actorName)
-        if index == -1 ; if actor not already loaded
+        ; if actor not already loaded or player is interrupting radiant dialogue
+        if (index == -1) || (radiantDialogue == "True")
             MantellaSpell.cast(Game.GetPlayer(), targetRef)
             Utility.Wait(0.5)
 		else
-			String playerResponse = "False"
-			playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
+            String playerResponse = "False"
+            playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
             ;Checks if the Mantella is ready for text input and if the MCM has the microphone disabled
-			if playerResponse == "True" && !microphoneEnabled
-				;Debug.Notification("Forcing Conversation Through Hotkey")
-				UIExtensions.InitMenu("UITextEntryMenu")
-				UIExtensions.OpenMenu("UITextEntryMenu")
-				string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
-				if result != ""
-					MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-					MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
-				endIf
-			endIf
+            if playerResponse == "True" ; && !microphoneEnabled
+                ;Debug.Notification("Forcing Conversation Through Hotkey")
+                UIExtensions.InitMenu("UITextEntryMenu")
+                UIExtensions.OpenMenu("UITextEntryMenu")
+                string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
+                if result != ""
+                    MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+                    MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
+                endIf
+            endIf
 		endIf
     ElseIf KeyCode == MantellaCustomGameEventHotkey && !utility.IsInMenuMode() 
         UIExtensions.InitMenu("UITextEntryMenu")
