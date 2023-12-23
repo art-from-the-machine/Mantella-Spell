@@ -21,7 +21,7 @@ Float Function ConvertGameUnitsToMeter(Float gameUnits)
 EndFunction
 
 Event OnPlayerLoadGame()
-    RegisterForUpdate(repository.radiantFrequency)
+    RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
 event OnUpdate()
@@ -82,6 +82,7 @@ event OnUpdate()
             MantellaActorList.stop()
         endIf
     endIf
+    RegisterForSingleUpdate(repository.radiantFrequency)
 endEvent
 
 
