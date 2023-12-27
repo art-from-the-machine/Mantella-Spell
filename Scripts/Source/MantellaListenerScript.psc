@@ -216,7 +216,7 @@ Event OnSit(ObjectReference akFurniture)
     if repository.playerTrackingOnSit
         ;Debug.MessageBox("The player sat down.")
         String furnitureName = akFurniture.getbaseobject().getname()
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player sat down / rested on a(n) "+furnitureName+".\n")
+        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player rested on / used a(n) "+furnitureName+".\n")
     endif
 endEvent
 
