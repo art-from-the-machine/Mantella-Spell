@@ -141,7 +141,7 @@ Event OnSit(ObjectReference akFurniture)
         String furnitureName = akFurniture.getbaseobject().getname()
         ; only save event if actor is sitting / resting on furniture (and not just, for example, leaning on a bar table)
         if furnitureName != ""
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" sat down / rested on a(n) "+furnitureName+".\n")
+            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" rested on / used a(n) "+furnitureName+".\n")
         endIf
     endif
 endEvent
