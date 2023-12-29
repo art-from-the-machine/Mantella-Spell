@@ -93,7 +93,7 @@ Event OnKeyDown(int KeyCode)
 			String playerResponse = "False"
 			playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
             ;Checks if the Mantella is ready for text input and if the MCM has the microphone disabled
-			if playerResponse == "True" && !microphoneEnabled
+			if playerResponse == "True" ;&& !microphoneEnabled
 				;Debug.Notification("Forcing Conversation Through Hotkey")
 				UIExtensions.InitMenu("UITextEntryMenu")
 				UIExtensions.OpenMenu("UITextEntryMenu")
