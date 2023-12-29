@@ -20,6 +20,7 @@
         <Import>C:\Games\Steam\steamapps\common\Skyrim Special Edition\Data\Scripts\Source</Import>
         <Import>C:\Modding\MO2\mods\SKSE64\Scripts\Source</Import>
         <Import>C:\Modding\MO2\mods\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
+        <Import>C:\Modding\MO2\mods\UIExtensions\scripts\source</Import>
     </Imports>
     <Folders>
         <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
