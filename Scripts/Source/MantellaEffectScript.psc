@@ -161,6 +161,8 @@ event OnEffectStart(Actor target, Actor caster)
         else
             Debug.Notification("Conversation ended.")
         endIf
+        target.ClearLookAt()
+        caster.ClearLookAt()
     else
         Debug.Notification("NPC not added. Please try again after your next response.")
     endIf
@@ -172,7 +174,7 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
     if sayLine != "False"
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
-        ;target.SetLookAt(caster)
+        target.SetLookAt(caster)
 
         ; Set sayLine back to False once the voiceline has been triggered
         MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
@@ -203,6 +205,8 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
         ; Update time (this may be too frequent)
         int Time = GetCurrentHourOfDay()
         MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
+
+        caster.SetLookAt(target)
     endIf
 
     ; Run these checks every 5 loops
@@ -220,6 +224,8 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
         endIf
 
         if loopCount % 20 == 0
+            target.ClearLookAt()
+            caster.ClearLookAt()
             String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
             if radiantDialogue == "True"
                 float distanceBetweenActors = caster.GetDistance(target)
