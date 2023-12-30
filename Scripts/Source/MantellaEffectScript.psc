@@ -17,16 +17,43 @@ event OnEffectStart(Actor target, Actor caster)
 	;MiscUtil.WriteToFile("_mantella_end_conversation.txt", "False",  append=false)
     
     MiscUtil.WriteToFile("_mantella__skyrim_folder.txt", "Set the folder this file is in as your skyrim_folder path in MantellaSoftware/config.ini", append=false)
-	; only run script if actor is not already selected
-	String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
     String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
+    int actorCount = MiscUtil.ReadFromFile("_mantella_actor_count.txt") as int
     String character_selection_enabled = MiscUtil.ReadFromFile("_mantella_character_selection.txt") as String
 
     Utility.Wait(0.5)
 
     String actorName = target.getdisplayname()
+    String casterName = caster.getdisplayname()
+
+    ;if radiant dialogue between two NPCs, label them 1 & 2
+    if (casterName == actorName)
+        if actorCount == 0
+            actorName = actorName + " 1"
+            casterName = casterName + " 2"
+        elseIf actorCount == 1
+            actorName = actorName + " 2"
+            casterName = casterName + " 1"
+        endIf
+    endIf
+
     int index = StringUtil.Find(activeActors, actorName)
-	if (index == -1) && (character_selection_enabled == "True") ; if actor not already loaded and character selection is enabled
+    bool actorAlreadyLoaded = true
+    if index == -1
+        actorAlreadyLoaded = false
+    endIf
+
+    String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
+    ; if radiant dialogue is active without the actor selected by player, end the radiant dialogue
+    if (radiantDialogue == "True") && (caster == Game.GetPlayer()) && (actorAlreadyLoaded == false)
+        Debug.Notification("Ending radiant dialogue")
+        MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+    ; if selected actor is in radiant dialogue, disable this mode to allow the player to join the conversation
+    elseIf (radiantDialogue == "True") && (actorAlreadyLoaded == true) && (caster == Game.GetPlayer())
+        Debug.Notification("Adding player to conversation")
+        MiscUtil.WriteToFile("_mantella_radiant_dialogue.txt", "False",  append=false)
+    ; if actor not already loaded and character selection is enabled
+	elseIf (actorAlreadyLoaded == false) && (character_selection_enabled == "True")
         TargetRefAlias.ForceRefTo(target)
 
         String actorId = (target.getactorbase() as form).getformid()
@@ -89,14 +116,20 @@ event OnEffectStart(Actor target, Actor caster)
         Time = GetCurrentHourOfDay()
         MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
 
-        int actorCount = MiscUtil.ReadFromFile("_mantella_actor_count.txt") as int
         actorCount += 1
         MiscUtil.WriteToFile("_mantella_actor_count.txt", actorCount, append=false)
 
         if actorCount == 1 ; reset player input if this is the first actor selected
             MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
             MiscUtil.WriteToFile("_mantella_text_input.txt", "", append=false)
+            MiscUtil.WriteToFile("_mantella_in_game_events.txt", "", append=False)
         endif
+
+        if caster == game.getplayer()
+		    Debug.Notification("Starting conversation with " + actorName)
+        elseIf actorCount == 1
+            Debug.Notification("Starting radiant dialogue with " + actorName + " and " + casterName)
+        endIf
 
         String endConversation = "False"
         String sayFinalLine = "False"
@@ -106,13 +139,15 @@ event OnEffectStart(Actor target, Actor caster)
         ; Wait for first voiceline to play to avoid old conversation playing
         Utility.Wait(0.5)
 
+        MiscUtil.WriteToFile("_mantella_character_selected.txt", "True", append=false)
+
         ; Start conversation
         While endConversation == "False"
             if actorCount == 1
                 MainConversationLoop(target, caster, actorName, actorRelationship, loopCount)
                 loopCount += 1
             else
-                ConversationLoop(target, actorName, sayLineFile)
+                ConversationLoop(target, caster, actorName, sayLineFile)
             endif
             
             if sayFinalLine == "True"
@@ -123,8 +158,15 @@ event OnEffectStart(Actor target, Actor caster)
             ; Wait for Python / the script to give the green light to end the conversation
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
         endWhile
-        Debug.Notification("Conversation ended.")
 		target.removefromfaction(repository.giafac_Mantella);gia
+        radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
+        if radiantDialogue == "True"
+            Debug.Notification("Radiant dialogue ended.")
+        else
+            Debug.Notification("Conversation ended.")
+        endIf
+        target.ClearLookAt()
+        caster.ClearLookAt()
     else
         Debug.Notification("NPC not added. Please try again after your next response.")
     endIf
@@ -136,6 +178,7 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
     if sayLine != "False"
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
+        target.SetLookAt(caster)
 
         ; Set sayLine back to False once the voiceline has been triggered
         MiscUtil.WriteToFile("_mantella_say_line.txt", "False",  append=false)
@@ -180,6 +223,8 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
         ; Update time (this may be too frequent)
         int Time = GetCurrentHourOfDay()
         MiscUtil.WriteToFile("_mantella_in_game_time.txt", Time, append=false)
+
+        caster.SetLookAt(target)
     endIf
 
     ; Run these checks every 5 loops
@@ -195,15 +240,32 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
             StartTimer()
             Utility.Wait(2)
         endIf
+
+        if loopCount % 20 == 0
+            target.ClearLookAt()
+            caster.ClearLookAt()
+            String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
+            if radiantDialogue == "True"
+                float distanceBetweenActors = caster.GetDistance(target)
+                float distanceToPlayer = ConvertGameUnitsToMeter(caster.GetDistance(game.getplayer()))
+                ;Debug.Notification(distanceBetweenActors)
+                ;TODO: allow distanceBetweenActos limit to be customisable
+                if (distanceBetweenActors > 1500) || (distanceToPlayer > repository.radiantDistance) || (caster.GetCurrentLocation() != target.GetCurrentLocation()) || (caster.GetCurrentScene() != None) || (target.GetCurrentScene() != None)
+                    ;Debug.Notification(distanceBetweenActors)
+                    MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+                endIf
+            endIf
+        endIf
     endIf
 endFunction
 
 
-function ConversationLoop(Actor target, String actorName, String sayLineFile)
+function ConversationLoop(Actor target, Actor caster, String actorName, String sayLineFile)
     String sayLine = MiscUtil.ReadFromFile(sayLineFile) as String
     if sayLine != "False"
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
+        ;target.SetLookAt(caster)
 
         ; Set sayLine back to False once the voiceline has been triggered
         MiscUtil.WriteToFile(sayLineFile, "False",  append=false)
@@ -282,3 +344,12 @@ function GetPlayerInput()
     MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
     MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
 endFunction
+
+Float meterUnits = 71.0210
+Float Function ConvertMeterToGameUnits(Float meter)
+    Return Meter * meterUnits
+EndFunction
+
+Float Function ConvertGameUnitsToMeter(Float gameUnits)
+    Return gameUnits / meterUnits
+EndFunction

@@ -54,17 +54,23 @@ int property oid_playerTrackingAll auto
 
 ;this toggle below is used in the PlayerTrackingSettings
 bool property playerAllToggle auto
+
+int property oid_radiantenabled auto
+int property oid_radiantdistance auto
+int property oid_radiantfrequency auto
+
 string MantellaMCMcurrentPage
 
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
     ModName = "Mantella"
-	Pages = new string[4]
+	Pages = new string[5]
     Pages[0] = "Main settings"
 	Pages[1] = "Player tracking settings"
 	Pages[2] = "Target tracking settings"
  	Pages[3] = "Following NPC settings"
-
+	Pages[4] = "Radiant Dialogue"
+ 
 	;not tracking dying triggers they're only there as a check to end the conversation
 	;targetTrackingOnDyingToggle=true
 	targetAllToggle=true
@@ -88,12 +94,13 @@ Event OnPageReset(string page)
 	elseif page=="Target tracking settings"
 		MantellaMCM_TargetTrackingSettings.Render(self, repository)
 		MantellaMCMcurrentPage="Target tracking settings"
- 	
 	elseif page=="Following NPC settings"
 		MantellaMCM_FollowingNPCSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Following NPC settings"
-	
-	endif		
+		MantellaMCMcurrentPage="Following NPC settings"	
+	elseif page=="Radiant Dialogue"
+		MantellaMCM_RadiantDialogue.Render(self, repository)
+		MantellaMCMcurrentPage="Radiant Dialogue"
+ 	endif		
 EndEvent
 ;This part of the MCM below is a bunch of event listeners, they all use functions to link to the appropriate MCM scripts 
 Event OnOptionSelect(int optionID)
@@ -103,23 +110,26 @@ Event OnOptionSelect(int optionID)
 		MantellaMCM_PlayerTrackingSettings.OptionUpdate(self,optionID, repository)	
 	elseif MantellaMCMcurrentPage =="Target tracking settings"
 		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)	
-
 	elseif MantellaMCMcurrentPage =="Following NPC settings" ;gia
 		MantellaMCM_FollowingNPCSettings.OptionUpdate(self,optionID, repository)	;gia
-
-	
+	elseif MantellaMCMcurrentPage =="Radiant Dialogue"
+		MantellaMCM_RadiantDialogue.OptionUpdate(self,optionID, repository)	
 	endif
 EndEvent 
 
 Event OnOptionSliderOpen(Int optionId)
-    If 	MantellaMCMcurrentPage =="Main settings"
+    If MantellaMCMcurrentPage =="Main settings"
 		MantellaMCM_MainSettings.SliderOptionOpen(self,optionID, repository)
+	elseIf MantellaMCMcurrentPage == "Radiant Dialogue"
+		MantellaMCM_RadiantDialogue.SliderOptionOpen(self,optionID, repository)
     EndIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
-	If 	MantellaMCMcurrentPage =="Main settings"
+	If MantellaMCMcurrentPage =="Main settings"
 		MantellaMCM_MainSettings.SliderOptionAccept(self,optionID, value, repository)
+	elseIf MantellaMCMcurrentPage == "Radiant Dialogue"
+		MantellaMCM_RadiantDialogue.SliderOptionAccept(self,optionID, value, repository)
     EndIf
 EndEvent
 
@@ -142,6 +152,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("This turn ON/OFF the microphone input for Mantella (requires Mantella.exe restart)")
 	elseIf optionID ==oid_debugNPCSelectMode	
 		SetInfoText("This allows the player to speak to any NPC by initiating a conversation then entering the actor RefID then the actor name that the player wishes to speak to")	
+	
+	;tooltips for the Target Tracking menu
 	elseIf optionID ==oid_targetTrackingItemAddedToggle	
 		SetInfoText("This tracks if the Mantella Effect's target acquires an item while the Mantella Spell is active.")
 	elseIf optionID ==oid_targetTrackingItemRemovedToggle	
@@ -179,7 +191,8 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID ==oid_NPCDialogueToggle ;gia	
 		SetInfoText("Enable Conversation through dialogue with NPCs")
 
-		
+	
+	;tooltips for the Player Tracking menu
 	elseIf optionID ==oid_playerTrackingOnItemAdded	
 		SetInfoText("This tracks if the player acquires an item while the Mantella Spell is active.")
 	elseIf optionID ==oid_playerTrackingOnItemRemoved	
@@ -202,6 +215,14 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("This tracks if player gets up from a chair or work area an item while the Mantella Spell is active.")
 	elseIf optionID ==oid_playerTrackingAll	
 		SetInfoText("Turns ON/OFF all tracking options for the player.")
+
+	;tooltips for the Radiant Dialogue menu
+	elseIf optionID == oid_radiantenabled
+		SetInfoText("Enable radiant dialogue.")
+	elseIf optionID == oid_radiantdistance
+		SetInfoText("How far from the player (in meters) radiant dialogues can begin. Default: 20")
+	elseIf optionID == oid_radiantfrequency
+		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. Default: 30")
 	EndIf
 endEvent
 
