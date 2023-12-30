@@ -4,7 +4,6 @@ Name:
   TargetLanguage: English
   Value: gia_FollowerQst
 Flags:
-- StartGameEnabled
 - 0x10
 - 0x1000
 Priority: 100
@@ -28,6 +27,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -47,6 +47,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -66,6 +67,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -85,6 +87,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -104,6 +107,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -123,6 +127,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -142,6 +147,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -161,6 +167,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -180,6 +187,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -199,6 +207,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -218,6 +227,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -237,6 +247,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -256,6 +267,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -275,6 +287,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -294,6 +307,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -313,6 +327,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -332,6 +347,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -351,6 +367,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -370,6 +387,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -389,6 +407,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:
@@ -408,6 +427,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   - ClearNamesWhenRemoved
   Conditions:

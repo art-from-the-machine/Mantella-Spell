@@ -78,24 +78,27 @@ Data:
     Target:
       MutagenObjectType: PackageTargetObjectType
       Type: TouchActorEffects
-- Key: 15
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 13
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 11
-  Value:
-    MutagenObjectType: PackageDataBool
 - Key: 2
   Value:
     MutagenObjectType: PackageDataObjectList
     Data: 0
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataBool
 - Key: 8
   Value:
     MutagenObjectType: PackageDataBool
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
 - Key: 17
   Value:
     MutagenObjectType: PackageDataBool
@@ -115,11 +118,15 @@ Data:
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-- Key: 25
+- Key: 22
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-- Key: 22
+- Key: 24
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 50
+- Key: 25
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
@@ -127,13 +134,6 @@ Data:
   Value:
     MutagenObjectType: PackageDataFloat
     Data: 300
-- Key: 6
-  Value:
-    MutagenObjectType: PackageDataBool
-- Key: 24
-  Value:
-    MutagenObjectType: PackageDataFloat
-    Data: 50
 XnamMarker: 0x05
 OnBegin:
   Topics:
