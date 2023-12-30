@@ -85,7 +85,6 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_active_actors.txt", " "+actorName+" ", append=true)
             MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
 		endIf
-		Debug.Notification("Starting conversation with " + actorName)
 		target.addtofaction(repository.giafac_Mantella);gia
 		
         String actorSex = target.getleveledactorbase().getsex()
