@@ -1,0 +1,9 @@
+FormKey: 038315:Mantella.esp
+EditorID: giafac_TalktoMe
+Name:
+  TargetLanguage: English
+  Value: giafac_TalktoMe
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

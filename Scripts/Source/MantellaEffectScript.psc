@@ -4,8 +4,7 @@ Topic property MantellaDialogueLine auto
 ReferenceAlias property TargetRefAlias auto
 ;Faction property DunPlayerAllyFactionProperty auto
 ;Faction property PotentialFollowerFactionProperty auto
-Faction Property gia_FollowerFaction  Auto ;gia
-quest property gia_FollowerQst auto ;gia
+
 ;#############
 float localMenuTimer = 0.0
 ;#############
@@ -60,7 +59,8 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_character_selection.txt", "False", append=false)
 		endIf
 		Debug.Notification("Starting conversation with " + actorName)
-        
+		target.addtofaction(repository.giafac_Mantella);gia
+		
         String actorSex = target.getleveledactorbase().getsex()
         MiscUtil.WriteToFile("_mantella_actor_sex.txt", actorSex, append=false)
 
@@ -124,6 +124,7 @@ event OnEffectStart(Actor target, Actor caster)
             sayFinalLine = MiscUtil.ReadFromFile("_mantella_end_conversation.txt") as String
         endWhile
         Debug.Notification("Conversation ended.")
+		target.removefromfaction(repository.giafac_Mantella);gia
     else
         Debug.Notification("NPC not added. Please try again after your next response.")
     endIf
@@ -143,14 +144,18 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
         ; Check aggro status after every line spoken
         String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
         if aggro == "0"
-            Debug.Notification(actorName + " forgave you.")
-            target.StopCombat()
+            if game.getplayer().isinfaction(Repository.giafac_AllowForgive)
+                Debug.Notification(actorName + " forgave you.")
+                target.StopCombat()
+			endif
             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
         elseIf aggro == "1"
-            Debug.Notification(actorName + " did not like that.")
-            ;target.UnsheatheWeapon()
-            ;target.SendTrespassAlarm(caster)
-            target.StartCombat(caster)
+            if game.getplayer().isinfaction(Repository.giafac_AllowAnger)
+                Debug.Notification(actorName + " did not like that.")
+                ;target.UnsheatheWeapon()
+                ;target.SendTrespassAlarm(caster)
+                target.StartCombat(caster)
+			Endif
             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
         elseif aggro == "2"
             if actorRelationship != "4"
@@ -158,13 +163,15 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
                 ;target.setrelationshiprank(caster, 4)
                 ;target.addtofaction(DunPlayerAllyFactionProperty)
                 ;target.addtofaction(PotentialFollowerFactionProperty)
-                Debug.Notification(actorName + " is following you.");gia
-                target.SetFactionRank(gia_FollowerFaction, 1);gia
-                gia_FollowerQst.reset();gia
-                gia_FollowerQst.stop();gia
-                Utility.Wait(0.5);gia
-                gia_FollowerQst.start();gia
-                target.EvaluatePackage();gia
+                if game.getplayer().isinfaction(repository.giafac_allowfollower)
+					Debug.Notification(actorName + " is following you.");gia
+					target.SetFactionRank(repository.giafac_following, 1);gia
+					repository.gia_FollowerQst.reset();gia
+					repository.gia_FollowerQst.stop();gia
+					Utility.Wait(0.5);gia
+					repository.gia_FollowerQst.start();gia
+					target.EvaluatePackage();gia
+				endif
 
                 MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
             endIf
@@ -226,7 +233,7 @@ endFunction
 
 function StartTimer()
 	localMenuTimer=180
-	;#################################################
+    ;#################################################
 	localMenuTimer = repository.MantellaEffectResponseTimer
     ;################################################
     int localMenuTimerInt = Math.Floor(localMenuTimer)

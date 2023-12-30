@@ -1,21 +1,21 @@
-FormKey: 003808:Mantella.esp
-EditorID: gia_FollowerFactionExitscript
+FormKey: 033212:Mantella.esp
+EditorID: gia_FollowerLayDownScript
 VirtualMachineAdapter:
   Scripts:
   - Name: gia_castMantellaSpell
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Follower
-      Object: 003806:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Mantella
-      Object: 000803:Mantella.esp
+    - MutagenObjectType: ScriptStringProperty
+      Name: WhatDo
+      Data: NPCjoinfac
     - MutagenObjectType: ScriptObjectProperty
       Name: gia_MantellaSpell
       Object: 0022EF:Mantella.esp
-    - MutagenObjectType: ScriptStringProperty
-      Name: WhatDo
-      Data: exit
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Mantella
+      Object: 0F2073:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Follower
+      Object: 003806:Mantella.esp
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: gia_castMantellaSpell
@@ -27,13 +27,10 @@ VirtualMachineAdapter:
       ExtraBindDataVersion: 1
       ScriptName: gia_castMantellaSpell
       FragmentName: Fragment_0
-Flags:
-  Flags:
-  - Goodbye
-  - ForceSubtitle
-PreviousDialog: 033212:Mantella.esp
+Flags: {}
+PreviousDialog: 033213:Mantella.esp
 FavorLevel: None
-ResponseData: 0DBA21:Skyrim.esm
+ResponseData: 0DBA22:Skyrim.esm
 Conditions:
 - MutagenObjectType: ConditionFloat
   Unknown1: 0x000000
@@ -42,10 +39,25 @@ Conditions:
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  CompareOperator: NotEqualTo
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetSleepingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
   ComparisonValue: 3
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 0F2073:Skyrim.esm
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 019D0B:Mantella.esp
+  ComparisonValue: 1
+Prompt:
+  TargetLanguage: English
+  Value: Get some sleep

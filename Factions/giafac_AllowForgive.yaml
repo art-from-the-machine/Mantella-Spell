@@ -1,0 +1,9 @@
+FormKey: 042518:Mantella.esp
+EditorID: giafac_AllowForgive
+Name:
+  TargetLanguage: English
+  Value: giafac_AllowForgive
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

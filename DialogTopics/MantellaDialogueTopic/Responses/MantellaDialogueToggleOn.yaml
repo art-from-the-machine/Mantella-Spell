@@ -42,3 +42,11 @@ Conditions:
     MutagenObjectType: GetRelationshipRankConditionData
     TargetNpc: 000014:Skyrim.esm
   ComparisonValue: -1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 042519:Mantella.esp
+  ComparisonValue: 1

@@ -1,0 +1,146 @@
+FormKey: 000894:Mantella.esp
+EditorID: gia_AutoSleep_pack
+Flags:
+- WeaponsUnequipped
+- 0x20000000
+Type: Package
+PreferredSpeed: Run
+Unknown: 116
+InteruptFlags:
+- RandomConversations
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- FriendlyFireComments
+- AggroRadiusBehavior
+- AllowIdleChatter
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: 255
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 003806:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: LessThanOrEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetDistanceConditionData
+    Target: 000014:Skyrim.esm
+  ComparisonValue: 1024
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetSleepingConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+  ComparisonValue: 3
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetSittingConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 019D0B:Mantella.esp
+  ComparisonValue: 1
+PackageTemplate: 019717:Skyrim.esm
+DataInputVersion: 6
+Data:
+- Key: 0
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Location:
+      Target:
+        MutagenObjectType: LocationTarget
+        Link: 000014:Skyrim.esm
+      Radius: 512
+- Key: 1
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Target:
+      MutagenObjectType: PackageTargetObjectType
+      Type: TouchActorEffects
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataObjectList
+    Data: 0
+- Key: 8
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 17
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 18
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 19
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 20
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 21
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 25
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 22
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 26
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 300
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 24
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 50
+XnamMarker: 0x05
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

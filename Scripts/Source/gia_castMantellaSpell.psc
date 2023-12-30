@@ -16,23 +16,31 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 	if WhatDo == "exit"
-        akspeaker.SetFactionRank(giafac_follower, -2)
-        getowningquest().reset()
-        getowningquest().stop()
-        Utility.Wait(0.5)
-        getowningquest().start()
-        akspeaker.EvaluatePackage()
+	akspeaker.SetFactionRank(giafac_follower, -2)
+	getowningquest().reset()
+	getowningquest().stop()
+	Utility.Wait(0.5)
+	getowningquest().start()
+	akspeaker.EvaluatePackage()
 	endif
 	
 	if WhatDo == "openinv"
-	    akspeaker.OpenInventory(true)
+	akspeaker.OpenInventory(true)
 	endif
 
 	if WhatDo == "speakto"
-	    gia_Mantellaspell.cast(game.getplayer(),akspeaker)
-	    game.getplayer().AddToFaction(giafac_mantella)
+	gia_Mantellaspell.cast(game.getplayer(),akspeaker)
+	game.getplayer().AddToFaction(giafac_mantella)
 	endif
 	
+	if WhatDo == "NPCjoinfac"
+	akspeaker.AddToFaction(giafac_mantella)
+	endif
+
+	if WhatDo == "NPCkickfac"
+	akspeaker.removefromfaction(giafac_mantella)
+	endif
+
 ;END CODE
 EndFunction
 ;END FRAGMENT
@@ -42,4 +50,4 @@ EndFunction
 string Property WhatDo  Auto
 Spell property gia_MantellaSpell Auto
 Faction property giafac_Mantella Auto
-Faction Property giafac_Follower  Auto
+Faction Property giafac_Follower  Auto  

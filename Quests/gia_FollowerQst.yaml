@@ -38,6 +38,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 124
@@ -55,6 +57,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 123
@@ -72,6 +76,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 122
@@ -89,6 +95,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 121
@@ -106,6 +114,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 120
@@ -123,6 +133,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 119
@@ -140,6 +152,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 118
@@ -157,6 +171,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 117
@@ -174,6 +190,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 116
@@ -191,6 +209,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 115
@@ -208,6 +228,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 114
@@ -225,6 +247,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 113
@@ -242,6 +266,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 112
@@ -259,6 +285,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 111
@@ -276,6 +304,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 110
@@ -293,6 +323,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 109
@@ -310,6 +342,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 108
@@ -327,6 +361,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 107
@@ -344,6 +380,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 106
@@ -361,6 +399,8 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null
 - ID: 105
@@ -378,5 +418,7 @@ Aliases:
       Faction: 003806:Mantella.esp
     ComparisonValue: 1
   PackageData:
+  - 000894:Mantella.esp
+  - 000804:Mantella.esp
   - 003804:Mantella.esp
   VoiceTypes: Null

@@ -5,6 +5,36 @@ VirtualMachineAdapter:
   - Name: mantellarepository
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_AllowAnger
+      Object: 042517:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_AllowDialogue
+      Object: 042519:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_AllowFollower
+      Object: 03D416:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_AllowForgive
+      Object: 042518:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Following
+      Object: 003806:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Mantella
+      Object: 000803:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Sitters
+      Object: 019D0A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Sleepers
+      Object: 019D0B:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_TalktoMe
+      Object: 038315:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: gia_FollowerQst
+      Object: 021211:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaSpell
       Object: 0022EF:Mantella.esp
   FileName: ''

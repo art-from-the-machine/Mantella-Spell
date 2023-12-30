@@ -1,0 +1,9 @@
+FormKey: 019D0B:Mantella.esp
+EditorID: giafac_Sleepers
+Name:
+  TargetLanguage: English
+  Value: giafac_Sleepers
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

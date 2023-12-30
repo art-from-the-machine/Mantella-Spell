@@ -12,8 +12,8 @@ VirtualMachineAdapter:
       Object: 020E11:Mantella.esp
       Alias: 0
     - MutagenObjectType: ScriptObjectProperty
-      Name: gia_FollowerFaction
-      Object: 003806:Mantella.esp
+      Name: giafac_Mantella
+      Object: 000803:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: gia_FollowerQst
       Object: 021211:Mantella.esp
@@ -24,8 +24,14 @@ VirtualMachineAdapter:
       Name: PotentialFollowerFactionProperty
       Object: 05C84D:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Following
+      Object: 003806:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_AllowFollower
+      Object: 03D416:Mantella.esp
 Name:
   TargetLanguage: English
   Value: MantellaEffect

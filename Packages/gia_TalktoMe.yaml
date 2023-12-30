@@ -1,0 +1,92 @@
+FormKey: 038314:Mantella.esp
+EditorID: gia_TalktoMe
+Type: PackageTemplate
+PreferredSpeed: Run
+Unknown: 101
+InteruptFlags:
+- HellosToPlayer
+- RandomConversations
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- FriendlyFireComments
+- AggroRadiusBehavior
+- AllowIdleChatter
+- 0x100
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: 255
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  CompareOperator: LessThan
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetDistanceConditionData
+    Target: 000014:Skyrim.esm
+  ComparisonValue: 400
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 038315:Mantella.esp
+  ComparisonValue: 1
+Data:
+- Key: 3
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: ActualSeconds
+    Flags:
+    - Public
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: StopMovement
+    Flags:
+    - Public
+    Data: True
+- Key: 0
+  Value:
+    MutagenObjectType: APackageData
+    Name: Place to Travel
+    Flags:
+    - Public
+- Key: 2
+  Value:
+    MutagenObjectType: APackageData
+    Name: Ride Horse if possible?
+    Flags:
+    - Public
+XnamMarker: 0x05
+ProcedureTree:
+- BranchType: Sequence
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags:
+  - SuccessCompletesPackage
+  DataInputIndices:
+  - 3
+  - 4
+  Unknown: []
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference
