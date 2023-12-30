@@ -1,0 +1,9 @@
+FormKey: 042517:Mantella.esp
+EditorID: giafac_AllowAnger
+Name:
+  TargetLanguage: English
+  Value: giafac_AllowAnger
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

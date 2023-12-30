@@ -26,6 +26,13 @@ int property oid_targetTrackingOnGetUpToggle auto
 int property oid_targetTrackingOnDyingToggle auto
 int property oid_targetTrackingAll auto
 
+int property oid_AllowForNPCtoFollowToggle auto ;gia
+int property oid_FollowingNPCsitToggle auto ;gia
+int property oid_FollowingNPCsleepToggle auto ;gia
+int property oid_NPCstopandTalkToggle auto ;gia
+int property oid_NPCAngerToggle auto ;gia
+int property oid_NPCForgiveToggle auto ;gia
+int property oid_NPCDialogueToggle auto ;gia
 
 ;not tracking dying triggers they're only there as a check to end the conversation
 ;bool property targetTrackingOnDyingToggle auto
@@ -57,11 +64,12 @@ string MantellaMCMcurrentPage
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
     ModName = "Mantella"
-	Pages = new string[4]
+	Pages = new string[5]
     Pages[0] = "Main settings"
 	Pages[1] = "Player tracking settings"
 	Pages[2] = "Target tracking settings"
-	Pages[3] = "Radiant Dialogue"
+ 	Pages[3] = "Following NPC settings"
+	Pages[4] = "Radiant Dialogue"
  
 	;not tracking dying triggers they're only there as a check to end the conversation
 	;targetTrackingOnDyingToggle=true
@@ -86,6 +94,9 @@ Event OnPageReset(string page)
 	elseif page=="Target tracking settings"
 		MantellaMCM_TargetTrackingSettings.Render(self, repository)
 		MantellaMCMcurrentPage="Target tracking settings"
+	elseif page=="Following NPC settings"
+		MantellaMCM_FollowingNPCSettings.Render(self, repository)
+		MantellaMCMcurrentPage="Following NPC settings"	
 	elseif page=="Radiant Dialogue"
 		MantellaMCM_RadiantDialogue.Render(self, repository)
 		MantellaMCMcurrentPage="Radiant Dialogue"
@@ -99,6 +110,8 @@ Event OnOptionSelect(int optionID)
 		MantellaMCM_PlayerTrackingSettings.OptionUpdate(self,optionID, repository)	
 	elseif MantellaMCMcurrentPage =="Target tracking settings"
 		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)	
+	elseif MantellaMCMcurrentPage =="Following NPC settings" ;gia
+		MantellaMCM_FollowingNPCSettings.OptionUpdate(self,optionID, repository)	;gia
 	elseif MantellaMCMcurrentPage =="Radiant Dialogue"
 		MantellaMCM_RadiantDialogue.OptionUpdate(self,optionID, repository)	
 	endif
@@ -161,7 +174,24 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("This tracks if the Mantella Effect's target gets up from a chair or work area an item while the Mantella Spell is active.")
 	elseIf optionID ==oid_targetTrackingOnGetUpToggle	
 		SetInfoText("Turns ON/OFF all tracking options for the target.")
-		
+
+
+	elseIf optionID ==oid_AllowForNPCtoFollowToggle ;gia	
+		SetInfoText("Allow for NPCs to be Mantella followers.")
+	elseIf optionID ==oid_FollowingNPCsitToggle ;gia	
+		SetInfoText("Mantella followers sit when player sits.")
+	elseIf optionID ==oid_FollowingNPCsleepToggle ;gia	
+		SetInfoText("This must be enabled and the Player must be laying in bed to use dialogue to send followers to bed. Does not pertain to rented beds. (player may have to exit the bed to exit or disable MCM toggle)")
+	elseIf optionID ==oid_NPCstopandTalkToggle ;gia	
+		SetInfoText("Prevents NPCs in conversations from moving around. e.g. Tap the same key as you would for opening a door on the NPC to get their attention during a conversation. To disengage simply walk away and they will resume their schedule")
+	elseIf optionID ==oid_NPCAngerToggle ;gia	
+		SetInfoText("Enable NPCs to become angry and attack the player for comments")
+	elseIf optionID ==oid_NPCForgiveToggle ;gia	
+		SetInfoText("Enable Angered NPCs to Forgive the player for comments")
+	elseIf optionID ==oid_NPCDialogueToggle ;gia	
+		SetInfoText("Enable Conversation through dialogue with NPCs")
+
+	
 	;tooltips for the Player Tracking menu
 	elseIf optionID ==oid_playerTrackingOnItemAdded	
 		SetInfoText("This tracks if the player acquires an item while the Mantella Spell is active.")

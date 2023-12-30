@@ -1,0 +1,13 @@
+FormKey: 003806:Mantella.esp
+EditorID: giafac_Following
+Name:
+  TargetLanguage: English
+  Value: giafac_Followering
+Relations:
+- Target: 0F2073:Skyrim.esm
+  Modifier: 1
+  Reaction: Ally
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

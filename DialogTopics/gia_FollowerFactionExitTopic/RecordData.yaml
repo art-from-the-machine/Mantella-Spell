@@ -1,0 +1,9 @@
+FormKey: 003802:Mantella.esp
+EditorID: gia_FollowerFactionExitTopic
+Name:
+  TargetLanguage: English
+  Value: I won't be needing your help any longer
+Priority: 60
+Branch: 00381F:Mantella.esp
+Quest: 021211:Mantella.esp
+SubtypeName: CUST

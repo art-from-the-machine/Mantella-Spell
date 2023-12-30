@@ -5,10 +5,9 @@ ModKey: Mantella.esp
 GameRelease: SkyrimSE
 ModHeader:
   Stats:
-    NumRecords: 26
-    NextFormID: 590869
-  Author: DEFAULT
-  Description: ' ESPFE+'
+    NumRecords: 33
+    NextFormID: 4278275082
+  Author: ''
   MasterReferences:
   - Master: Skyrim.esm
     FileSize: 0

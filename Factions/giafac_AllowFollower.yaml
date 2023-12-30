@@ -1,0 +1,9 @@
+FormKey: 03D416:Mantella.esp
+EditorID: giafac_AllowFollower
+Name:
+  TargetLanguage: English
+  Value: giafac_AllowFollower
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

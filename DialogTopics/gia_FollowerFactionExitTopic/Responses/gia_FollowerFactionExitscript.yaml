@@ -1,5 +1,5 @@
-FormKey: 000801:Mantella.esp
-EditorID: MantellaDialogueToggleOn
+FormKey: 003808:Mantella.esp
+EditorID: gia_FollowerFactionExitscript
 VirtualMachineAdapter:
   Scripts:
   - Name: gia_castMantellaSpell
@@ -9,7 +9,7 @@ VirtualMachineAdapter:
       Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
-      Data: speakto
+      Data: exit
     - MutagenObjectType: ScriptObjectProperty
       Name: gia_MantellaSpell
       Object: 0022EF:Mantella.esp
@@ -31,22 +31,21 @@ Flags:
   Flags:
   - Goodbye
   - ForceSubtitle
-PreviousDialog: Null
+PreviousDialog: 033212:Mantella.esp
 FavorLevel: None
-ResponseData: 0DBA22:Skyrim.esm
+ResponseData: 0DBA21:Skyrim.esm
 Conditions:
-- MutagenObjectType: ConditionFloat
-  CompareOperator: GreaterThan
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetRelationshipRankConditionData
-    TargetNpc: 000014:Skyrim.esm
-  ComparisonValue: -1
 - MutagenObjectType: ConditionFloat
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
+    Faction: 003806:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetSleepingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
-    Faction: 042519:Mantella.esp
-  ComparisonValue: 1
+  ComparisonValue: 3

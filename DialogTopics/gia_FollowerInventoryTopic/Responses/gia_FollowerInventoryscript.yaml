@@ -1,15 +1,15 @@
-FormKey: 000801:Mantella.esp
-EditorID: MantellaDialogueToggleOn
+FormKey: 021216:Mantella.esp
+EditorID: gia_FollowerInventoryscript
 VirtualMachineAdapter:
   Scripts:
-  - Name: gia_castMantellaSpell
+  - Name: gia_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Follower
       Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
-      Data: speakto
+      Data: openinv
     - MutagenObjectType: ScriptObjectProperty
       Name: gia_MantellaSpell
       Object: 0022EF:Mantella.esp
@@ -18,35 +18,23 @@ VirtualMachineAdapter:
       Object: 000803:Mantella.esp
   ScriptFragments:
     MutagenObjectType: ScriptFragments
-    FileName: gia_castMantellaSpell
+    FileName: gia_Script
     OnBegin:
       ExtraBindDataVersion: 1
-      ScriptName: gia_castMantellaSpell
+      ScriptName: gia_Script
       FragmentName: Fragment_1
     OnEnd:
       ExtraBindDataVersion: 1
-      ScriptName: gia_castMantellaSpell
+      ScriptName: gia_Script
       FragmentName: Fragment_0
-Flags:
-  Flags:
-  - Goodbye
-  - ForceSubtitle
+Flags: {}
 PreviousDialog: Null
 FavorLevel: None
 ResponseData: 0DBA22:Skyrim.esm
 Conditions:
 - MutagenObjectType: ConditionFloat
-  CompareOperator: GreaterThan
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetRelationshipRankConditionData
-    TargetNpc: 000014:Skyrim.esm
-  ComparisonValue: -1
-- MutagenObjectType: ConditionFloat
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
-    RunOnType: Reference
-    Reference: 000014:Skyrim.esm
-    Faction: 042519:Mantella.esp
+    Faction: 003806:Mantella.esp
   ComparisonValue: 1

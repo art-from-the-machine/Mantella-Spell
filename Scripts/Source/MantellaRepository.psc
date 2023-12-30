@@ -1,5 +1,16 @@
 Scriptname MantellaRepository extends Quest  
 Spell property MantellaSpell auto
+Faction Property giafac_Sitters  Auto ;gia
+Faction Property giafac_Sleepers  Auto ;gia
+Faction Property giafac_talktome  Auto ;gia
+Faction Property giafac_AllowFollower  Auto ;gia
+Faction Property giafac_AllowAnger  Auto ;gia
+Faction Property giafac_AllowForgive  Auto ;gia
+Faction Property giafac_AllowDialogue  Auto ;gia
+Faction Property giafac_Following  Auto ;gia
+Faction Property giafac_Mantella  Auto ;gia
+quest property gia_FollowerQst auto ;gia
+
 ;variables below used by MCM_TargetTrackingSettings
 bool property targetTrackingItemAdded auto 
 bool property targetTrackingItemRemoved auto
@@ -10,6 +21,16 @@ bool property targetTrackingOnObjectEquipped auto
 bool property targetTrackingOnObjectUnequipped auto
 bool property targetTrackingOnSit auto
 bool property targetTrackingOnGetUp auto
+
+
+bool property AllowForNPCtoFollow auto ;gia
+bool property followingNPCsit auto ;gia
+bool property followingNPCsleep auto ;gia
+bool property NPCstopandTalk auto ;gia
+bool property NPCAnger auto ;gia
+bool property NPCForgive auto ;gia
+bool property NPCDialogue auto ;gia
+
 ;variables below used by MCM_PlayerTrackingSettings
 bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
@@ -43,6 +64,15 @@ event OnInit()
     targetTrackingOnObjectUnequipped = true
     targetTrackingOnSit = true
     targetTrackingOnGetUp = true
+	
+	followingNPCsit = false ;gia
+	followingNPCsleep = false ;gia
+	NPCstopandTalk = false ;gia
+	AllowForNPCtoFollow = false ;gia
+	NPCAnger = false ;gia
+	NPCForgive = false ;gia
+	NPCDialogue = false ;gia
+
     
     ;variables below used by MCM_PlayerTrackingSettings
     playerTrackingOnItemAdded = true
@@ -102,16 +132,16 @@ Event OnKeyDown(int KeyCode)
             String playerResponse = "False"
             playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
             ;Checks if the Mantella is ready for text input and if the MCM has the microphone disabled
-            if playerResponse == "True" ; && !microphoneEnabled
-                ;Debug.Notification("Forcing Conversation Through Hotkey")
-                UIExtensions.InitMenu("UITextEntryMenu")
-                UIExtensions.OpenMenu("UITextEntryMenu")
-                string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
-                if result != ""
-                    MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-                    MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
-                endIf
-            endIf
+			if playerResponse == "True" ;&& !microphoneEnabled
+				;Debug.Notification("Forcing Conversation Through Hotkey")
+				UIExtensions.InitMenu("UITextEntryMenu")
+				UIExtensions.OpenMenu("UITextEntryMenu")
+				string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
+				if result != ""
+					MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
+					MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
+				endIf
+			endIf
 		endIf
     ElseIf KeyCode == MantellaCustomGameEventHotkey && !utility.IsInMenuMode() 
         UIExtensions.InitMenu("UITextEntryMenu")
