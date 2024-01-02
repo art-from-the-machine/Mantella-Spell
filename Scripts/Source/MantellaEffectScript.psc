@@ -124,8 +124,10 @@ event OnEffectStart(Actor target, Actor caster)
             MiscUtil.WriteToFile("_mantella_in_game_events.txt", "", append=False)
         endif
 
-        if caster == game.getplayer()
+        if (caster == game.getplayer()) && actorCount == 1
 		    Debug.Notification("Starting conversation with " + actorName)
+        elseIf (caster == game.getplayer()) && actorCount >1
+                Debug.Notification("Adding " + actorName + " to conversation")
         elseIf actorCount == 1
             Debug.Notification("Starting radiant dialogue with " + actorName + " and " + casterName)
         endIf
@@ -166,6 +168,7 @@ event OnEffectStart(Actor target, Actor caster)
         endIf
         target.ClearLookAt()
         caster.ClearLookAt()
+        MiscUtil.WriteToFile("_mantella_actor_count.txt", "0", append=False)
     else
         Debug.Notification("NPC not added. Please try again after your next response.")
     endIf
@@ -175,6 +178,7 @@ endEvent
 function MainConversationLoop(Actor target, Actor caster, String actorName, String actorRelationship, Int loopCount)
     String sayLine = MiscUtil.ReadFromFile("_mantella_say_line.txt") as String
     if sayLine != "False"
+        ;Debug.Notification(actorName + " is speaking.")
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
         target.SetLookAt(caster)
@@ -262,6 +266,7 @@ endFunction
 function ConversationLoop(Actor target, Actor caster, String actorName, String sayLineFile)
     String sayLine = MiscUtil.ReadFromFile(sayLineFile) as String
     if sayLine != "False"
+        ;Debug.Notification(actorName + " is speaking.")
         MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(target, MantellaDialogueLine, sayLine)
         target.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
         ;target.SetLookAt(caster)
