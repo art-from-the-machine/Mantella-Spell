@@ -124,11 +124,6 @@ Aliases:
       MutagenObjectType: GetIsInjuredConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsPlayableRaceConditionData
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
     Unknown1: 0x000000
     Data:
