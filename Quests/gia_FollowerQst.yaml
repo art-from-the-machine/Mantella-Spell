@@ -4,7 +4,6 @@ Name:
   TargetLanguage: English
   Value: gia_FollowerQst
 Flags:
-- 0x10
 - 0x1000
 Priority: 100
 DialogConditions:

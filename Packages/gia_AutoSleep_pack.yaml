@@ -53,14 +53,6 @@ Conditions:
     MutagenObjectType: GetSittingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
-- MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetInFactionConditionData
-    RunOnType: Reference
-    Reference: 000014:Skyrim.esm
-    Faction: 019D0B:Mantella.esp
-  ComparisonValue: 1
 PackageTemplate: 019717:Skyrim.esm
 DataInputVersion: 6
 Data:
