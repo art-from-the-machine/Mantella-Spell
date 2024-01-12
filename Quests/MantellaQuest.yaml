@@ -5,24 +5,6 @@ VirtualMachineAdapter:
   - Name: mantellarepository
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Mantella
-      Object: 000803:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_TalktoMe
-      Object: 038315:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: gia_FollowerQst
-      Object: 021211:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_AllowForgive
-      Object: 042518:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Following
-      Object: 003806:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_AllowFollower
-      Object: 03D416:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_AllowAnger
       Object: 042517:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
@@ -32,11 +14,20 @@ VirtualMachineAdapter:
       Name: MantellaSpell
       Object: 0022EF:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Sitters
-      Object: 019D0A:Mantella.esp
+      Name: giafac_AllowFollower
+      Object: 03D416:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Sleepers
-      Object: 019D0B:Mantella.esp
+      Name: gia_FollowerQst
+      Object: 021211:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Mantella
+      Object: 000803:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Following
+      Object: 003806:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaEndSpell
+      Object: 01EE0C:Mantella.esp
   FileName: ''
   Aliases:
   - Property:
@@ -47,25 +38,31 @@ VirtualMachineAdapter:
     - Name: MantellaListenerScript
       Properties:
       - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaSpell
-        Object: 0022EF:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaPower
-        Object: 000805:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PotentialActor1
         Object: 03A314:Mantella.esp
         Alias: 0
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaEndPower
+        Object: 02E113:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
         Name: PotentialActor2
         Object: 03A314:Mantella.esp
         Alias: 2
       - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaSpell
+        Object: 0022EF:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaEndSpell
+        Object: 01EE0C:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
         Name: MantellaActorList
         Object: 03A314:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaPower
+        Object: 000805:Mantella.esp
 Flags:
 - StartGameEnabled
 - 0x10

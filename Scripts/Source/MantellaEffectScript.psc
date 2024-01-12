@@ -190,7 +190,7 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
         ; Check aggro status after every line spoken
         String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
         if aggro == "0"
-            if game.getplayer().isinfaction(Repository.giafac_AllowForgive)
+            if game.getplayer().isinfaction(Repository.giafac_AllowAnger)
                 Debug.Notification(actorName + " forgave you.")
                 target.StopCombat()
 			endif
@@ -201,6 +201,8 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
                 ;target.UnsheatheWeapon()
                 ;target.SendTrespassAlarm(caster)
                 target.StartCombat(caster)
+            else
+                Debug.Notification("Aggro action not enabled in the Mantella MCM.")
 			Endif
             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
         elseif aggro == "2"
@@ -217,6 +219,8 @@ function MainConversationLoop(Actor target, Actor caster, String actorName, Stri
 					Utility.Wait(0.5);gia
 					repository.gia_FollowerQst.start();gia
 					target.EvaluatePackage();gia
+                else
+                    Debug.Notification("Follow action not enabled in the Mantella MCM.")
 				endif
 
                 MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)

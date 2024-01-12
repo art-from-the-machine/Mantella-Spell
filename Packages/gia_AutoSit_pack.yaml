@@ -54,14 +54,6 @@ Conditions:
     MutagenObjectType: GetSleepingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
-- MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetInFactionConditionData
-    RunOnType: Reference
-    Reference: 000014:Skyrim.esm
-    Faction: 019D0A:Mantella.esp
-  ComparisonValue: 1
 PackageTemplate: 019715:Skyrim.esm
 DataInputVersion: 5
 Data:

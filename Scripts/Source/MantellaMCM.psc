@@ -3,42 +3,18 @@ Scriptname MantellaMCM extends SKI_ConfigBase
 ;don't forget to set this in the CK!
 MantellaRepository property repository auto
 
-;bool property microphoneEnabledToggle auto
-;int property responsetimer auto
-;string property mcmActorName auto
-
-;oid variables are pretty much just int values to link to the correct button when displaying info with render functions
-int property oid_responsetimeslider auto
-int property oid_keymapPromptHotkey auto
-int property oid_keymapCustomGameEventHotkey auto
 int property oid_microphoneEnabledToggle auto
-int property oid_debugNPCSelectMode auto
+int property oid_responsetimeslider auto
 
-int property oid_targetTrackingItemAddedToggle auto
-int property oid_targetTrackingItemRemovedToggle auto
-int property oid_targetTrackingOnSpellCastToggle auto
-int property oid_targetTrackingOnHitToggle auto
-int property oid_targetTrackingOnCombatStateChangedToggle auto
-int property oid_targetTrackingOnObjectEquippedToggle auto
-int property oid_targetTrackingOnObjectUnequippedToggle auto
-int property oid_targetTrackingOnSitToggle auto
-int property oid_targetTrackingOnGetUpToggle auto
-int property oid_targetTrackingOnDyingToggle auto
-int property oid_targetTrackingAll auto
+int property oid_keymapPromptHotkey auto
+int property oid_keymapEndHotkey auto
+int property oid_keymapCustomGameEventHotkey auto
+int property oid_keymapRadiantHotkey auto
 
-int property oid_AllowForNPCtoFollowToggle auto ;gia
-int property oid_FollowingNPCsitToggle auto ;gia
-int property oid_FollowingNPCsleepToggle auto ;gia
-int property oid_NPCstopandTalkToggle auto ;gia
-int property oid_NPCAngerToggle auto ;gia
-int property oid_NPCForgiveToggle auto ;gia
-int property oid_NPCDialogueToggle auto ;gia
+int property oid_radiantenabled auto
+int property oid_radiantdistance auto
+int property oid_radiantfrequency auto
 
-;not tracking dying triggers they're only there as a check to end the conversation
-;bool property targetTrackingOnDyingToggle auto
-
-;this toggle below is used in the TargetTrackingSettings
-bool property targetAllToggle auto
 
 int property oid_playerTrackingOnItemAdded auto
 int property oid_playerTrackingOnItemRemoved auto
@@ -51,32 +27,44 @@ int property oid_playerTrackingOnPlayerBowShot auto
 int property oid_playerTrackingOnSit auto
 int property oid_playerTrackingOnGetUp auto
 int property oid_playerTrackingAll auto
-
-;this toggle below is used in the PlayerTrackingSettings
 bool property playerAllToggle auto
 
-int property oid_radiantenabled auto
-int property oid_radiantdistance auto
-int property oid_radiantfrequency auto
+
+int property oid_targetTrackingItemAddedToggle auto
+int property oid_targetTrackingItemRemovedToggle auto
+int property oid_targetTrackingOnSpellCastToggle auto
+int property oid_targetTrackingOnHitToggle auto
+int property oid_targetTrackingOnCombatStateChangedToggle auto
+int property oid_targetTrackingOnObjectEquippedToggle auto
+int property oid_targetTrackingOnObjectUnequippedToggle auto
+int property oid_targetTrackingOnSitToggle auto
+int property oid_targetTrackingOnGetUpToggle auto
+int property oid_targetTrackingOnDyingToggle auto
+int property oid_targetTrackingAll auto
+bool property targetAllToggle auto
+
+
+int property oid_AllowForNPCtoFollowToggle auto ;gia
+int property oid_NPCAngerToggle auto ;gia
+
+int property oid_debugNPCSelectMode auto
 
 string MantellaMCMcurrentPage
 
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
     ModName = "Mantella"
-	Pages = new string[5]
-    Pages[0] = "Main settings"
-	Pages[1] = "Player tracking settings"
-	Pages[2] = "Target tracking settings"
- 	Pages[3] = "Following NPC settings"
-	Pages[4] = "Radiant Dialogue"
+	Pages = new string[4]
+    Pages[0] = "General"
+	Pages[1] = "Player Tracking"
+	Pages[2] = "Target Tracking"
+ 	Pages[3] = "Advanced"
  
-	;not tracking dying triggers they're only there as a check to end the conversation
-	;targetTrackingOnDyingToggle=true
 	targetAllToggle=true
 	playerAllToggle=true
 
 EndEvent
+
 Event OnPageReset(string page)
 	;this is the event that triggers when the pages get clicked, so I link to the other MCM scripts that are basically just used for global functions
 	if page==""
@@ -85,144 +73,130 @@ Event OnPageReset(string page)
 	else 
 		unloadcustomcontent()
 	endif
-	if page=="Main settings"
-		MantellaMCM_MainSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Main settings"
-	elseif page=="Player tracking settings"
+	if page=="General"
+		MantellaMCM_GeneralSettings.Render(self, repository)
+		MantellaMCMcurrentPage="General"
+	elseif page=="Player Tracking"
 		MantellaMCM_PlayerTrackingSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Player tracking settings"
-	elseif page=="Target tracking settings"
+		MantellaMCMcurrentPage="Player Tracking"
+	elseif page=="Target Tracking"
 		MantellaMCM_TargetTrackingSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Target tracking settings"
-	elseif page=="Following NPC settings"
-		MantellaMCM_FollowingNPCSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Following NPC settings"	
-	elseif page=="Radiant Dialogue"
-		MantellaMCM_RadiantDialogue.Render(self, repository)
-		MantellaMCMcurrentPage="Radiant Dialogue"
+		MantellaMCMcurrentPage="Target Tracking"
+	elseif page=="Advanced"
+		MantellaMCM_AdvancedSettings.Render(self, repository)
+		MantellaMCMcurrentPage="Advanced"
  	endif		
 EndEvent
+
 ;This part of the MCM below is a bunch of event listeners, they all use functions to link to the appropriate MCM scripts 
 Event OnOptionSelect(int optionID)
-	if MantellaMCMcurrentPage =="Main settings"
-		MantellaMCM_MainSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Player tracking settings"
+	if MantellaMCMcurrentPage =="General"
+		MantellaMCM_GeneralSettings.OptionUpdate(self,optionID, repository)	
+	elseif MantellaMCMcurrentPage =="Player Tracking"
 		MantellaMCM_PlayerTrackingSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Target tracking settings"
+	elseif MantellaMCMcurrentPage =="Target Tracking"
 		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Following NPC settings" ;gia
-		MantellaMCM_FollowingNPCSettings.OptionUpdate(self,optionID, repository)	;gia
-	elseif MantellaMCMcurrentPage =="Radiant Dialogue"
-		MantellaMCM_RadiantDialogue.OptionUpdate(self,optionID, repository)	
+	elseif MantellaMCMcurrentPage =="Advanced"
+		MantellaMCM_AdvancedSettings.OptionUpdate(self,optionID, repository)
 	endif
 EndEvent 
 
 Event OnOptionSliderOpen(Int optionId)
-    If MantellaMCMcurrentPage =="Main settings"
-		MantellaMCM_MainSettings.SliderOptionOpen(self,optionID, repository)
-	elseIf MantellaMCMcurrentPage == "Radiant Dialogue"
-		MantellaMCM_RadiantDialogue.SliderOptionOpen(self,optionID, repository)
+    If MantellaMCMcurrentPage =="General"
+		MantellaMCM_GeneralSettings.SliderOptionOpen(self,optionID, repository)
     EndIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
-	If MantellaMCMcurrentPage =="Main settings"
-		MantellaMCM_MainSettings.SliderOptionAccept(self,optionID, value, repository)
-	elseIf MantellaMCMcurrentPage == "Radiant Dialogue"
-		MantellaMCM_RadiantDialogue.SliderOptionAccept(self,optionID, value, repository)
+	If MantellaMCMcurrentPage =="General"
+		MantellaMCM_GeneralSettings.SliderOptionAccept(self,optionID, value, repository)
     EndIf
 EndEvent
 
 Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl, String a_conflictName)
     {Called when a key has been remapped}
-    If 	MantellaMCMcurrentPage =="Main settings"
-		MantellaMCM_MainSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
+    If 	MantellaMCMcurrentPage =="General"
+		MantellaMCM_GeneralSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
 	EndIf
 EndEvent
 
 Event OnOptionHighlight (Int optionID)
-	;tooltips for the Mantella Menu
-	If 	optionID ==oid_responsetimeslider
-		SetInfoText("This slider is used to set the timer (in seconds) to enter a text response when Mantella is ready to receive a text input (microphone disabled only)")
-	elseIf optionID ==oid_keymapPromptHotkey	
-		SetInfoText("This allows the player to start conversation with a hotkey. It can also be used to force the text prompt to appear during a conversation (microphone disabled only)")
-	elseIf optionID ==oid_keymapCustomGameEventHotkey	
-		SetInfoText("This allows the player to enter a game event through text using the hotkey. For example, typing 'The house is on fire' will send that information to the AI")
-	elseIf optionID ==oid_microphoneEnabledToggle	
-		SetInfoText("This turn ON/OFF the microphone input for Mantella (requires Mantella.exe restart)")
-	elseIf optionID ==oid_debugNPCSelectMode	
-		SetInfoText("This allows the player to speak to any NPC by initiating a conversation then entering the actor RefID then the actor name that the player wishes to speak to")	
-	
-	;tooltips for the Target Tracking menu
-	elseIf optionID ==oid_targetTrackingItemAddedToggle	
-		SetInfoText("This tracks if the Mantella Effect's target acquires an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingItemRemovedToggle	
-		SetInfoText("This tracks if the Mantella Effect's target drops an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnSpellCastToggle	
-		SetInfoText("This tracks if the Mantella Effect's target casts a spell/shout while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnHitToggle	
-		SetInfoText("This tracks if the Mantella Effect's target is hit by an attack while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnCombatStateChangedToggle	
-		SetInfoText("This tracks if the Mantella Effect's target changes combat state while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnObjectEquippedToggle	
-		SetInfoText("This tracks if the Mantella Effect's target equips an item/spell/shout while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnObjectUnequippedToggle	
-		SetInfoText("This tracks if the Mantella Effect's target unequips an item/spell/shout an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnSitToggle	
-		SetInfoText("This tracks if the Mantella Effect's target sits down on a chair or work area an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnGetUpToggle	
-		SetInfoText("This tracks if the Mantella Effect's target gets up from a chair or work area an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_targetTrackingOnGetUpToggle	
-		SetInfoText("Turns ON/OFF all tracking options for the target.")
+	if optionID == oid_microphoneEnabledToggle	
+		SetInfoText("Toggles microphone / text input (requires Mantella.exe restart). \nThis setting overrides the `microphone_enabled` option in MantellaSoftware/config.ini.")
+	elseIf optionID == oid_responsetimeslider
+		SetInfoText("Time (in seconds) to enter a text response (microphone disabled only). \nDefault: 180")
 
+	elseIf optionID == oid_keymapPromptHotkey
+		SetInfoText("Either starts a conversation / adds an NPC to a conversation / opens the text prompt, depending on the context. \nDefault: H")
+	elseIf optionID == oid_keymapEndHotkey
+		SetInfoText("Ends all Mantella conversations.")
+	elseIf optionID == oid_keymapCustomGameEventHotkey	
+		SetInfoText("Opens a text prompt to enter a custom game event (eg 'The house is on fire').")
+	elseIf optionID == oid_keymapRadiantHotkey	
+		SetInfoText("Toggle radiant conversations.")
 
-	elseIf optionID ==oid_AllowForNPCtoFollowToggle ;gia	
-		SetInfoText("Allow for NPCs to be Mantella followers.")
-	elseIf optionID ==oid_FollowingNPCsitToggle ;gia	
-		SetInfoText("Mantella followers sit when player sits.")
-	elseIf optionID ==oid_FollowingNPCsleepToggle ;gia	
-		SetInfoText("This must be enabled and the Player must be laying in bed to use dialogue to send followers to bed. Does not pertain to rented beds. (player may have to exit the bed to exit or disable MCM toggle)")
-	elseIf optionID ==oid_NPCstopandTalkToggle ;gia	
-		SetInfoText("Prevents NPCs in conversations from moving around. e.g. Tap the same key as you would for opening a door on the NPC to get their attention during a conversation. To disengage simply walk away and they will resume their schedule")
-	elseIf optionID ==oid_NPCAngerToggle ;gia	
-		SetInfoText("Enable NPCs to become angry and attack the player for comments")
-	elseIf optionID ==oid_NPCForgiveToggle ;gia	
-		SetInfoText("Enable Angered NPCs to Forgive the player for comments")
-	elseIf optionID ==oid_NPCDialogueToggle ;gia	
-		SetInfoText("Enable Conversation through dialogue with NPCs")
-
-	
-	;tooltips for the Player Tracking menu
-	elseIf optionID ==oid_playerTrackingOnItemAdded	
-		SetInfoText("This tracks if the player acquires an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnItemRemoved	
-		SetInfoText("This tracks if player drops an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnSpellCast	
-		SetInfoText("This tracks if player casts a spell/shout while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnHit	
-		SetInfoText("This tracks if player is hit by an attack while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnLocationChange	
-		SetInfoText("This tracks if player changes location while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnObjectEquipped	
-		SetInfoText("This tracks if player equips an item/spell/shout while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnObjectEquipped	
-		SetInfoText("This tracks if player unequips an item/spell/shout an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnPlayerBowShot	
-		SetInfoText("This tracks if player shoots an arrow while the Mantella Spell is active")
-	elseIf optionID ==oid_playerTrackingOnSit	
-		SetInfoText("This tracks if player sits down on a chair or work area an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingOnGetUp	
-		SetInfoText("This tracks if player gets up from a chair or work area an item while the Mantella Spell is active.")
-	elseIf optionID ==oid_playerTrackingAll	
-		SetInfoText("Turns ON/OFF all tracking options for the player.")
-
-	;tooltips for the Radiant Dialogue menu
 	elseIf optionID == oid_radiantenabled
-		SetInfoText("Enable radiant dialogue.")
+		SetInfoText("Starts a Mantella conversation between the nearest two NPCs to the player at a given frequency. \nNPCs must both be stationary when a radiant dialogue attempt is made.")
 	elseIf optionID == oid_radiantdistance
-		SetInfoText("How far from the player (in meters) radiant dialogues can begin. Default: 20")
+		SetInfoText("How far from the player (in meters) radiant dialogues can begin. \nDefault: 20")
 	elseIf optionID == oid_radiantfrequency
-		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. Default: 30")
+		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
+
+	
+	elseIf optionID == oid_playerTrackingOnItemAdded	
+		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnItemRemoved	
+		SetInfoText("Tracks items dropped / removed while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnSpellCast	
+		SetInfoText("Tracks spells / shouts / effects casted while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnHit	
+		SetInfoText("Tracks damage taken (and the source of the damage) while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnLocationChange	
+		SetInfoText("Tracks location changes while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnObjectEquipped	
+		SetInfoText("Tracks items / spells / shouts equipped while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnObjectEquipped	
+		SetInfoText("Tracks items / spells / shouts unequipped while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnPlayerBowShot	
+		SetInfoText("Tracks if player shoots an arrow while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnSit
+		SetInfoText("Tracks furniture rested on while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingOnGetUp
+		SetInfoText("Tracks furniture stood up from while a Mantella conversation is active.")
+	elseIf optionID == oid_playerTrackingAll	
+		SetInfoText("Enable / disable all tracking options for the player.")
+	
+	
+	elseIf optionID == oid_targetTrackingItemAddedToggle	
+		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingItemRemovedToggle	
+		SetInfoText("Tracks items dropped / removed while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnSpellCastToggle	
+		SetInfoText("Tracks spells / shouts / effects casted while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnHitToggle	
+		SetInfoText("Tracks damage taken (and the source of the damage) while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnCombatStateChangedToggle	
+		SetInfoText("Tracks combat state changes while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnObjectEquippedToggle	
+		SetInfoText("Tracks items / spells / shouts equipped while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnObjectUnequippedToggle	
+		SetInfoText("Tracks items / spells / shouts unequipped while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnSitToggle	
+		SetInfoText("Tracks furniture rested on while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnGetUpToggle	
+		SetInfoText("Tracks furniture stood up from while a Mantella conversation is active.")
+	elseIf optionID == oid_targetTrackingOnGetUpToggle	
+		SetInfoText("Enable / disable all tracking options for the target.")
+
+
+	elseIf optionID == oid_AllowForNPCtoFollowToggle ;gia
+		SetInfoText("NPCs can be convinced to follow (not tested over long playthroughs).")
+	elseIf optionID == oid_NPCAngerToggle ;gia
+		SetInfoText("NPCs can attack the player if provoked.")
+
+	elseIf optionID == oid_debugNPCSelectMode
+		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
+
 	EndIf
 endEvent
 

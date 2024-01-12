@@ -1,5 +1,8 @@
 FormKey: 011B10:Mantella.esp
 EditorID: MantellaDebugEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaEndConversationScript
 Name:
   TargetLanguage: English
   Value: MantellaDebugEffect
@@ -8,10 +11,9 @@ Archetype:
   MutagenObjectType: MagicEffectArchetype
   ActorValue: Health
 CastType: FireAndForget
-TargetType: TargetActor
 DualCastScale: 1
 CastingSoundLevel: Normal
 Sounds: []
 Description:
   TargetLanguage: English
-  Value: ''
+  Value: Ends all active Mantella conversations. Conversations can also be ended by saying / typing the "goodbye" keyword.

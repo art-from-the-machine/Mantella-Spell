@@ -4,12 +4,27 @@ Import StringUtil
 function Render(MantellaMCM mcm, MantellaRepository Repository) global
     ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display.
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
-    LeftColumn(mcm)
+    LeftColumn(mcm, Repository)
     mcm.SetCursorPosition(1)
-    RightColumn(mcm, Repository)
+    RightColumn(mcm)
 endfunction
 
-function LeftColumn(MantellaMCM mcm) global
+function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
+    ;generates the toggle buttons on the right side
+    mcm.AddHeaderOption ("Tracked Events")
+    mcm.oid_targetTrackingItemAddedToggle = mcm.AddToggleOption("Item Added", Repository.targetTrackingItemAdded)
+    mcm.oid_targetTrackingItemRemovedToggle = mcm.AddToggleOption("Item Removed", Repository.targetTrackingItemRemoved)
+    mcm.oid_targetTrackingOnSpellCastToggle = mcm.AddToggleOption("Spell Cast", Repository.targetTrackingOnSpellCast)
+    mcm.oid_targetTrackingOnHitToggle = mcm.AddToggleOption("Target Hit", Repository.targetTrackingOnHit)
+    mcm.oid_targetTrackingOnCombatStateChangedToggle = mcm.AddToggleOption("Combat State Changed", Repository.targetTrackingOnCombatStateChanged)
+    mcm.oid_targetTrackingOnObjectEquippedToggle = mcm.AddToggleOption("Item Equipped", Repository.targetTrackingOnObjectEquipped)
+    mcm.oid_targetTrackingOnObjectUnequippedToggle = mcm.AddToggleOption("Item Unequipped", Repository.targetTrackingOnObjectUnequipped)
+    mcm.oid_targetTrackingOnSitToggle = mcm.AddToggleOption("Target Rests on Furniture", Repository.targetTrackingOnSit)
+    mcm.oid_targetTrackingOnGetUpToggle = mcm.AddToggleOption("Target Gets Up from Furniture", Repository.targetTrackingOnGetUp)
+    mcm.oid_targetTrackingAll = mcm.AddToggleOption("All", mcm.targetAllToggle)
+endfunction
+
+function RightColumn(MantellaMCM mcm) global
      ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
     ;generates left column
     mcm.AddHeaderOption ("Target Info")
@@ -55,28 +70,11 @@ function LeftColumn(MantellaMCM mcm) global
         mcm.AddTextOption("ID",currentActorID )
         mcm.AddTextOption("Gender",currentActorSex )
         mcm.AddTextOption("Race",currentActorRaceSubstring )
-        mcm.AddTextOption("Relationship with player",currentActorRelationshipString )
-        mcm.AddTextOption("Voice type",currentActorVoiceSubstring )
-        mcm.AddTextOption("Enemy status",currentActorIsEnemy )
+        mcm.AddTextOption("Relationship",currentActorRelationshipString )
+        mcm.AddTextOption("Voice Type",currentActorVoiceSubstring )
+        mcm.AddTextOption("Enemy",currentActorIsEnemy )
     endif
     ;_keymapOID_K = mcm.AddKeyMapOption("Mantella Initiate/Text Hotkey", _myKey, 0)
-endfunction
-
-function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    ;generates the toggle buttons on the right side
-    mcm.AddHeaderOption ("Tracked events")
-    mcm.oid_targetTrackingItemAddedToggle=mcm.AddToggleOption("Item Added", Repository.targetTrackingItemAdded)
-    mcm.oid_targetTrackingItemRemovedToggle=mcm.AddToggleOption("Item removed", Repository.targetTrackingItemRemoved)
-    mcm.oid_targetTrackingOnSpellCastToggle=mcm.AddToggleOption("Spell cast", Repository.targetTrackingOnSpellCast)
-    mcm.oid_targetTrackingOnHitToggle=mcm.AddToggleOption("Target is hit", Repository.targetTrackingOnHit)
-    mcm.oid_targetTrackingOnCombatStateChangedToggle=mcm.AddToggleOption("Combat state changes", Repository.targetTrackingOnCombatStateChanged)
-    mcm.oid_targetTrackingOnObjectEquippedToggle=mcm.AddToggleOption("Object equipped", Repository.targetTrackingOnObjectEquipped)
-    mcm.oid_targetTrackingOnObjectUnequippedToggle=mcm.AddToggleOption("Object unequipped", Repository.targetTrackingOnObjectUnequipped)
-    mcm.oid_targetTrackingOnSitToggle=mcm.AddToggleOption("Target sitting", Repository.targetTrackingOnSit)
-    mcm.oid_targetTrackingOnGetUpToggle=mcm.AddToggleOption("Target getting up", Repository.targetTrackingOnGetUp)
-    ;not using dying toggle cause this one is to end conversations on NPC death
-    ;mcm.oid_targetTrackingOnDyingToggle=mcm.AddToggleOption("Target dying", mcm.targetTrackingOnDyingToggle)
-    mcm.oid_targetTrackingAll=mcm.AddToggleOption("All", mcm.targetAllToggle)
 endfunction
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -108,11 +106,6 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     ElseIf optionID==mcm.oid_targetTrackingOnGetUpToggle
         Repository.targetTrackingOnGetUp=!Repository.targetTrackingOnGetUp
         mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnGetUpToggle, Repository.targetTrackingOnGetUp)
-    ;not using dying toggle cause this one is to end conversations on NPC death
-        ;ElseIf mcm.oid_targetTrackingOnDyingToggle
-    ;   mcm.targetTrackingOnDyingToggle=!mcm.targetTrackingOnDyingToggle
-    ;   mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnDyingToggle, mcm.targetTrackingOnDyingToggle)
-    ;    Repository.targetTrackingOnDying=mcm.targetTrackingOnDyingToggle
     ElseIf optionID==mcm.oid_targetTrackingAll
         ;This part of the function OptionUpdate flips a bunch of variables in the repository at once :
         mcm.targetAllToggle=!mcm.targetAllToggle
