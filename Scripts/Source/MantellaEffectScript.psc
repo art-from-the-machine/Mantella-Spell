@@ -170,7 +170,15 @@ event OnEffectStart(Actor target, Actor caster)
         caster.ClearLookAt()
         MiscUtil.WriteToFile("_mantella_actor_count.txt", "0", append=False)
     else
-        Debug.Notification("NPC not added. Please try again after your next response.")
+        int papyrusutil_check = PapyrusUtil.GetVersion() as int
+        bool mod_check = MiscUtil.FileExists("_mantella__skyrim_folder.txt") as bool
+        if papyrusutil_check == 0
+            Debug.MessageBox("There is an error with your PapyrusUtil installation.\nPlease ensure you are running Skyrim via SKSE. Otherwise, ensure you have the right PapyrusUtil version installed for your Skyrim version.\nFor more details, see here:\nhttps://github.com/art-from-the-machine/Mantella#issues-qa")
+        elseIf mod_check == False
+            Debug.MessageBox("There is an error with your installation of Mantella (or one of its dependent mods).\nPlease see here for details:\nhttps://github.com/art-from-the-machine/Mantella#issues-qa")
+        else
+            Debug.Notification("NPC not added. Please try again after your next response.")
+        endIf
     endIf
 endEvent
 
