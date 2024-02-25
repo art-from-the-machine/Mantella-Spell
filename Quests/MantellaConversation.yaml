@@ -1,0 +1,10 @@
+FormKey: 03D41A:Mantella.esp
+VersionControl: 12376
+EditorID: MantellaConversation
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaConversation
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''

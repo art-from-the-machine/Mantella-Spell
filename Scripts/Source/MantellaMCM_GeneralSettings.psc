@@ -102,7 +102,7 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     if optionID == mcm.oid_microphoneEnabledToggle
         Repository.microphoneEnabled =! Repository.microphoneEnabled
         mcm.SetToggleOptionValue(mcm.oid_microphoneEnabledToggle, Repository.microphoneEnabled)
-        MiscUtil.WriteToFile("_mantella_microphone_enabled.txt", Repository.microphoneEnabled,  append=false)
+        ; MiscUtil.WriteToFile("_mantella_microphone_enabled.txt", Repository.microphoneEnabled,  append=false)
         debug.MessageBox("Please restart Mantella and start a new conversation for this option to take effect")
     elseIf optionID == mcm.oid_debugNPCselectMode
         Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled

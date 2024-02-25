@@ -8,6 +8,7 @@ MantellaRepository property repository auto
 Quest Property MantellaActorList  Auto  
 ReferenceAlias Property PotentialActor1  Auto  
 ReferenceAlias Property PotentialActor2  Auto  
+MantellaConversation Property conversation auto 
 
 event OnInit()
     Game.GetPlayer().AddSpell(MantellaSpell)
@@ -16,7 +17,15 @@ event OnInit()
     Game.GetPlayer().AddSpell(MantellaEndPower)
     Game.GetPlayer().AddToFaction(repository.giafac_AllowDialogue);gia
     Debug.Notification("Please save and reload to activate Mantella.")
+
+    conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
 endEvent
+
+Function AddIngameEventToConversation(string eventText)
+    If (conversation.IsRunning())
+        conversation.AddIngameEvent(eventText)
+    EndIf
+EndFunction
 
 Float meterUnits = 71.0210
 Float Function ConvertMeterToGameUnits(Float meter)
@@ -33,9 +42,8 @@ EndEvent
 
 event OnUpdate()
     if repository.radiantEnabled
-        String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
         ; if no Mantella conversation active
-        if activeActors == ""
+        if !conversation.IsRunning()
             ;MantellaActorList taken from this tutorial:
             ;http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
             MantellaActorList.start()
@@ -54,25 +62,8 @@ event OnUpdate()
 
                     ;TODO: make distanceBetweenActors customisable
                     if (distanceBetweenActors <= 1000)
-                        MiscUtil.WriteToFile("_mantella_radiant_dialogue.txt", "True", append=false)
-
                         ;have spell casted on Actor 1 by Actor 2
                         MantellaSpell.Cast(Actor2 as ObjectReference, Actor1 as ObjectReference)
-
-                        MiscUtil.WriteToFile("_mantella_character_selected.txt", "False", append=false)
-
-                        String character_selected = "False"
-                        ;wait for the Mantella spell to give the green light that it is ready to load another actor
-                        while character_selected == "False"
-                            character_selected = MiscUtil.ReadFromFile("_mantella_character_selected.txt") as String
-                        endWhile
-
-                        String character_selection_enabled = "False"
-                        while character_selection_enabled == "False"
-                            character_selection_enabled = MiscUtil.ReadFromFile("_mantella_character_selection.txt") as String
-                        endWhile
-
-                        MantellaSpell.Cast(Actor1 as ObjectReference, Actor2 as ObjectReference)
                     else
                         ;TODO: make this notification optional
                         Debug.Notification("Radiant dialogue attempted. No NPCs available")
@@ -107,7 +98,7 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemPickedUpMessage)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", itemPickedUpMessage)
+            AddIngameEventToConversation(itemPickedUpMessage)
         endIf
     endif
 EndEvent
@@ -125,7 +116,7 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
             ;Debug.MessageBox(itemDroppedMessage)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", itemDroppedMessage)
+            AddIngameEventToConversation(itemDroppedMessage)
         endIf
     endif
 endEvent
@@ -139,7 +130,7 @@ Event OnSpellCast(Form akSpell)
                 ; Do not save event if Mantella itself is cast
             else
                 ;Debug.Notification("The player casted the spell "+ spellCast)
-                MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player casted the spell " + spellCast + ".\n")
+                AddIngameEventToConversation("The player casted the spell " + spellCast + ".\n")
             endIf
         endIf
     endif
@@ -163,10 +154,10 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
             if (hitSource == "None") || (hitSource == "")
                 ;Debug.MessageBox(aggressor + " punched the player.")
-                MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " punched the player.\n")
+                AddIngameEventToConversation(aggressor + " punched the player.\n")
             else
                 ;Debug.MessageBox(aggressor + " hit the player with " + hitSource+".\n")
-                MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " hit the player with " + hitSource+".\n")
+                AddIngameEventToConversation(aggressor + " hit the player with " + hitSource+".\n")
             endIf
         else
             timesHitSameAggressorSource += 1
@@ -179,7 +170,10 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
     ; check if radiant dialogue is playing, and end conversation if the player leaves the area
     String radiant_dialogue_active = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
     if radiant_dialogue_active == "True"
-        MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+        ;ToDo: Add new way to end radiant conversation
+        If (conversation.IsRunning())
+            conversation.EndConversation()
+        EndIf
     endIf
 
     if repository.playerTrackingOnLocationChange
@@ -188,7 +182,8 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
             currLoc = "Skyrim"
         endIf
         ;Debug.MessageBox("Current location is now " + currLoc)
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "Current location is now " + currLoc+".\n")
+        ;ToDo: Set the location as a context and not as an ingame event
+        AddIngameEventToConversation("Current location is now " + currLoc+".\n")
     endif
 endEvent
 
@@ -197,7 +192,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectEquipped
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox("The player equipped " + itemEquipped)
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player equipped " + itemEquipped + ".\n")
+        AddIngameEventToConversation("The player equipped " + itemEquipped + ".\n")
     endif
 endEvent
 
@@ -206,7 +201,7 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectUnequipped
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox("The player unequipped " + itemUnequipped)
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player unequipped " + itemUnequipped + ".\n")
+        AddIngameEventToConversation("The player unequipped " + itemUnequipped + ".\n")
     endif
 endEvent
 
@@ -214,7 +209,7 @@ endEvent
 Event OnPlayerBowShot(Weapon akWeapon, Ammo akAmmo, float afPower, bool abSunGazing)
     if repository.playerTrackingOnPlayerBowShot
         ;Debug.MessageBox("The player fired an arrow.")
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player fired an arrow.\n")
+        AddIngameEventToConversation("The player fired an arrow.\n")
     endif
 endEvent
 
@@ -223,7 +218,7 @@ Event OnSit(ObjectReference akFurniture)
     if repository.playerTrackingOnSit
         ;Debug.MessageBox("The player sat down.")
         String furnitureName = akFurniture.getbaseobject().getname()
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player rested on / used a(n) "+furnitureName+".\n")
+        AddIngameEventToConversation("The player rested on / used a(n) "+furnitureName+".\n")
     endif
 endEvent
 
@@ -232,12 +227,14 @@ Event OnGetUp(ObjectReference akFurniture)
     if repository.playerTrackingOnGetUp
         ;Debug.MessageBox("The player stood up.")
         String furnitureName = akFurniture.getbaseobject().getname()
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", "The player stood up from a(n) "+furnitureName+".\n")
+        AddIngameEventToConversation("The player stood up from a(n) "+furnitureName+".\n")
     endif
 EndEvent
 
 
 Event OnDying(Actor akKiller)
-    MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+    If (conversation.IsRunning())
+        conversation.EndConversation()
+    EndIf
 EndEvent
 
