@@ -141,40 +141,29 @@ Event OnKeyDown(int KeyCode)
 	;this ensures the right key is pressed and only activated while not in menu mode
     if !utility.IsInMenuMode()
         if KeyCode == MantellaListenerTextHotkey
-            String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
-
-            ;String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
-            String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
-            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
-            String actorName = targetRef.getdisplayname()
-            int index = StringUtil.Find(activeActors, actorName)
-            ; if actor not already loaded or player is interrupting radiant dialogue
-            if (index == -1) || (radiantDialogue == "True")
+            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
+            if (targetRef) ;If we have a target under the crosshair, cast sepll on it
                 MantellaSpell.cast(Game.GetPlayer(), targetRef)
                 Utility.Wait(0.5)
-            else
-                String playerResponse = "False"
-                playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
-                ;Checks if the Mantella is ready for text input and if the MCM has the microphone disabled
-                if playerResponse == "True" ;&& !microphoneEnabled
-                    ;Debug.Notification("Forcing Conversation Through Hotkey")
-                    UIExtensions.InitMenu("UITextEntryMenu")
-                    UIExtensions.OpenMenu("UITextEntryMenu")
-                    string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
-                    if result != ""
-                        MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-                        MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
-                    endIf
+            ElseIf(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
+                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+                if(conversation.IsRunning())
+                    conversation.GetPlayerTextInput()
                 endIf
-            endIf
+            endif
         elseIf KeyCode == MantellaEndHotkey
             MantellaEndSpell.cast(Game.GetPlayer())
         elseIf KeyCode == MantellaCustomGameEventHotkey
-            UIExtensions.InitMenu("UITextEntryMenu")
-            UIExtensions.OpenMenu("UITextEntryMenu")
-            string gameEventEntry = UIExtensions.GetMenuResultString("UITextEntryMenu")
-            gameEventEntry = gameEventEntry+"\n"
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", gameEventEntry)
+            MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+            if(conversation.IsRunning())
+                UIExtensions.InitMenu("UITextEntryMenu")
+                UIExtensions.OpenMenu("UITextEntryMenu")
+                string gameEventEntry = UIExtensions.GetMenuResultString("UITextEntryMenu")
+                if (gameEventEntry && gameEventEntry != "")
+                    gameEventEntry = gameEventEntry+"\n"
+                    conversation.AddIngameEvent(gameEventEntry)
+                endIf
+            endIf
         elseIf KeyCode == MantellaRadiantHotkey
             radiantEnabled =! radiantEnabled
             if radiantEnabled == True

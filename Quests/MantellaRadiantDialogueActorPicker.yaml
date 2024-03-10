@@ -1,5 +1,8 @@
 FormKey: 03A314:Mantella.esp
-EditorID: MantellaActorList
+EditorID: MantellaRadiantDialogueActorPicker
+Flags:
+- StartGameEnabled
+- 0x10
 Aliases:
 - Name: PotentialActor1
   Flags:

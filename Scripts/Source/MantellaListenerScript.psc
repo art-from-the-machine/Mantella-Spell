@@ -5,7 +5,7 @@ Spell property MantellaPower auto;gia
 SPELL Property MantellaEndSpell  Auto
 SPELL Property MantellaEndPower  Auto
 MantellaRepository property repository auto
-Quest Property MantellaActorList  Auto  
+Quest Property MantellaActorPicker  Auto  
 ReferenceAlias Property PotentialActor1  Auto  
 ReferenceAlias Property PotentialActor2  Auto  
 MantellaConversation Property conversation auto 
@@ -46,7 +46,7 @@ event OnUpdate()
         if !conversation.IsRunning()
             ;MantellaActorList taken from this tutorial:
             ;http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
-            MantellaActorList.start()
+            MantellaActorPicker.start()
 
             ; if both actors found
             if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
@@ -77,7 +77,7 @@ event OnUpdate()
                 Debug.Notification("Radiant dialogue attempted. No NPCs available")
             endIf
 
-            MantellaActorList.stop()
+            MantellaActorPicker.stop()
         endIf
     endIf
     RegisterForSingleUpdate(repository.radiantFrequency)

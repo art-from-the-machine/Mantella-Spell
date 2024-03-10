@@ -12,6 +12,7 @@ event OnEffectStart(Actor target, Actor caster)
 	Utility.Wait(0.5)
 
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
+    ; Debug.Notification("Registered for Mod Event")
 
     ; String actorName = target.getdisplayname()
     ; String casterName = caster.getdisplayname()
@@ -34,7 +35,11 @@ event OnEffectStart(Actor target, Actor caster)
     actors[1] = target
     MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
     if(!conversation.IsRunning())
+        ; Debug.Notification("Trying to start conversation quest")        
         conversation.Start()
+        ; if(conversation.IsRunning())
+        ;     Debug.Notification("Conversation quest started")  
+        ; endIf
     endIf
     conversation.StartConversation(actors)
     
