@@ -14,7 +14,7 @@ string property PREFIX = "mantella_" auto
 string property KEY_REQUESTTYPE = "mantella_request_type" auto
 string property KEY_REPLYTYPE = "mantella_reply_type" auto
 
-string property KEY_REQUEST_EXTRA_ACTIONS = "extra_actions" auto
+string property KEY_REQUEST_EXTRA_ACTIONS = "mantella_extra_actions" auto
 
 ;Conversation
 string property KEY_REQUESTTYPE_STARTCONVERSATION = "mantella_start_conversation" auto
