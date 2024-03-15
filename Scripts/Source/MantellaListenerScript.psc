@@ -168,13 +168,9 @@ EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
     ; check if radiant dialogue is playing, and end conversation if the player leaves the area
-    String radiant_dialogue_active = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
-    if radiant_dialogue_active == "True"
-        ;ToDo: Add new way to end radiant conversation
-        If (conversation.IsRunning())
-            conversation.EndConversation()
-        EndIf
-    endIf
+    If (conversation.IsRunning() && !conversation.IsPlayerInConversation())
+        conversation.EndConversation()
+    EndIf
 
     if repository.playerTrackingOnLocationChange
         String currLoc = (akNewLoc as form).getname()

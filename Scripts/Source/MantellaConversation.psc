@@ -18,27 +18,58 @@ bool _does_accept_player_input = false
 
 event OnInit()    
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
+    RegisterForModEvent("SKSE_HTTP_OnHttpErrorReceived","OnHttpErrorReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;    Start new conversation   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+function StartConversation(Actor[] actorsToStartConversationWith)
+    if(actorsToStartConversationWith.Length > 2)
+        Debug.Notification("Can not start conversation. Conversation is already running.")
+        return
+    endIf
+    
+    UpdateActorsArray(actorsToStartConversationWith)
+
+    if(actorsToStartConversationWith.Length < 2)
+        Debug.Notification("Not enough characters to start a conversation")
+        return
+    endIf
+
+    int handle = SKSE_HTTP.createDictionary()
+    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
+    AddCurrentActorsAndContext(handle)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
+    ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
+    ; Debug.Notification("Sent StartConversation http request to " + address)  
+endFunction
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;    Continue conversation    ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Function AddActorsToConversation(Actor[] actorsToAdd)
+    UpdateActorsArray(actorsToAdd)    
+EndFunction
 
 event OnHttpReplyReceived(int typedDictionaryHandle)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
     If (replyType != "error")
-        ContinueConversation(typedDictionaryHandle)
+        ContinueConversation(typedDictionaryHandle)        
     Else
         string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Could not retrieve error message")
         Debug.Notification(errorMessage)
+        CleanupConversation()
     EndIf
 endEvent
 
 function ContinueConversation(int handle)
     string nextAction = SKSE_HTTP.getString(handle, mConsts.KEY_REPLYTYPE, "Error: Did not receive reply type")
-    Debug.Notification(nextAction)
+    ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
@@ -63,10 +94,12 @@ endFunction
 function RequestContinueConversation()
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+    AddCurrentActorsAndContext(handle)
     if(_extraRequestActions && _extraRequestActions.Length > 0)
         Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
         SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
         ClearExtraRequestAction()
+        Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
     endif
     SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
 endFunction
@@ -108,31 +141,7 @@ Actor function GetActorInConversation(string actorName)
     return none
 endFunction
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;    Start new conversation   ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-function StartConversation(Actor[] actorsToStartConversationWith)
-    UpdateActorsArray(actorsToStartConversationWith)
-
-    if(actorsToStartConversationWith.Length < 2)
-        Debug.Notification("Not enough characters to start a conversation")
-        return
-    endIf
-
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,"mantella_start_conversation")
-    ;add characters 
-    int[] handlesNpcs = BuildNpcsInConversationArray()
-    SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)
-    ;add context
-    int handleContext = BuildContext()
-    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
-
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
-    string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
-    Debug.Notification("Sent StartConversation http request to " + address)  
-endFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;       End conversation      ;
@@ -154,7 +163,6 @@ Function CleanupConversation()
     _does_accept_player_input = false
     Debug.Notification("Conversation has ended!")  
     Stop()
-    Debug.Notification("Conversationquest after Quest.Stop() running: " + IsRunning())  
 EndFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -265,16 +273,41 @@ event OnReloadConversationActionReceived(Form speaker, string sentence)
     AddExtraRequestAction(mConsts.ACTION_RELOADCONVERSATION)
 endEvent
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;       Error handling        ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+event OnHttpErrorReceived(int typedDictionaryHandle)
+    string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.HTTP_ERROR ,"error")
+    If (errorMessage != "error")
+        Debug.Notification("Received SKSE_HTTP error: " + errorMessage)        
+        CleanupConversation()
+    Else
+        Debug.Notification("Error: Could not retrieve error")
+        CleanupConversation()
+    EndIf
+endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;            Utils            ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; string Function GetFullKey(string dictionaryKey)
-;     return  mConsts.PREFIX + dictionaryKey
-; EndFunction
+bool Function IsPlayerInConversation()
+    if(!_actorsInConversation)
+        return false
+    endif
+        int i = 0
+        While i < _actorsInConversation.Length
+            if (_actorsInConversation[i] == Game.GetPlayer())
+                return true
+            endif
+            i += 1
+        EndWhile
+        return false    
+EndFunction
 
 Function UpdateActorsArray(Actor[] actorsToStartConversationWith)
+    int i = 0
     if(!_actorsInConversation)
         _actorsInConversation = Utility.CreateFormArray(actorsToStartConversationWith.Length)
         While i < actorsToStartConversationWith.Length
@@ -283,7 +316,7 @@ Function UpdateActorsArray(Actor[] actorsToStartConversationWith)
         EndWhile
         return
     endIf
-    int i = 0
+    i = 0
     While i < actorsToStartConversationWith.Length
         int pos = _actorsInConversation.Find(actorsToStartConversationWith[i])
         if(pos < 0)
@@ -306,6 +339,15 @@ Actor Function GetActorInConversationByIndex(int indexOfActor)
         return _actorsInConversation[indexOfActor] as Actor
     EndIf
     return none
+EndFunction
+
+Function AddCurrentActorsAndContext(int handleToAddTo)
+    ;Add Actors
+    int[] handlesNpcs = BuildNpcsInConversationArray()
+    SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, handlesNpcs)
+    ;add context
+    int handleContext = BuildContext()
+    SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, handleContext)
 EndFunction
 
 int[] function BuildNpcsInConversationArray()

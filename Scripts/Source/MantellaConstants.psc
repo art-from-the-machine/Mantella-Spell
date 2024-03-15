@@ -4,6 +4,8 @@ int property HTTP_PORT = 5000 auto
 string property HTTP_ROUTE_MAIN = "mantella" auto
 string property HTTP_ROUTE_STT = "stt" auto
 
+string property HTTP_ERROR = "SKSE_HTTP_error" auto
+
 string property EVENT_ACTIONS = "MantellaConversation_Action_" auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
