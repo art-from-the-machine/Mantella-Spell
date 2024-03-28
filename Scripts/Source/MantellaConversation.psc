@@ -38,12 +38,12 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     if(actorsToStartConversationWith.Length < 2)
         Debug.Notification("Not enough characters to start a conversation")
         return
-    endIf
-
+    endIf    
+   
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     AddCurrentActorsAndContext(handle)
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
     ; Debug.Notification("Sent StartConversation http request to " + address)  
 endFunction
@@ -101,7 +101,7 @@ function RequestContinueConversation()
         ClearExtraRequestAction()
         Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
     endif
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 endFunction
 
 function ProcessNpcSpeak(int handle)
@@ -154,13 +154,14 @@ endEvent
 Function EndConversation()
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 EndFunction
 
 Function CleanupConversation()
     _actorsInConversation = None
     _ingameEvents = None
     _does_accept_player_input = false
+    SKSE_HTTP.clearAllDictionaries()
     Debug.Notification("Conversation has ended!")  
     Stop()
 EndFunction
@@ -179,7 +180,7 @@ function sendRequestForPlayerInput(string playerInput)
     SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
 
     ClearIngameEvent()    
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_MAIN)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 endFunction
 
 function sendRequestForVoiceTranscribe()
@@ -192,7 +193,7 @@ function sendRequestForVoiceTranscribe()
         i += 1
     EndWhile
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_INPUT_NAMESINCONVERSATION, namesInConversation)
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, mConsts.HTTP_PORT, mConsts.HTTP_ROUTE_STT)
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_STT)
 endFunction
 
 function GetPlayerTextInput()

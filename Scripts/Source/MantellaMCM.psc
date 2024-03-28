@@ -48,6 +48,7 @@ int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
 
 int property oid_debugNPCSelectMode auto
+int property oid_httpPort auto
 
 string MantellaMCMcurrentPage
 
@@ -118,6 +119,12 @@ Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl
     If 	MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
 	EndIf
+EndEvent
+
+event OnOptionInputAccept(int optionID, string inputText)
+	if MantellaMCMcurrentPage =="Advanced"
+		MantellaMCM_AdvancedSettings.OptionInputUpdate(self, optionID, inputText, repository)
+	endif
 EndEvent
 
 Event OnOptionHighlight (Int optionID)
@@ -196,7 +203,8 @@ Event OnOptionHighlight (Int optionID)
 
 	elseIf optionID == oid_debugNPCSelectMode
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
-
+	elseif optionID == oid_httpPort
+		SetInfoText("HTTP port for Mantella to call. If you need to change the default port, change it here and the port for MantellaSoftware's server in its config.ini. Default: 4999")
 	EndIf
 endEvent
 

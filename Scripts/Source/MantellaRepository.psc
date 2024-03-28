@@ -59,6 +59,8 @@ bool property NPCDialogue auto ;gia
 
 bool property NPCdebugSelectModeEnabled auto
 
+int property HttpPort auto
+
 event OnInit()
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
@@ -106,6 +108,8 @@ event OnInit()
 	NPCDialogue = True ;gia
     
     NPCdebugSelectModeEnabled = false
+
+    HttpPort = 4999
 endEvent
 
 function BindPromptHotkey(int keyCode)

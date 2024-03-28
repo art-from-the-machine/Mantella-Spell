@@ -89,11 +89,11 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
     if repository.playerTrackingOnItemAdded
         
         string itemName = akBaseItem.GetName()
-        string itemPickedUpMessage = "The player picked up " + itemName + ".\n"
+        string itemPickedUpMessage = "The player picked up " + itemName 
 
         string sourceName = akSourceContainer.getbaseobject().getname()
         if sourceName != ""
-            itemPickedUpMessage = "The player picked up " + itemName + " from " + sourceName + ".\n"
+            itemPickedUpMessage = "The player picked up " + itemName + " from " + sourceName 
         endIf
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
@@ -107,11 +107,11 @@ EndEvent
 Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akDestContainer)
     if Repository.playerTrackingOnItemRemoved
         string itemName = akBaseItem.GetName()
-        string itemDroppedMessage = "The player dropped " + itemName + ".\n"
+        string itemDroppedMessage = "The player dropped " + itemName 
 
         string destName = akDestContainer.getbaseobject().getname()
         if destName != ""
-            itemDroppedMessage = "The player placed " + itemName + " in/on " + destName + ".\n"
+            itemDroppedMessage = "The player placed " + itemName + " in/on " + destName 
         endIf
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
@@ -130,7 +130,7 @@ Event OnSpellCast(Form akSpell)
                 ; Do not save event if Mantella itself is cast
             else
                 ;Debug.Notification("The player casted the spell "+ spellCast)
-                AddIngameEventToConversation("The player casted the spell " + spellCast + ".\n")
+                AddIngameEventToConversation("The player casted the spell " + spellCast )
             endIf
         endIf
     endif
@@ -154,10 +154,10 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
             if (hitSource == "None") || (hitSource == "")
                 ;Debug.MessageBox(aggressor + " punched the player.")
-                AddIngameEventToConversation(aggressor + " punched the player.\n")
+                AddIngameEventToConversation(aggressor + " punched the player.")
             else
-                ;Debug.MessageBox(aggressor + " hit the player with " + hitSource+".\n")
-                AddIngameEventToConversation(aggressor + " hit the player with " + hitSource+".\n")
+                ;Debug.MessageBox(aggressor + " hit the player with " + hitSource)
+                AddIngameEventToConversation(aggressor + " hit the player with " + hitSource)
             endIf
         else
             timesHitSameAggressorSource += 1
@@ -179,7 +179,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
         endIf
         ;Debug.MessageBox("Current location is now " + currLoc)
         ;ToDo: Set the location as a context and not as an ingame event
-        AddIngameEventToConversation("Current location is now " + currLoc+".\n")
+        AddIngameEventToConversation("Current location is now " + currLoc)
     endif
 endEvent
 
@@ -188,7 +188,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectEquipped
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox("The player equipped " + itemEquipped)
-        AddIngameEventToConversation("The player equipped " + itemEquipped + ".\n")
+        AddIngameEventToConversation("The player equipped " + itemEquipped )
     endif
 endEvent
 
@@ -197,7 +197,7 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectUnequipped
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox("The player unequipped " + itemUnequipped)
-        AddIngameEventToConversation("The player unequipped " + itemUnequipped + ".\n")
+        AddIngameEventToConversation("The player unequipped " + itemUnequipped )
     endif
 endEvent
 
@@ -205,7 +205,7 @@ endEvent
 Event OnPlayerBowShot(Weapon akWeapon, Ammo akAmmo, float afPower, bool abSunGazing)
     if repository.playerTrackingOnPlayerBowShot
         ;Debug.MessageBox("The player fired an arrow.")
-        AddIngameEventToConversation("The player fired an arrow.\n")
+        AddIngameEventToConversation("The player fired an arrow.")
     endif
 endEvent
 
@@ -214,7 +214,7 @@ Event OnSit(ObjectReference akFurniture)
     if repository.playerTrackingOnSit
         ;Debug.MessageBox("The player sat down.")
         String furnitureName = akFurniture.getbaseobject().getname()
-        AddIngameEventToConversation("The player rested on / used a(n) "+furnitureName+".\n")
+        AddIngameEventToConversation("The player rested on / used a(n) "+furnitureName)
     endif
 endEvent
 
@@ -223,7 +223,7 @@ Event OnGetUp(ObjectReference akFurniture)
     if repository.playerTrackingOnGetUp
         ;Debug.MessageBox("The player stood up.")
         String furnitureName = akFurniture.getbaseobject().getname()
-        AddIngameEventToConversation("The player stood up from a(n) "+furnitureName+".\n")
+        AddIngameEventToConversation("The player stood up from a(n) "+furnitureName)
     endif
 EndEvent
 

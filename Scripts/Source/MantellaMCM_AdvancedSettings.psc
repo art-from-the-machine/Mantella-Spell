@@ -1,4 +1,4 @@
-Scriptname MantellaMCM_AdvancedSettings  Hidden 
+Scriptname MantellaMCM_AdvancedSettings Hidden
 
 function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
@@ -13,6 +13,18 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
+	mcm.AddHeaderOption("HTTP")
+	mcm.oid_httpPort = mcm.AddInputOption("Port", Repository.HttpPort)
+endfunction
+
+function OptionInputUpdate(MantellaMCM mcm, int optionID, string inputText, MantellaRepository Repository) global
+	If optionID == mcm.oid_httpPort
+		int convertedInput = inputText as int
+		if(convertedInput > 0 && convertedInput < 65535)
+			Repository.HttpPort = convertedInput
+			mcm.SetInputOptionValue(optionID, inputText)
+		endIf
+	endIf
 endfunction
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
