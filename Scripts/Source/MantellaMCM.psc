@@ -16,6 +16,7 @@ int property oid_radiantdistance auto
 int property oid_radiantfrequency auto
 
 
+int property oid_playerTrackingUsePCName auto
 int property oid_playerTrackingOnItemAdded auto
 int property oid_playerTrackingOnItemRemoved auto
 int property oid_playerTrackingOnSpellCast auto
@@ -150,6 +151,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
 
 	
+    elseIf optionID == oid_playerTrackingUsePCName	
+		SetInfoText("Use the name of the player character when tracking events. Uses 'Player' otherwise.")
 	elseIf optionID == oid_playerTrackingOnItemAdded	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnItemRemoved	

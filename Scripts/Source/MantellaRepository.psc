@@ -26,6 +26,7 @@ float property radiantDistance auto
 float property radiantFrequency auto
 
 
+bool property playerTrackingUsePCName auto
 bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
 bool property playerTrackingOnSpellCast auto
@@ -76,6 +77,7 @@ event OnInit()
     radiantFrequency = 10
 
 
+    playerTrackingUsePCName = true
     playerTrackingOnItemAdded = true
     playerTrackingOnItemRemoved = true
     playerTrackingOnSpellCast = true

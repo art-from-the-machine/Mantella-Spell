@@ -179,7 +179,6 @@ function sendRequestForPlayerInput(string playerInput)
     int handleContext = BuildContext()
     SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
 
-    ClearIngameEvent()    
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 endFunction
 
@@ -258,7 +257,7 @@ Function AddIngameEvent(string eventText)
     Else
         _ingameEvents = Utility.ResizeStringArray(_ingameEvents, _ingameEvents.Length + 1)
     endif
-    _ingameEvents[_extraRequestActions.Length - 1] = eventText
+    _ingameEvents[_ingameEvents.Length - 1] = eventText
 EndFunction
 
 Function ClearIngameEvent()
@@ -383,7 +382,9 @@ int function BuildContext()
     endIf
     SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, currLoc)
     SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, GetCurrentHourOfDay())
-    SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, _ingameEvents)
+    string[] past_events = deepcopy(_ingameEvents)
+    SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
+    ClearIngameEvent()
     return handle
 endFunction
 
@@ -393,4 +394,14 @@ int function GetCurrentHourOfDay()
 	Time *= 24 ; Convert from fraction of a day to number of hours
 	int Hour = Math.Floor(Time) ; Get whole hour
 	return Hour
+endFunction
+
+string[] function deepcopy(string[] array_to_copy)
+    string[] result = Utility.CreateStringArray(array_to_copy.Length)
+    int i = 0
+    While i < array_to_copy.Length
+        result[i] = array_to_copy[i]
+        i += 1
+    EndWhile
+    return result
 endFunction
