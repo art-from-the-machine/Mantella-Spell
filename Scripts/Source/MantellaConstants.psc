@@ -66,6 +66,7 @@ string property KEY_TRANSCRIBE = "mantella_transcribe" auto
 
 string property ACTION_RELOADCONVERSATION = "mantella_reload_conversation" auto
 string property ACTION_ENDCONVERSATION = "mantella_end_conversation" auto
+string property ACTION_REMOVECHARACTER = "mantella_remove_character" auto
 
 string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto

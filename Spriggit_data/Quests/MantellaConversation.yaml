@@ -5,14 +5,17 @@ VirtualMachineAdapter:
   - Name: MantellaConversation
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaDialogueLine
       Object: 001D8A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: mConsts
-      Object: 03D41A:Mantella.esp
+      Name: MantellaConversationParticipantsFaction
+      Object: 06FE24:Mantella.esp
   - Name: mantellaconstants
   Versioning:
   - Break0

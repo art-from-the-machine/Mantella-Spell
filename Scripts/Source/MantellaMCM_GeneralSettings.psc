@@ -13,13 +13,17 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
 
     mcm.AddHeaderOption("Controls")
-    mcm.oid_keymapPromptHotkey = mcm.AddKeyMapOption("Start Conversation / Open Text Prompt", repository.MantellaListenerTextHotkey)
-    mcm.oid_keymapEndHotkey = mcm.AddKeyMapOption("End Conversation", repository.MantellaEndHotkey)
+    mcm.oid_keymapStartAddHotkey = mcm.AddKeyMapOption("Start Conversation / Add NPC to it", repository.MantellaStartHotkey)
+    mcm.oid_keymapPromptHotkey = mcm.AddKeyMapOption("Open Text Prompt", repository.MantellaListenerTextHotkey)
+    mcm.oid_keymapEndHotkey = mcm.AddKeyMapOption("End Conversation / Remove NPC from it", repository.MantellaEndHotkey)
     mcm.oid_keymapCustomGameEventHotkey = mcm.AddKeyMapOption("Add Custom Game Event", repository.MantellaCustomGameEventHotkey)
     mcm.oid_keymapRadiantHotkey = mcm.AddKeyMapOption("Toggle Radiant Dialogue", repository.MantellaRadiantHotkey) 
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
+    mcm.AddHeaderOption("Dialogue items")
+    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
+
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
@@ -69,7 +73,8 @@ endfunction
 
 function KeyMapChange(MantellaMCM mcm,Int option, Int keyCode, String conflictControl, String conflictName, MantellaRepository Repository) global
     ;This script is used to check if a key is already used, if it's not it will update to a new value (stored in MantellaRepository) or it will prompt the user to warn him of the conflict. The actual keybind happens in MantellaRepository
-    if option == mcm.oid_keymapPromptHotkey || mcm.oid_keymapCustomGameEventHotkey || mcm.oid_keymapEndHotkey || mcm.oid_keymapRadiantHotkey
+    bool isOptionHotkey = option == mcm.oid_keymapStartAddHotkey || option == mcm.oid_keymapPromptHotkey || option == mcm.oid_keymapCustomGameEventHotkey || option == mcm.oid_keymapEndHotkey || option == mcm.oid_keymapRadiantHotkey
+    if (isOptionHotkey)
         Bool continue = true
         ;below checks if there's already a bound key
         if conflictControl != ""
@@ -84,7 +89,9 @@ function KeyMapChange(MantellaMCM mcm,Int option, Int keyCode, String conflictCo
         if continue
             mcm.SetKeymapOptionValue(option, keyCode)
             ;selector to update the correct hotkey according to oid values
-            if option == mcm.oid_keymapPromptHotkey 
+            if option == mcm.oid_keymapStartAddHotkey
+                repository.BindStartAddHotkey(keyCode)
+            elseIf option == mcm.oid_keymapPromptHotkey 
                 repository.BindPromptHotkey(keyCode)
             elseIf option == mcm.oid_keymapEndHotkey
                 repository.BindEndHotkey(keyCode)
@@ -107,6 +114,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_debugNPCselectMode
         Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled
         mcm.SetToggleOptionValue(mcm.oid_debugNPCselectMode, Repository.NPCdebugSelectModeEnabled)
+    elseIf optionID == mcm.oid_showDialogueItems
+        repository.showDialogueItems =! repository.showDialogueItems
+        mcm.SetToggleOptionValue(mcm.oid_showDialogueItems, repository.showDialogueItems)
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)

@@ -1,0 +1,15 @@
+FormKey: 0CB02E:Mantella.esp
+EditorID: MantellaRemoveNpcSpell
+Name:
+  TargetLanguage: English
+  Value: Mantella Remove Npc
+MenuDisplayObject: 10A046:Skyrim.esm
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+CastType: FireAndForget
+TargetType: TargetActor
+Effects:
+- BaseEffect: 0C5F2D:Mantella.esp
+  Data: {}

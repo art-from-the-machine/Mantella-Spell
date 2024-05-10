@@ -1,15 +1,15 @@
-FormKey: 0022EE:Mantella.esp
-EditorID: MantellaEffect
+FormKey: 0C5F2D:Mantella.esp
+EditorID: MantellaRemoveNpcEffect
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaEffectScript
+  - Name: MantellaRemoveNpcEffect
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: conversation
       Object: 03D41A:Mantella.esp
 Name:
   TargetLanguage: English
-  Value: MantellaEffect
+  Value: MantellaRemoveNpcEffect
 MagicSkill: Illusion
 Archetype:
   MutagenObjectType: MagicEffectArchetype
@@ -21,4 +21,4 @@ CastingSoundLevel: Normal
 Sounds: []
 Description:
   TargetLanguage: English
-  Value: Starts a conversation with the target. The conversation can be ended by saying / typing the "goodbye" keyword.
+  Value: Removes the targeted NPC from the running Mantella conversation.

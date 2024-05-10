@@ -6,6 +6,7 @@ Import Utility
 Topic property MantellaDialogueLine auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
+Faction Property MantellaConversationParticipantsFaction Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -21,6 +22,11 @@ event OnInit()
     RegisterForModEvent("SKSE_HTTP_OnHttpErrorReceived","OnHttpErrorReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
+    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+endEvent
+
+event OnPlayerLoadGame()
+    CleanupConversation()
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -33,7 +39,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         return
     endIf
     
-    UpdateActorsArray(actorsToStartConversationWith)
+    AddActors(actorsToStartConversationWith)
 
     if(actorsToStartConversationWith.Length < 2)
         Debug.Notification("Not enough characters to start a conversation")
@@ -53,7 +59,11 @@ endFunction
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Function AddActorsToConversation(Actor[] actorsToAdd)
-    UpdateActorsArray(actorsToAdd)    
+    AddActors(actorsToAdd)    
+EndFunction
+
+Function RemoveActorsFromConversation(Actor[] actorsToRemove)
+    RemoveActors(actorsToRemove)  
 EndFunction
 
 event OnHttpReplyReceived(int typedDictionaryHandle)
@@ -158,6 +168,11 @@ Function EndConversation()
 EndFunction
 
 Function CleanupConversation()
+    int i = 0
+    While i < _actorsInConversation.Length
+        (_actorsInConversation[i] as Actor).RemoveFromFaction(MantellaConversationParticipantsFaction)
+        i += 1
+    EndWhile
     _actorsInConversation = None
     _ingameEvents = None
     _does_accept_player_input = false
@@ -165,6 +180,17 @@ Function CleanupConversation()
     Debug.Notification("Conversation has ended!")  
     Stop()
 EndFunction
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;      Remove character       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+event OnRemoveCharacterActionReceived(Form speaker, string sentence)
+    Actor[] actors = new Actor[2]
+    actors[0] = speaker as Actor
+    RemoveActors(actors)
+endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;   Handle player speaking    ;
@@ -289,6 +315,12 @@ event OnHttpErrorReceived(int typedDictionaryHandle)
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;            Access           ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;            Utils            ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -306,25 +338,82 @@ bool Function IsPlayerInConversation()
         return false    
 EndFunction
 
-Function UpdateActorsArray(Actor[] actorsToStartConversationWith)
+Function AddActors(Actor[] actorsToAdd)
     int i = 0
     if(!_actorsInConversation)
-        _actorsInConversation = Utility.CreateFormArray(actorsToStartConversationWith.Length)
-        While i < actorsToStartConversationWith.Length
-            _actorsInConversation[i] = actorsToStartConversationWith[i]
+        _actorsInConversation = Utility.CreateFormArray(actorsToAdd.Length)
+        While i < actorsToAdd.Length
+            _actorsInConversation[i] = actorsToAdd[i]
+            actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
             i += 1
         EndWhile
         return
+    else
+        i = 0
+        While i < actorsToAdd.Length
+            int pos = _actorsInConversation.Find(actorsToAdd[i])
+            if(pos < 0)
+                _actorsInConversation = Utility.ResizeFormArray(_actorsInConversation, _actorsInConversation.Length + 1)
+                _actorsInConversation[_actorsInConversation.Length - 1] = actorsToAdd[i]
+                actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
+            endIf
+            i += 1
+        EndWhile
     endIf
-    i = 0
-    While i < actorsToStartConversationWith.Length
-        int pos = _actorsInConversation.Find(actorsToStartConversationWith[i])
-        if(pos < 0)
-            _actorsInConversation = Utility.ResizeFormArray(_actorsInConversation, _actorsInConversation.Length + 1)
-            _actorsInConversation[_actorsInConversation.Length - 1] = actorsToStartConversationWith[i]
-        endIf
+    PrintActorsInConversation()
+EndFunction
+
+Function RemoveActors(Actor[] actorsToRemove)
+    PrintActorsArray("Actors to remove: ",actorsToRemove)
+    Form[] result = Utility.CreateFormArray(_actorsInConversation.Length)
+    int i = 0
+    int insertCounter = 0
+    While (i < _actorsInConversation.Length)
+        bool isAmongActorsToRemove = actorsToRemove.Find(_actorsInConversation[i] as Actor) >= 0
+        if (!isAmongActorsToRemove)
+            result[insertCounter] = _actorsInConversation[i]
+            insertCounter += 1
+        Else
+            (_actorsInConversation[i] as Actor).RemoveFromFaction(MantellaConversationParticipantsFaction)
+        EndIf
         i += 1
     EndWhile
+    _actorsInConversation = Utility.ResizeFormArray(result, insertCounter)
+    if (_actorsInConversation.Length < 2)
+        EndConversation()
+    endIf
+    PrintActorsInConversation()
+EndFunction
+
+bool Function ContainsActor(Actor[] arrayToCheck, Actor actorCheckFor)
+    int i = 0
+    While i < arrayToCheck.Length
+        If (arrayToCheck[i] == actorCheckFor)
+            return True
+        EndIf
+        i += 1
+    EndWhile
+    return False
+EndFunction
+
+Function PrintActorsArray(string prefix, Actor[] actors)
+    int i = 0
+    string actor_message = ""
+    While i < actors.Length
+        actor_message += actors[i].GetDisplayName() + ", "
+        i += 1
+    EndWhile
+    Debug.Notification(prefix + actor_message)
+EndFunction
+
+Function PrintActorsInConversation()
+    int i = 0
+    string actor_message = ""
+    While i < _actorsInConversation.Length
+        actor_message += (_actorsInConversation[i] as Actor).GetDisplayName() + ", "
+        i += 1
+    EndWhile
+    Debug.Notification(actor_message)
 EndFunction
 
 int Function CountActorsInConversation()
@@ -369,8 +458,8 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_RACE, actorToBuild.getrace())
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(game.getplayer()))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
-    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())    
-    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == game.getplayer())    
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == game.getplayer())
     return handle
 endFunction
 

@@ -1,6 +1,7 @@
-Scriptname MantellaRepository extends Quest  
+Scriptname MantellaRepository extends Quest Conditional
 Spell property MantellaSpell auto
-SPELL Property MantellaEndSpell auto
+Spell property MantellaRemoveNpcSpell auto
+Spell Property MantellaEndSpell auto
 ;Faction Property giafac_Sitters  Auto ;gia
 ;Faction Property giafac_Sleepers  Auto ;gia
 ;Faction Property giafac_talktome  Auto ;gia
@@ -16,10 +17,13 @@ quest property gia_FollowerQst auto ;gia
 bool property microphoneEnabled auto
 float property MantellaEffectResponseTimer auto
 
+int property MantellaStartHotkey auto
 int property MantellaListenerTextHotkey auto
 int property MantellaEndHotkey auto
 int property MantellaCustomGameEventHotkey auto
 int property MantellaRadiantHotkey auto
+
+bool property showDialogueItems auto Conditional
 
 bool property radiantEnabled auto
 float property radiantDistance auto
@@ -66,11 +70,14 @@ event OnInit()
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
 
+    MantellaStartHotkey = -1
     MantellaListenerTextHotkey = 35
     BindPromptHotkey(MantellaListenerTextHotkey)
     MantellaEndHotkey = -1
     MantellaCustomGameEventHotkey = -1
     MantellaRadiantHotkey = -1
+
+    showDialogueItems = true
 
     radiantEnabled = false
     radiantDistance = 20
@@ -114,6 +121,13 @@ event OnInit()
     HttpPort = 4999
 endEvent
 
+function BindStartAddHotkey(int keyCode)
+    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
+    UnregisterForKey(MantellaStartHotkey)
+    MantellaStartHotkey=keyCode
+    RegisterForKey(keyCode)
+endfunction
+
 function BindPromptHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the prompt hotkey KeyMapChange
     UnregisterForKey(MantellaListenerTextHotkey)
@@ -122,7 +136,7 @@ function BindPromptHotkey(int keyCode)
 endfunction
 
 function BindEndHotkey(int keyCode)
-    ;used by the MCM_GeneralSettings when updating the prompt hotkey KeyMapChange
+    ;used by the MCM_GeneralSettings when updating the end hotkey KeyMapChange
     UnregisterForKey(MantellaEndHotkey)
     MantellaEndHotkey=keyCode
     RegisterForKey(keyCode)
@@ -146,19 +160,26 @@ Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
     if !utility.IsInMenuMode()
-        if KeyCode == MantellaListenerTextHotkey
+        if KeyCode == MantellaStartHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
                 MantellaSpell.cast(Game.GetPlayer(), targetRef)
                 Utility.Wait(0.5)
-            ElseIf(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
+            endIf        
+        elseIf KeyCode == MantellaListenerTextHotkey
+            If(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
                 MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
                 if(conversation.IsRunning())
                     conversation.GetPlayerTextInput()
                 endIf
             endif
         elseIf KeyCode == MantellaEndHotkey
-            MantellaEndSpell.cast(Game.GetPlayer())
+            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
+            if (targetRef) ;If we have a target under the crosshair, cast sepll on it
+                MantellaRemoveNpcSpell.cast(Game.GetPlayer(), targetRef)
+            else
+                MantellaEndSpell.cast(Game.GetPlayer())
+            endIf
         elseIf KeyCode == MantellaCustomGameEventHotkey
             MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
             if(conversation.IsRunning())

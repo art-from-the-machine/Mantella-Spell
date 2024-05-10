@@ -2,12 +2,14 @@ Scriptname MantellaListenerScript extends ReferenceAlias
 
 Spell property MantellaSpell auto
 Spell property MantellaPower auto;gia
-SPELL Property MantellaEndSpell  Auto
-SPELL Property MantellaEndPower  Auto
+Spell Property MantellaEndSpell auto
+Spell Property MantellaEndPower auto
+Spell Property MantellaRemoveNpcSpell auto
+Spell Property MantellaRemoveNpcPower auto
 MantellaRepository property repository auto
-Quest Property MantellaActorPicker  Auto  
-ReferenceAlias Property PotentialActor1  Auto  
-ReferenceAlias Property PotentialActor2  Auto  
+Quest Property MantellaActorPicker auto  
+ReferenceAlias Property PotentialActor1 auto  
+ReferenceAlias Property PotentialActor2 auto  
 MantellaConversation Property conversation auto 
 
 event OnInit()
@@ -15,10 +17,10 @@ event OnInit()
     Game.GetPlayer().AddSpell(MantellaPower);gia
     Game.GetPlayer().AddSpell(MantellaEndSpell)
     Game.GetPlayer().AddSpell(MantellaEndPower)
+    Game.GetPlayer().AddSpell(MantellaRemoveNpcSpell)
+    Game.GetPlayer().AddSpell(MantellaRemoveNpcPower)
     Game.GetPlayer().AddToFaction(repository.giafac_AllowDialogue);gia
     Debug.Notification("Please save and reload to activate Mantella.")
-
-    conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
 endEvent
 
 Function AddIngameEventToConversation(string eventText)
