@@ -5,17 +5,11 @@ VirtualMachineAdapter:
   - Name: mantellarepository
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: gia_FollowerQst
-      Object: 021211:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_AllowFollower
       Object: 03D416:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: giafac_AllowAnger
       Object: 042517:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaSpell
-      Object: 0022EF:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: giafac_AllowDialogue
       Object: 042519:Mantella.esp
@@ -23,14 +17,20 @@ VirtualMachineAdapter:
       Name: giafac_Mantella
       Object: 000803:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaRemoveNpcSpell
+      Object: 0CB02E:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Following
       Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: gia_FollowerQst
+      Object: 021211:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaSpell
+      Object: 0022EF:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaEndSpell
       Object: 01EE0C:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaRemoveNpcSpell
-      Object: 0CB02E:Mantella.esp
   FileName: ''
   Aliases:
   - Property:
@@ -41,18 +41,24 @@ VirtualMachineAdapter:
     - Name: MantellaListenerScript
       Properties:
       - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaSpell
-        Object: 0022EF:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaPower
-        Object: 000805:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PotentialActor2
         Object: 03A314:Mantella.esp
         Alias: 2
       - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaEndSpell
-        Object: 01EE0C:Mantella.esp
+        Name: MantellaActorPicker
+        Object: 03A314:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaRemoveNpcSpell
+        Object: 0CB02E:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaRemoveNpcPower
+        Object: 0CB032:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaSpell
+        Object: 0022EF:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
         Name: repository
         Object: 000D62:Mantella.esp
@@ -64,21 +70,16 @@ VirtualMachineAdapter:
         Name: MantellaEndPower
         Object: 02E113:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
+        Name: MantellaPower
+        Object: 000805:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaActorPicker
-        Object: 03A314:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaRemoveNpcPower
-        Object: 0CB032:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
-        Name: MantellaRemoveNpcSpell
-        Object: 0CB02E:Mantella.esp
+        Name: MantellaEndSpell
+        Object: 01EE0C:Mantella.esp
 Flags:
 - StartGameEnabled
 - 0x10
 - RunOnce
+NextAliasID: 1
 Aliases:
 - Name: PlayerRef
   Flags: []

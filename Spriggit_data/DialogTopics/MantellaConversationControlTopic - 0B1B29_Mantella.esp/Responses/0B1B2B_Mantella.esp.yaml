@@ -1,4 +1,4 @@
-FormKey: 0B1B2A:Mantella.esp
+FormKey: 0B1B2B:Mantella.esp
 VirtualMachineAdapter:
   Scripts:
   - Name: MantellaDialogueItems
@@ -24,7 +24,7 @@ Flags:
   Flags:
   - Goodbye
   - ForceSubtitle
-PreviousDialog: Null
+PreviousDialog: 0B1B2A:Mantella.esp
 FavorLevel: None
 ResponseData: 0DBA22:Skyrim.esm
 Conditions:
@@ -33,19 +33,23 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -612171904
+    SecondUnusedIntParameter: -671390400
     VariableName: ::showDialogueItems_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  CompareOperator: NotEqualTo
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetQuestRunningConditionData
-    UseAliases: True
-    Quest: 84136986
+    Quest: 03D41A:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  CompareOperator: NotEqualTo
+  CompareOperator: GreaterThan
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetRelationshipRankConditionData
+    TargetNpc: 000014:Skyrim.esm
+  ComparisonValue: -1
+- MutagenObjectType: ConditionFloat
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
@@ -53,6 +57,13 @@ Conditions:
     Reference: 000014:Skyrim.esm
     Faction: 06FE24:Mantella.esp
   ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
 Prompt:
   TargetLanguage: English
-  Value: I want to speak with you. (Start Mantella conversation)
+  Value: Could you speak to us? (Add to Mantella conversation)

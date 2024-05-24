@@ -19,6 +19,7 @@ Flags:
 - RunOnce
 Type: Misc
 Filter: MantellaEvents\
+NextAliasID: 1
 Aliases:
 - Name: TargetRef
   Flags: []

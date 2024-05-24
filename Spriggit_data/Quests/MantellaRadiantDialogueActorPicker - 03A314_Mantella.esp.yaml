@@ -3,6 +3,7 @@ EditorID: MantellaRadiantDialogueActorPicker
 Flags:
 - StartGameEnabled
 - 0x10
+NextAliasID: 3
 Aliases:
 - Name: PotentialActor1
   Flags:

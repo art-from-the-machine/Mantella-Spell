@@ -1,11 +1,11 @@
-FormKey: 0B1B2B:Mantella.esp
+FormKey: 0B1B2C:Mantella.esp
 VirtualMachineAdapter:
   Scripts:
   - Name: MantellaDialogueItems
     Properties:
     - MutagenObjectType: ScriptStringProperty
       Name: TriggeredDialogueItem
-      Data: mantella_start_add
+      Data: mantella_remove_character
     - MutagenObjectType: ScriptObjectProperty
       Name: conversation
       Object: 03D41A:Mantella.esp
@@ -24,24 +24,21 @@ Flags:
   Flags:
   - Goodbye
   - ForceSubtitle
-PreviousDialog: 0B1B2A:Mantella.esp
+PreviousDialog: 0B1B2B:Mantella.esp
 FavorLevel: None
-ResponseData: 0DBA22:Skyrim.esm
+Responses:
+- EmotionValue: 50
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: Goodbye
+  ScriptNotes: ''
+  Edits: ''
 Conditions:
-- MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetVMQuestVariableConditionData
-    Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -612171744
-    VariableName: ::showDialogueItems_var
-  ComparisonValue: 1
-- MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
-  Data:
-    MutagenObjectType: GetQuestRunningConditionData
-    Quest: 03D41A:Mantella.esp
-  ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
   CompareOperator: GreaterThan
   Unknown1: 0x000000
@@ -52,13 +49,26 @@ Conditions:
 - MutagenObjectType: ConditionFloat
   Unknown1: 0x000000
   Data:
+    MutagenObjectType: GetVMQuestVariableConditionData
+    Quest: 000D62:Mantella.esp
+    SecondUnusedIntParameter: -671390336
+    VariableName: ::showDialogueItems_var
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetQuestRunningConditionData
+    Quest: 03D41A:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
     MutagenObjectType: GetInFactionConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
     Faction: 06FE24:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  CompareOperator: NotEqualTo
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
@@ -66,4 +76,4 @@ Conditions:
   ComparisonValue: 1
 Prompt:
   TargetLanguage: English
-  Value: Could you speak to us? (Add to Mantella conversation)
+  Value: Goodbye. (Remove from Mantella conversation)
