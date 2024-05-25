@@ -17,3 +17,4 @@ Flags:
 - RunOnce
 Type: Misc
 Filter: MantellaEvents\
+NextAliasID: 0

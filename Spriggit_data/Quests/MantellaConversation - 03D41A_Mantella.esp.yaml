@@ -5,14 +5,20 @@ VirtualMachineAdapter:
   - Name: MantellaConversation
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: mConsts
-      Object: 03D41A:Mantella.esp
+      Name: MantellaIsTalkingSpell
+      Object: 0E4537:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDialogueLine
+      Object: 001D8A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaIsTalkingEffect
+      Object: 0DA334:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaDialogueLine
-      Object: 001D8A:Mantella.esp
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsFaction
       Object: 06FE24:Mantella.esp
@@ -21,3 +27,4 @@ VirtualMachineAdapter:
   - Break0
   ExtraBindDataVersion: 0
   FileName: ''
+NextAliasID: 0

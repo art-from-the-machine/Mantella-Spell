@@ -7,6 +7,7 @@ Topic property MantellaDialogueLine auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
 Faction Property MantellaConversationParticipantsFaction Auto
+SPELL Property MantellaIsTalkingSpell Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -16,6 +17,8 @@ Form[] _actorsInConversation
 String[] _ingameEvents
 String[] _extraRequestActions
 bool _does_accept_player_input = false
+bool _isTalking = false
+Actor _lastNpcToSpeak = None
 
 event OnInit()    
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
@@ -65,6 +68,24 @@ EndFunction
 Function RemoveActorsFromConversation(Actor[] actorsToRemove)
     RemoveActors(actorsToRemove)  
 EndFunction
+
+Function SetIsTalking(bool isTalking)
+    _isTalking = isTalking
+EndFunction
+
+bool Function GetIsTalking()
+    return _isTalking
+EndFunction
+
+Event OnTalking(string eventName, string strArg, float numArg, Form sender)
+    If eventName == "talkingEvent"
+        If strArg == "started"
+            Debug.Notification("is talking")
+        ElseIf strArg == "finished"
+            Debug.Notification("is finished talking")
+        EndIf
+    EndIf
+EndEvent
 
 event OnHttpReplyReceived(int typedDictionaryHandle)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
@@ -118,20 +139,25 @@ function ProcessNpcSpeak(int handle)
     string speakerName = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_SPEAKER, "Error: No speaker transmitted for action 'NPC talk'")
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = GetActorInConversation(speakerName)
-    ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     if speaker != none
+        WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, "Error: No line transmitted for actor to speak")
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)        
         RaiseActionEvent(speaker, lineToSpeak, actions)
-        NpcSpeak(speaker, lineToSpeak, Game.GetPlayer(), duration)
+
+        Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
+        NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
     endIf
 endFunction
 
-function NpcSpeak(Actor actorSpeaking, string lineToSay, Actor actorToSpekTo, float duration)
+function NpcSpeak(Actor actorSpeaking, string lineToSay, Actor actorToSpeakTo, float duration)
     MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(actorSpeaking, MantellaDialogueLine, lineToSay)
     actorSpeaking.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
-    actorSpeaking.SetLookAt(actorToSpekTo)
+    actorSpeaking.SetLookAt(actorToSpeakTo)
+    actorToSpeakTo.SetLookAt(actorSpeaking)
+
     float durationAdjusted = duration - 0.5
     if(durationAdjusted < 0)
         durationAdjusted = 0
@@ -176,8 +202,10 @@ Function CleanupConversation()
     _actorsInConversation = None
     _ingameEvents = None
     _does_accept_player_input = false
-    SKSE_HTTP.clearAllDictionaries()
-    Debug.Notification("Conversation has ended!")  
+    _isTalking = false
+    _lastNpcToSpeak = None
+    ;SKSE_HTTP.clearAllDictionaries()
+    Debug.Notification("Conversation ended.")  
     Stop()
 EndFunction
 
@@ -233,6 +261,54 @@ function GetPlayerTextInput()
     if (result && result != "")
         sendRequestForPlayerInput(result)
         _does_accept_player_input = False
+    endIf
+endFunction
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   Handle NPC speaking       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
+    Actor NpcToLookAt = None
+    if (lastNpcToSpeak != speaker)
+        if (lastNpcToSpeak != None)
+            NpcToLookAt = lastNpcToSpeak
+        else
+            lastNpcToSpeak = speaker
+            int i = 0
+            while i < CountActorsInConversation()
+                Actor tmpActor = GetActorInConversationByIndex(i)
+                if tmpActor.GetDisplayName() != speaker.GetDisplayName()
+                    NpcToLookAt = tmpActor
+                endIf
+                i += 1
+            endWhile
+            if IsPlayerInConversation()
+                NpcToLookAt = Game.GetPlayer()
+            endIf
+        endIf
+    elseIf IsPlayerInConversation()
+        NpcToLookAt = Game.GetPlayer()
+    endIf
+    return NpcToLookAt
+endFunction
+
+function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
+    if lastNpcToSpeak != None
+        speaker.AddSpell(MantellaIsTalkingSpell)
+    endIf
+    Utility.Wait(0.01)
+    ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
+    bool waitingToSpeakMessage = true
+    while _isTalking == true
+        if waitingToSpeakMessage == true
+            ;Debug.Notification("Waiting for NPC to finish speaking before next line...")
+            waitingToSpeakMessage = false
+        endIf
+        Utility.Wait(0.01)
+    endWhile
+    if lastNpcToSpeak != None
+        speaker.RemoveSpell(MantellaIsTalkingSpell)
     endIf
 endFunction
 

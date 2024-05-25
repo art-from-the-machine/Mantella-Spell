@@ -5,17 +5,17 @@ VirtualMachineAdapter:
   - Name: gia_Script
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: gia_MantellaSpell
+      Object: 0022EF:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Follower
       Object: 003806:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Mantella
-      Object: 000803:Mantella.esp
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
       Data: openinv
     - MutagenObjectType: ScriptObjectProperty
-      Name: gia_MantellaSpell
-      Object: 0022EF:Mantella.esp
+      Name: giafac_Mantella
+      Object: 000803:Mantella.esp
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: gia_Script

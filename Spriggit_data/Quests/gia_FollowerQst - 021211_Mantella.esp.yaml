@@ -20,6 +20,7 @@ EventConditions:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
+NextAliasID: 126
 Aliases:
 - ID: 125
   Name: gia_FollowerAlias020
