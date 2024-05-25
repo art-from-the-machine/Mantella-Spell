@@ -135,7 +135,7 @@ Event OnOptionHighlight (Int optionID)
 	if optionID == oid_microphoneEnabledToggle	
 		SetInfoText("Toggles microphone / text input (requires Mantella.exe restart). \nThis setting overrides the `microphone_enabled` option in MantellaSoftware/config.ini.")
 	elseIf optionID == oid_responsetimeslider
-		SetInfoText("Time (in seconds) to enter a text response (microphone disabled only). \nDefault: 180")
+		SetInfoText("Time to wait (in seconds) for player to enter a text response. \nDefault: 180")
     
     elseIf optionID == oid_keymapStartAddHotkey
 		SetInfoText("Either starts a conversation or adds an NPC to a conversation.")
@@ -149,7 +149,7 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Toggle radiant conversations.")
 
     elseIf optionID == oid_showDialogueItems	
-		SetInfoText("Show the dialogue tree entries to start a conversation or add and remove NPCs from it.")
+		SetInfoText("Show the dialogue tree entries to start a conversation or add and remove NPCs.")
 
 	elseIf optionID == oid_radiantenabled
 		SetInfoText("Starts a Mantella conversation between the nearest two NPCs to the player at a given frequency. \nNPCs must both be stationary when a radiant dialogue attempt is made.")

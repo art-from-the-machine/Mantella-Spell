@@ -13,16 +13,16 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
 
     mcm.AddHeaderOption("Controls")
-    mcm.oid_keymapStartAddHotkey = mcm.AddKeyMapOption("Start Conversation / Add NPC to it", repository.MantellaStartHotkey)
+    mcm.oid_keymapStartAddHotkey = mcm.AddKeyMapOption("Start Conversation / Add NPC", repository.MantellaStartHotkey)
     mcm.oid_keymapPromptHotkey = mcm.AddKeyMapOption("Open Text Prompt", repository.MantellaListenerTextHotkey)
-    mcm.oid_keymapEndHotkey = mcm.AddKeyMapOption("End Conversation / Remove NPC from it", repository.MantellaEndHotkey)
+    mcm.oid_keymapEndHotkey = mcm.AddKeyMapOption("End Conversation / Remove NPC", repository.MantellaEndHotkey)
     mcm.oid_keymapCustomGameEventHotkey = mcm.AddKeyMapOption("Add Custom Game Event", repository.MantellaCustomGameEventHotkey)
     mcm.oid_keymapRadiantHotkey = mcm.AddKeyMapOption("Toggle Radiant Dialogue", repository.MantellaRadiantHotkey) 
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Dialogue items")
-    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
+    mcm.AddHeaderOption("Dialogue Items")
+    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems)
 
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
