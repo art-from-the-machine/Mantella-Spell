@@ -1,0 +1,19 @@
+FormKey: 10CD3A:Mantella.esp
+VersionControl: 12476
+EditorID: MantellaIsTalkingSpell
+Name:
+  TargetLanguage: English
+  Value: MantellaIsTalkingSpell
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+Effects:
+- BaseEffect: 10CD39:Mantella.esp
+  Data: {}
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: IsTalkingConditionData
+    ComparisonValue: 1

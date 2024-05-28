@@ -6,8 +6,8 @@ GameRelease: SkyrimSE
 ModHeader:
   Stats:
     Version: 1.7
-    NumRecords: 65
-    NextFormID: 1080377
+    NumRecords: 67
+    NextFormID: 1101115
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm

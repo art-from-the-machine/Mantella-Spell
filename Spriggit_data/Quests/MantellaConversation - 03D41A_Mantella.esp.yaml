@@ -22,6 +22,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsQuest
       Object: 0DF435:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaIsTalkingSpell
+      Object: 10CD3A:Mantella.esp
   - Name: mantellaconstants
   Versioning:
   - Break0

@@ -1,0 +1,17 @@
+FormKey: 10CD39:Mantella.esp
+VersionControl: 12476
+EditorID: MantellaIsTalkingEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaIsTalkingEffectScript
+Name:
+  TargetLanguage: English
+  Value: MantellaIsTalkingEffect
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: ''
