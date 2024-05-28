@@ -50,6 +50,7 @@ bool property targetAllToggle auto
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
+int property oid_NPCPackageToggle auto
 
 int property oid_debugNPCSelectMode auto
 int property oid_httpPort auto
@@ -211,6 +212,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("NPCs can be convinced to follow (not tested over long playthroughs).")
 	elseIf optionID == oid_NPCAngerToggle ;gia
 		SetInfoText("NPCs can attack the player if provoked.")
+	elseIf optionID == oid_NPCPackageToggle
+		SetInfoText("NPCs will stop to talk to you and will not engage in non-Mantella conversations.")
 
 	elseIf optionID == oid_debugNPCSelectMode
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")

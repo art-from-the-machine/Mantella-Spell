@@ -59,6 +59,7 @@ bool property AllowForNPCtoFollow auto ;gia
 ;bool property followingNPCsleep auto ;gia
 ;bool property NPCstopandTalk auto ;gia
 bool property NPCAnger auto ;gia
+bool property NPCPackage auto
 ;bool property NPCForgive auto ;gia
 bool property NPCDialogue auto ;gia
 
@@ -113,6 +114,7 @@ event OnInit()
 	;NPCstopandTalk = false ;gia
 	AllowForNPCtoFollow = false ;gia
 	NPCAnger = false ;gia
+    NPCPackage = false
 	;NPCForgive = false ;gia
 	NPCDialogue = True ;gia
     

@@ -32,6 +32,7 @@ function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption("Actions")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
 	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
+    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -136,5 +137,8 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         elseif (Repository.NPCAnger) == False
             game.getplayer().removefromfaction(Repository.giafac_AllowAnger)
         endif
+    elseIf optionID == mcm.oid_NPCPackageToggle
+        Repository.NPCPackage =! Repository.NPCPackage
+        mcm.SetToggleOptionValue(mcm.oid_NPCPackageToggle, Repository.NPCPackage)
     endif
 endfunction

@@ -171,7 +171,7 @@ Function CleanupConversation()
     ClearParticipants()
     _ingameEvents = None
     _does_accept_player_input = false
-    SKSE_HTTP.clearAllDictionaries()
+    ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
     EndIf
@@ -348,7 +348,9 @@ Function AddActors(Actor[] actorsToAdd)
         int pos = Participants.Find(actorsToAdd[i])
         if(pos < 0)
             Participants.AddForm(actorsToAdd[i])
-            actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
+            if (Repository.NPCPackage) == True
+                actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
+            endIf
             wasNewActorAdded = true
         endIf
         i += 1
