@@ -412,9 +412,7 @@ Function AddActors(Actor[] actorsToAdd)
         int pos = Participants.Find(actorsToAdd[i])
         if(pos < 0)
             Participants.AddForm(actorsToAdd[i])
-            if (Repository.NPCPackage) == True
-                actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
-            endIf
+            actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
             wasNewActorAdded = true
         endIf
         i += 1
