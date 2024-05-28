@@ -1,6 +1,7 @@
-Scriptname MantellaRepository extends Quest  
+Scriptname MantellaRepository extends Quest Conditional
 Spell property MantellaSpell auto
-SPELL Property MantellaEndSpell auto
+Spell property MantellaRemoveNpcSpell auto
+Spell Property MantellaEndSpell auto
 ;Faction Property giafac_Sitters  Auto ;gia
 ;Faction Property giafac_Sleepers  Auto ;gia
 ;Faction Property giafac_talktome  Auto ;gia
@@ -16,16 +17,20 @@ quest property gia_FollowerQst auto ;gia
 bool property microphoneEnabled auto
 float property MantellaEffectResponseTimer auto
 
+int property MantellaStartHotkey auto
 int property MantellaListenerTextHotkey auto
 int property MantellaEndHotkey auto
 int property MantellaCustomGameEventHotkey auto
 int property MantellaRadiantHotkey auto
+
+bool property showDialogueItems auto Conditional
 
 bool property radiantEnabled auto
 float property radiantDistance auto
 float property radiantFrequency auto
 
 
+bool property playerTrackingUsePCName auto
 bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
 bool property playerTrackingOnSpellCast auto
@@ -54,26 +59,33 @@ bool property AllowForNPCtoFollow auto ;gia
 ;bool property followingNPCsleep auto ;gia
 ;bool property NPCstopandTalk auto ;gia
 bool property NPCAnger auto ;gia
+bool property NPCPackage auto
 ;bool property NPCForgive auto ;gia
 bool property NPCDialogue auto ;gia
 
 bool property NPCdebugSelectModeEnabled auto
 
+int property HttpPort auto
+
 event OnInit()
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
 
+    MantellaStartHotkey = -1
     MantellaListenerTextHotkey = 35
     BindPromptHotkey(MantellaListenerTextHotkey)
     MantellaEndHotkey = -1
     MantellaCustomGameEventHotkey = -1
     MantellaRadiantHotkey = -1
 
+    showDialogueItems = true
+
     radiantEnabled = false
     radiantDistance = 20
     radiantFrequency = 10
 
 
+    playerTrackingUsePCName = true
     playerTrackingOnItemAdded = true
     playerTrackingOnItemRemoved = true
     playerTrackingOnSpellCast = true
@@ -102,11 +114,21 @@ event OnInit()
 	;NPCstopandTalk = false ;gia
 	AllowForNPCtoFollow = false ;gia
 	NPCAnger = false ;gia
+    NPCPackage = false
 	;NPCForgive = false ;gia
 	NPCDialogue = True ;gia
     
     NPCdebugSelectModeEnabled = false
+
+    HttpPort = 4999
 endEvent
+
+function BindStartAddHotkey(int keyCode)
+    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
+    UnregisterForKey(MantellaStartHotkey)
+    MantellaStartHotkey=keyCode
+    RegisterForKey(keyCode)
+endfunction
 
 function BindPromptHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the prompt hotkey KeyMapChange
@@ -116,7 +138,7 @@ function BindPromptHotkey(int keyCode)
 endfunction
 
 function BindEndHotkey(int keyCode)
-    ;used by the MCM_GeneralSettings when updating the prompt hotkey KeyMapChange
+    ;used by the MCM_GeneralSettings when updating the end hotkey KeyMapChange
     UnregisterForKey(MantellaEndHotkey)
     MantellaEndHotkey=keyCode
     RegisterForKey(keyCode)
@@ -140,41 +162,37 @@ Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
     if !utility.IsInMenuMode()
-        if KeyCode == MantellaListenerTextHotkey
-            String radiantDialogue = MiscUtil.ReadFromFile("_mantella_radiant_dialogue.txt") as String
-
-            ;String currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as String
-            String activeActors = MiscUtil.ReadFromFile("_mantella_active_actors.txt") as String
-            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)
-            String actorName = targetRef.getdisplayname()
-            int index = StringUtil.Find(activeActors, actorName)
-            ; if actor not already loaded or player is interrupting radiant dialogue
-            if (index == -1) || (radiantDialogue == "True")
+        if KeyCode == MantellaStartHotkey
+            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
+            if (targetRef) ;If we have a target under the crosshair, cast sepll on it
                 MantellaSpell.cast(Game.GetPlayer(), targetRef)
                 Utility.Wait(0.5)
+            endIf        
+        elseIf KeyCode == MantellaListenerTextHotkey
+            If(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
+                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+                if(conversation.IsRunning())
+                    conversation.GetPlayerTextInput()
+                endIf
+            endif
+        elseIf KeyCode == MantellaEndHotkey
+            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
+            if (targetRef) ;If we have a target under the crosshair, cast sepll on it
+                MantellaRemoveNpcSpell.cast(Game.GetPlayer(), targetRef)
             else
-                String playerResponse = "False"
-                playerResponse = MiscUtil.ReadFromFile("_mantella_text_input_enabled.txt") as String
-                ;Checks if the Mantella is ready for text input and if the MCM has the microphone disabled
-                if playerResponse == "True" ;&& !microphoneEnabled
-                    ;Debug.Notification("Forcing Conversation Through Hotkey")
-                    UIExtensions.InitMenu("UITextEntryMenu")
-                    UIExtensions.OpenMenu("UITextEntryMenu")
-                    string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
-                    if result != ""
-                        MiscUtil.WriteToFile("_mantella_text_input_enabled.txt", "False", append=False)
-                        MiscUtil.WriteToFile("_mantella_text_input.txt", result, append=false)
-                    endIf
+                MantellaEndSpell.cast(Game.GetPlayer())
+            endIf
+        elseIf KeyCode == MantellaCustomGameEventHotkey
+            MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+            if(conversation.IsRunning())
+                UIExtensions.InitMenu("UITextEntryMenu")
+                UIExtensions.OpenMenu("UITextEntryMenu")
+                string gameEventEntry = UIExtensions.GetMenuResultString("UITextEntryMenu")
+                if (gameEventEntry && gameEventEntry != "")
+                    gameEventEntry = gameEventEntry+"\n"
+                    conversation.AddIngameEvent(gameEventEntry)
                 endIf
             endIf
-        elseIf KeyCode == MantellaEndHotkey
-            MantellaEndSpell.cast(Game.GetPlayer())
-        elseIf KeyCode == MantellaCustomGameEventHotkey
-            UIExtensions.InitMenu("UITextEntryMenu")
-            UIExtensions.OpenMenu("UITextEntryMenu")
-            string gameEventEntry = UIExtensions.GetMenuResultString("UITextEntryMenu")
-            gameEventEntry = gameEventEntry+"\n"
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", gameEventEntry)
         elseIf KeyCode == MantellaRadiantHotkey
             radiantEnabled =! radiantEnabled
             if radiantEnabled == True

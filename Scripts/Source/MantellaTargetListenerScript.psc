@@ -1,22 +1,33 @@
 Scriptname MantellaTargetListenerScript extends ReferenceAlias
 ;new property added after Mantella 0.9.2
 MantellaRepository property repository auto
+MantellaConversation Property conversation auto
+
+event OnInit()
+    conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+endEvent
+
+Function AddIngameEventToConversation(string eventText)
+    If (conversation.IsRunning())
+        conversation.AddIngameEvent(eventText)
+    EndIf
+EndFunction
 
 ;All the event listeners below have 'if' clauses added after Mantella 0.9.2 (except ondying)
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if repository.targetTrackingItemAdded 
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemPickedUpMessage = selfName+" picked up " + itemName + ".\n"
+        string itemPickedUpMessage = selfName+" picked up " + itemName 
 
         string sourceName = akSourceContainer.getbaseobject().getname()
         if sourceName != ""
-            itemPickedUpMessage = selfName+" picked up " + itemName + " from " + sourceName + ".\n"
+            itemPickedUpMessage = selfName+" picked up " + itemName + " from " + sourceName 
         endIf
         
         if (itemName != "Iron Arrow") && (itemName != "") ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", itemPickedUpMessage)
+            AddIngameEventToConversation( itemPickedUpMessage)
         endIf
     endif
 EndEvent
@@ -26,16 +37,16 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
     if repository.targetTrackingItemRemoved  
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemDroppedMessage = selfName+" dropped " + itemName + ".\n"
+        string itemDroppedMessage = selfName+" dropped " + itemName 
 
         string destName = akDestContainer.getbaseobject().getname()
         if destName != ""
-            itemDroppedMessage = selfName+" placed " + itemName + " in/on " + destName + ".\n"
+            itemDroppedMessage = selfName+" placed " + itemName + " in/on " + destName 
         endIf
         
         if  (itemName != "Iron Arrow") && (itemName != "") ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", itemDroppedMessage)
+            AddIngameEventToConversation(itemDroppedMessage)
         endIf
     endif
 endEvent
@@ -47,7 +58,7 @@ Event OnSpellCast(Form akSpell)
         string spellCast = (akSpell as form).getname()
         if spellCast 
             ;Debug.Notification(selfName+" casted the spell "+ spellCast)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" casted the spell " + spellCast + ".\n")
+            AddIngameEventToConversation(selfName+" casted the spell " + spellCast )
         endIf
     endif
 endEvent
@@ -76,12 +87,12 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
             if (hitSource == "None") || (hitSource == "")
                 ;Debug.MessageBox(aggressor + " punched "+selfName+".")
-                MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " punched "+selfName+".\n")
+                AddIngameEventToConversation(aggressor + " punched "+selfName)
             elseif hitSource == "Mantella"
                 ; Do not save event if Mantella itself is cast
             else
                 ;Debug.MessageBox(aggressor + " hit "+selfName+" with a(n) " + hitSource)
-                MiscUtil.WriteToFile("_mantella_in_game_events.txt", aggressor + " hit "+selfName+" with " + hitSource+".\n")
+                AddIngameEventToConversation(aggressor + " hit "+selfName+" with " + hitSource)
             endIf
         else
             timesHitSameAggressorSource += 1
@@ -102,15 +113,17 @@ Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
 
         if (aeCombatState == 0)
             ;Debug.MessageBox(selfName+" is no longer in combat")
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" is no longer in combat.\n")
-            MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
+            AddIngameEventToConversation(selfName+" is no longer in combat.")
+            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
+            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
         elseif (aeCombatState == 1)
             ;Debug.MessageBox(selfName+" has entered combat with "+targetName)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" has entered combat with "+targetName+".\n")
-            MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "True", append=false)
+            AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
+            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
+            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "True", append=false)
         elseif (aeCombatState == 2)
             ;Debug.MessageBox(selfName+" is searching for "+targetName)
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" is searching for "+targetName+".\n")
+            AddIngameEventToConversation( selfName+" is searching for "+targetName)
         endIf
     endif
 endEvent
@@ -121,7 +134,7 @@ Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
         String selfName = self.GetActorReference().getdisplayname()
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" equipped " + itemEquipped)
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" equipped " + itemEquipped + ".\n")
+        AddIngameEventToConversation(selfName+" equipped " + itemEquipped )
     endif
 endEvent
 
@@ -131,7 +144,7 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
         String selfName = self.GetActorReference().getdisplayname()
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" unequipped " + itemUnequipped)
-        MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" unequipped " + itemUnequipped + ".\n")
+        AddIngameEventToConversation(selfName+" unequipped " + itemUnequipped )
     endif
 endEvent
 
@@ -143,7 +156,7 @@ Event OnSit(ObjectReference akFurniture)
         String furnitureName = akFurniture.getbaseobject().getname()
         ; only save event if actor is sitting / resting on furniture (and not just, for example, leaning on a bar table)
         if furnitureName != ""
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" rested on / used a(n) "+furnitureName+".\n")
+            AddIngameEventToConversation(selfName+" rested on / used a(n) "+furnitureName)
         endIf
     endif
 endEvent
@@ -156,12 +169,14 @@ Event OnGetUp(ObjectReference akFurniture)
         String furnitureName = akFurniture.getbaseobject().getname()
         ; only save event if actor is sitting / resting on furniture (and not just, for example, leaning on a bar table)
         if furnitureName != ""
-            MiscUtil.WriteToFile("_mantella_in_game_events.txt", selfName+" stood up from a(n) "+furnitureName+".\n")
+            AddIngameEventToConversation(selfName+" stood up from a(n) "+furnitureName)
         endIf
     endif
 EndEvent
 
 
 Event OnDying(Actor akKiller)
-    MiscUtil.WriteToFile("_mantella_end_conversation.txt", "True",  append=false)
+    If (conversation.IsRunning())
+        conversation.EndConversation()
+    EndIf
 EndEvent

@@ -1,0 +1,79 @@
+FormKey: 0B1B2C:Mantella.esp
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaDialogueItems
+    Properties:
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_remove_character
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+  ScriptFragments:
+    MutagenObjectType: ScriptFragments
+    FileName: MantellaDialogueItems
+    OnBegin:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_1
+    OnEnd:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_0
+Flags:
+  Flags:
+  - Goodbye
+  - ForceSubtitle
+PreviousDialog: 0B1B2B:Mantella.esp
+FavorLevel: None
+Responses:
+- EmotionValue: 50
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: Goodbye
+  ScriptNotes: ''
+  Edits: ''
+Conditions:
+- MutagenObjectType: ConditionFloat
+  CompareOperator: GreaterThan
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetRelationshipRankConditionData
+    TargetNpc: 000014:Skyrim.esm
+  ComparisonValue: -1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetVMQuestVariableConditionData
+    Quest: 000D62:Mantella.esp
+    SecondUnusedIntParameter: -671390336
+    VariableName: ::showDialogueItems_var
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetQuestRunningConditionData
+    Quest: 03D41A:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
+Prompt:
+  TargetLanguage: English
+  Value: Goodbye. (Remove from Mantella conversation)

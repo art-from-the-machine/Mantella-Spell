@@ -1,0 +1,9 @@
+FormKey: 0B1B29:Mantella.esp
+EditorID: MantellaConversationControlTopic
+Name:
+  TargetLanguage: English
+  Value: Mantella conversation control
+Branch: 0B1B28:Mantella.esp
+Quest: 001827:Mantella.esp
+SubtypeName: CUST
+Timestamp: 12467

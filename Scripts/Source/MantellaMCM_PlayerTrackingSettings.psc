@@ -5,7 +5,7 @@ function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
     LeftColumn(mcm, Repository)
     mcm.SetCursorPosition(1)
-    ;RightColumn(mcm, Repository)
+    RightColumn(mcm, Repository)
 endfunction
 
 
@@ -25,13 +25,18 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_playerTrackingAll=mcm.AddToggleOption("All", mcm.playerAllToggle)
 endfunction
 
-;function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global   
-;endfunction
+function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
+    mcm.AddHeaderOption ("Event tracking options")
+    mcm.oid_playerTrackingUsePCName=mcm.AddToggleOption("Use name of player character", repository.playerTrackingUsePCName)
+endfunction
 
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
     ;checks option per option what the toggle is and the updates the var repository MantellaRepository so the ListenerScript can access it
-    if optionID==mcm.oid_playerTrackingOnItemAdded
+    if optionID==mcm.oid_playerTrackingUsePCName
+        repository.playerTrackingUsePCName=!mcm.repository.playerTrackingUsePCName
+        mcm.SetToggleOptionValue(mcm.oid_playerTrackingUsePCName, repository.playerTrackingUsePCName)
+    ElseIf optionID==mcm.oid_playerTrackingOnItemAdded
         repository.playerTrackingOnItemAdded=!mcm.repository.playerTrackingOnItemAdded
         mcm.SetToggleOptionValue(mcm.oid_playerTrackingOnItemAdded, repository.playerTrackingOnItemAdded)
     ElseIf optionID==mcm.oid_playerTrackingOnItemRemoved

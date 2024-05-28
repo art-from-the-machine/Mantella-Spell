@@ -1,0 +1,24 @@
+FormKey: 0022EE:Mantella.esp
+EditorID: MantellaEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaEffectScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+Name:
+  TargetLanguage: English
+  Value: MantellaEffect
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Starts a conversation with the target. The conversation can be ended by saying / typing the "goodbye" keyword.

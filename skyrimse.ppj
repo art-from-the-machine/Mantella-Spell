@@ -12,34 +12,37 @@
     <Variables>
         <!-- Set the name of your mod: -->
         <Variable Name="ModName" Value="Mantella" />
-        <!-- The folder where you store all of your mods -->
-        <Variable Name="ModsFolder" Value="C:\Modding\MO2\mods" />
+        <!-- Path to where your Skyrim game folder is -->   
+        <Variable Name="GameFolder" Value="{Put the path to your Skyrim main folder here}"/>
+        <!-- The folder where you store all of your mods -->        
+        <Variable Name="ModsFolder" Value="{Put the path to your mods folder in MO2 here}" />
     </Variables>
     <Imports>
-        <!-- <Import>@ModsFolder\SKSE64\Scripts\Source</Import> -->
-        <Import>C:\Games\Steam\steamapps\common\Skyrim Special Edition\Data\Scripts\Source</Import>
-        <Import>C:\Modding\MO2\mods\SKSE64\Scripts\Source</Import>
-        <Import>C:\Modding\MO2\mods\PapyrusUtil SE - Modders Scripting Utility Functions\Scripts\Source</Import>
-        <Import>C:\Modding\MO2\mods\UIExtensions\scripts\source</Import>
+        <Import>@GameFolder\Data\Scripts\Source</Import>
+        <Import>@GameFolder\Data\Source\Scripts</Import>        
+        <Import>@ModsFolder\SKSE64\Scripts\Source</Import>
+        <!-- <Import>@ModsFolder\PapyrusUtil AE SE - Scripting Utility Functions\Scripts\Source</Import> -->
+        <Import>@ModsFolder\SKSE_HTTP\Scripts\Source</Import>
+        <Import>@ModsFolder\SkyUI_5.1_SDK\scripts\source</Import>
+        <Import>@ModsFolder\UIExtensions\scripts\source</Import>
     </Imports>
-    <Folders>
-        <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
+    <Folders>        
         <Folder>./Scripts/Source</Folder>
     </Folders>
     <!-- The following section is for .bsa archives. You can enable it by setting Package="true" in the PapyrusProject -->
     <!-- Packages Output=".">
-        <!-- Package Name="@ModName" RootDir=".">
+        <Package Name="@ModName" RootDir=".">
             <Match In="Scripts">*.pex</Match>
             <Match In="Scripts/Source">*.psc</Match>
             <Match In="Sound/Voice/Mantella.esp">*.wav</Match>
             <Match In="Sound/Voice/Mantella.esp">*.lip</Match>
-            <!-- <Match In="interface\translations">*.txt</Match> -->
-        <!-- /Package>
-        <!-- If you have any texture files, uncomment the following to create a Textures .bsa archive with texture files -->
-        <!-- <Package Name="@ModName - Textures" RootDir=".">
-            <Include>*.dds</Include>
+            <Match In="interface\translations">*.txt</Match>
         </Package> -->
-    <!-- /Packages>
+        <!-- If you have any texture files, uncomment the following to create a Textures .bsa archive with texture files -->
+        <!-- Package Name="@ModName - Textures" RootDir=".">
+            <Include>*.dds</Include>
+        </Package>
+    < /Packages> -->
     <!-- The following section is for .zip archive. You can enable it by setting Zip="true" in the PapyrusProject -->
     <ZipFiles Output=".">
         <ZipFile Name="MantellaSpell" RootDir="." Compression="deflate">

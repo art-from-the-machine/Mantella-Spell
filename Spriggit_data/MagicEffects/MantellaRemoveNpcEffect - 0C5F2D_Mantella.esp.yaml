@@ -1,0 +1,24 @@
+FormKey: 0C5F2D:Mantella.esp
+EditorID: MantellaRemoveNpcEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaRemoveNpcEffect
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+Name:
+  TargetLanguage: English
+  Value: MantellaRemoveNpcEffect
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: Removes the targeted NPC from the running Mantella conversation.

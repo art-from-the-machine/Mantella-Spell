@@ -1,0 +1,69 @@
+FormKey: 0B1B2B:Mantella.esp
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaDialogueItems
+    Properties:
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_start_add
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+  ScriptFragments:
+    MutagenObjectType: ScriptFragments
+    FileName: MantellaDialogueItems
+    OnBegin:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_1
+    OnEnd:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_0
+Flags:
+  Flags:
+  - Goodbye
+  - ForceSubtitle
+PreviousDialog: 0B1B2A:Mantella.esp
+FavorLevel: None
+ResponseData: 0DBA22:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetVMQuestVariableConditionData
+    Quest: 000D62:Mantella.esp
+    SecondUnusedIntParameter: -671390400
+    VariableName: ::showDialogueItems_var
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetQuestRunningConditionData
+    Quest: 03D41A:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: GreaterThan
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetRelationshipRankConditionData
+    TargetNpc: 000014:Skyrim.esm
+  ComparisonValue: -1
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
+Prompt:
+  TargetLanguage: English
+  Value: Could you speak to us? (Add to Mantella conversation)

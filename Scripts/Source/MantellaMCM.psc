@@ -6,16 +6,20 @@ MantellaRepository property repository auto
 int property oid_microphoneEnabledToggle auto
 int property oid_responsetimeslider auto
 
+int property oid_keymapStartAddHotkey auto
 int property oid_keymapPromptHotkey auto
 int property oid_keymapEndHotkey auto
 int property oid_keymapCustomGameEventHotkey auto
 int property oid_keymapRadiantHotkey auto
+
+int property oid_showDialogueItems auto
 
 int property oid_radiantenabled auto
 int property oid_radiantdistance auto
 int property oid_radiantfrequency auto
 
 
+int property oid_playerTrackingUsePCName auto
 int property oid_playerTrackingOnItemAdded auto
 int property oid_playerTrackingOnItemRemoved auto
 int property oid_playerTrackingOnSpellCast auto
@@ -46,8 +50,10 @@ bool property targetAllToggle auto
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
+int property oid_NPCPackageToggle auto
 
 int property oid_debugNPCSelectMode auto
+int property oid_httpPort auto
 
 string MantellaMCMcurrentPage
 
@@ -120,20 +126,31 @@ Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl
 	EndIf
 EndEvent
 
+event OnOptionInputAccept(int optionID, string inputText)
+	if MantellaMCMcurrentPage =="Advanced"
+		MantellaMCM_AdvancedSettings.OptionInputUpdate(self, optionID, inputText, repository)
+	endif
+EndEvent
+
 Event OnOptionHighlight (Int optionID)
 	if optionID == oid_microphoneEnabledToggle	
 		SetInfoText("Toggles microphone / text input (requires Mantella.exe restart). \nThis setting overrides the `microphone_enabled` option in MantellaSoftware/config.ini.")
 	elseIf optionID == oid_responsetimeslider
 		SetInfoText("Time (in seconds) to enter a text response (microphone disabled only). \nDefault: 180")
-
+    
+    elseIf optionID == oid_keymapStartAddHotkey
+		SetInfoText("Either starts a conversation or adds an NPC to a conversation.")
 	elseIf optionID == oid_keymapPromptHotkey
-		SetInfoText("Either starts a conversation / adds an NPC to a conversation / opens the text prompt, depending on the context. \nDefault: H")
+		SetInfoText("Opens the text prompt, depending on the context. \nDefault: H")
 	elseIf optionID == oid_keymapEndHotkey
 		SetInfoText("Ends all Mantella conversations.")
 	elseIf optionID == oid_keymapCustomGameEventHotkey	
 		SetInfoText("Opens a text prompt to enter a custom game event (eg 'The house is on fire').")
 	elseIf optionID == oid_keymapRadiantHotkey	
 		SetInfoText("Toggle radiant conversations.")
+
+    elseIf optionID == oid_showDialogueItems	
+		SetInfoText("Show the dialogue tree entries to start a conversation or add and remove NPCs from it.")
 
 	elseIf optionID == oid_radiantenabled
 		SetInfoText("Starts a Mantella conversation between the nearest two NPCs to the player at a given frequency. \nNPCs must both be stationary when a radiant dialogue attempt is made.")
@@ -143,6 +160,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
 
 	
+    elseIf optionID == oid_playerTrackingUsePCName	
+		SetInfoText("Use the name of the player character when tracking events. Uses 'Player' otherwise.")
 	elseIf optionID == oid_playerTrackingOnItemAdded	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnItemRemoved	
@@ -193,10 +212,13 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("NPCs can be convinced to follow (not tested over long playthroughs).")
 	elseIf optionID == oid_NPCAngerToggle ;gia
 		SetInfoText("NPCs can attack the player if provoked.")
+	elseIf optionID == oid_NPCPackageToggle
+		SetInfoText("NPCs will stop to talk to you and will not engage in non-Mantella conversations.")
 
 	elseIf optionID == oid_debugNPCSelectMode
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
-
+	elseif optionID == oid_httpPort
+		SetInfoText("HTTP port for Mantella to call. If you need to change the default port, change it here and the port for MantellaSoftware's server in its config.ini. Default: 4999")
 	EndIf
 endEvent
 

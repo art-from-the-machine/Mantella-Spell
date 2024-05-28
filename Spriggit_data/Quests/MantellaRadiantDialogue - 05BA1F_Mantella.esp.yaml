@@ -1,0 +1,27 @@
+FormKey: 05BA1F:Mantella.esp
+EditorID: MantellaRadiantDialogue
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaRadiantDialogue
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaSpell
+      Object: 0022EF:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: picker
+      Object: 03A314:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

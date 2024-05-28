@@ -1,0 +1,21 @@
+FormKey: 060B20:Mantella.esp
+EditorID: MantellaAction_OffendForgiveFollow
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAction_OffendForgiveFollow
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

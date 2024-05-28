@@ -1,0 +1,9 @@
+FormKey: 06FE24:Mantella.esp
+EditorID: MantellaConversationParticipantsFaction
+Name:
+  TargetLanguage: English
+  Value: MantellaConversationParticipants
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

@@ -28,52 +28,59 @@ function RightColumn(MantellaMCM mcm) global
      ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
     ;generates left column
     mcm.AddHeaderOption ("Target Info")
-    
-    string currentActor = MiscUtil.ReadFromFile("_mantella_current_actor.txt") as string
-    ;check if there's actually an actor is selected (mostly there to prevent from displaying obsolete info from a previous target)
-    if currentActor!=""
-        string currentActorID = MiscUtil.ReadFromFile("_mantella_current_actor_id.txt") as string
-        string currentActorSex = MiscUtil.ReadFromFile("_mantella_actor_sex.txt") as string
-        ;below translate the number for gender into string text
-        if currentActorSex == 1
-            currentActorSex = "Female"
-        else
-            currentActorSex = "Male"
-        endif
-        ;this part below chops down the string from the text file to get the race
-        string currentActorRace = MiscUtil.ReadFromFile("_mantella_actor_race.txt") as string
-        string currentActorRaceSubstring= Substring(currentActorRace, 7)
-        int currentActorRaceSpacePlacement = Find(currentActorRaceSubstring, "race ")
-        currentActorRaceSubstring= Substring(currentActorRaceSubstring, 0, currentActorRaceSpacePlacement)
-        int currentActorRelationship = MiscUtil.ReadFromFile("_mantella_actor_relationship.txt") as int
-        ;build array for relationship status to transfert from number to string text 
-        string[] relationshipArray = new string[9]
-        relationshipArray[0]="Archnemesis"
-        relationshipArray[1]="Enemy"
-        relationshipArray[2]="Foe"
-        relationshipArray[3]="Rival"
-        relationshipArray[4]="Acquaintance"
-        relationshipArray[5]="Friend"
-        relationshipArray[6]="Confidant"
-        relationshipArray[7]="Ally"
-        relationshipArray[8]="Lover"
-        string currentActorRelationshipString=relationshipArray[currentActorRelationship+4]
-        ;this part below chops down the string from the text file  get the voice
-        string currentActorVoice = MiscUtil.ReadFromFile("_mantella_actor_voice.txt") as string
-        string currentActorVoiceSubstring= Substring(currentActorVoice, 12)
-        int currentActorVoiceSpacePlacement = Find(currentActorVoiceSubstring, " ")
-        currentActorVoiceSubstring= Substring(currentActorVoiceSubstring, 0, currentActorVoiceSpacePlacement)
-        string currentActorIsEnemy = MiscUtil.ReadFromFile("_mantella_actor_is_enemy.txt") as string
-        
-        ;this part tells the MCM what to display
-        mcm.AddTextOption("Name",currentActor )
-        mcm.AddTextOption("ID",currentActorID )
-        mcm.AddTextOption("Gender",currentActorSex )
-        mcm.AddTextOption("Race",currentActorRaceSubstring )
-        mcm.AddTextOption("Relationship",currentActorRelationshipString )
-        mcm.AddTextOption("Voice Type",currentActorVoiceSubstring )
-        mcm.AddTextOption("Enemy",currentActorIsEnemy )
+    MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+    If (!conversation.IsRunning() || conversation.CountActorsInConversation() < 2)
+        return
+    EndIf
+    Actor actorToDisplay = conversation.GetActorInConversationByIndex(0)
+    If (actorToDisplay == Game.GetPlayer())
+        actorToDisplay = conversation.GetActorInConversationByIndex(1)
+    EndIf
+
+    string currentActor = actorToDisplay.GetDisplayName()
+    string currentActorID = (actorToDisplay.GetActorBase() as Form).GetFormID()
+    string currentActorSex = actorToDisplay.getleveledactorbase().getsex()
+    ;below translate the number for gender into string text
+    if currentActorSex == 1
+        currentActorSex = "Female"
+    else
+        currentActorSex = "Male"
     endif
+    ;this part below chops down the string from the text file to get the race
+    string currentActorRaceSubstring = actorToDisplay.GetRace() ;MiscUtil.ReadFromFile("_mantella_actor_race.txt") as string
+    ; string currentActorRaceSubstring= Substring(currentActorRace, 7)
+    ; int currentActorRaceSpacePlacement = Find(currentActorRaceSubstring, "race ")
+    ; currentActorRaceSubstring= Substring(currentActorRaceSubstring, 0, currentActorRaceSpacePlacement)
+    int currentActorRelationship = actorToDisplay.GetRelationshipRank(Game.GetPlayer()) ;MiscUtil.ReadFromFile("_mantella_actor_relationship.txt") as int
+    ;build array for relationship status to transfert from number to string text 
+    ;ToDo: Double check this relationship to relationshiprank
+    string[] relationshipArray = new string[9]
+    relationshipArray[0]="Archnemesis"
+    relationshipArray[1]="Enemy"
+    relationshipArray[2]="Foe"
+    relationshipArray[3]="Rival"
+    relationshipArray[4]="Acquaintance"
+    relationshipArray[5]="Friend"
+    relationshipArray[6]="Confidant"
+    relationshipArray[7]="Ally"
+    relationshipArray[8]="Lover"
+    string currentActorRelationshipString=relationshipArray[currentActorRelationship+4]
+    ;this part below chops down the string from the text file  get the voice
+    ; string currentActorVoice = MiscUtil.ReadFromFile("_mantella_actor_voice.txt") as string
+    ; string currentActorVoiceSubstring= Substring(currentActorVoice, 12)
+    ; int currentActorVoiceSpacePlacement = Find(currentActorVoiceSubstring, " ")
+    ; currentActorVoiceSubstring= Substring(currentActorVoiceSubstring, 0, currentActorVoiceSpacePlacement)
+    string currentActorVoiceSubstring = actorToDisplay.GetVoiceType()
+    string currentActorIsEnemy = actorToDisplay.getcombattarget() == game.getplayer();MiscUtil.ReadFromFile("_mantella_actor_is_enemy.txt") as string
+    
+    ;this part tells the MCM what to display
+    mcm.AddTextOption("Name",currentActor )
+    mcm.AddTextOption("ID",currentActorID )
+    mcm.AddTextOption("Gender",currentActorSex )
+    mcm.AddTextOption("Race",currentActorRaceSubstring )
+    mcm.AddTextOption("Relationship",currentActorRelationshipString )
+    mcm.AddTextOption("Voice Type",currentActorVoiceSubstring )
+    mcm.AddTextOption("Enemy",currentActorIsEnemy )
     ;_keymapOID_K = mcm.AddKeyMapOption("Mantella Initiate/Text Hotkey", _myKey, 0)
 endfunction
 

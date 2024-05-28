@@ -1,0 +1,58 @@
+FormKey: 0B1B2A:Mantella.esp
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaDialogueItems
+    Properties:
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_start_add
+    - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+  ScriptFragments:
+    MutagenObjectType: ScriptFragments
+    FileName: MantellaDialogueItems
+    OnBegin:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_1
+    OnEnd:
+      ExtraBindDataVersion: 1
+      ScriptName: MantellaDialogueItems
+      FragmentName: Fragment_0
+Flags:
+  Flags:
+  - Goodbye
+  - ForceSubtitle
+PreviousDialog: Null
+FavorLevel: None
+ResponseData: 0DBA22:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetVMQuestVariableConditionData
+    Quest: 000D62:Mantella.esp
+    SecondUnusedIntParameter: -671390560
+    VariableName: ::showDialogueItems_var
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetQuestRunningConditionData
+    UseAliases: True
+    Quest: 84136986
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+    Faction: 06FE24:Mantella.esp
+  ComparisonValue: 1
+Prompt:
+  TargetLanguage: English
+  Value: I want to speak with you. (Start Mantella conversation)

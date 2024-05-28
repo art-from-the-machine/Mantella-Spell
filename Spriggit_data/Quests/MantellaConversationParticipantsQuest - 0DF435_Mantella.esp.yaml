@@ -1,0 +1,60 @@
+FormKey: 0DF435:Mantella.esp
+EditorID: MantellaConversationParticipantsQuest
+Flags:
+- 0x1000
+Priority: 100
+NextAliasID: 7
+Aliases:
+- Name: Participant1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  VoiceTypes: Null
+- ID: 5
+  Name: Participant2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  VoiceTypes: Null
+- ID: 6
+  Name: Participant3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Unknown1: 0x000000
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  VoiceTypes: Null

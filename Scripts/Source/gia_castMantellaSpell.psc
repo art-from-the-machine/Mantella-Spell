@@ -29,7 +29,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 	endif
 
 	if WhatDo == "speakto"
-	gia_Mantellaspell.cast(game.getplayer(),akspeaker)
+	;gia_Mantellaspell.cast(game.getplayer(),akspeaker)
 	game.getplayer().AddToFaction(giafac_mantella)
 	endif
 	
