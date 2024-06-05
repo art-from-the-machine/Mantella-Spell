@@ -154,11 +154,20 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay, Actor actorToSpeakTo, f
     Utility.Wait(durationAdjusted)
 endfunction
 
+string function GetActorName(actor actorToGetName)
+    string actorName = actorToGetName.GetDisplayName()
+    int actorID = actorToGetName.GetFactionRank(MantellaConversationParticipantsFaction)
+    if actorID > 0
+        actorName = actorName + " " + actorID
+    endIf
+    return actorName
+endFunction
+
 Actor function GetActorInConversation(string actorName)
     int i = 0
     While i < Participants.GetSize()
         Actor currentActor = Participants.GetAt(i) as Actor
-        if currentActor.GetDisplayName() == actorName
+        if GetActorName(currentActor) == actorName
             return currentActor
         endIf
         i += 1
@@ -263,7 +272,7 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
             int i = 0
             while i < CountActorsInConversation()
                 Actor tmpActor = GetActorInConversationByIndex(i)
-                if tmpActor.GetDisplayName() != speaker.GetDisplayName()
+                if GetActorName(tmpActor) != GetActorName(speaker)
                     NpcToLookAt = tmpActor
                 endIf
                 i += 1
@@ -414,6 +423,29 @@ Function AddActors(Actor[] actorsToAdd)
             Participants.AddForm(actorsToAdd[i])
             actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
             wasNewActorAdded = true
+
+            ; check if there are multiple actors with the same name
+            int nameCount = 0
+            int j = 0
+            bool break = false
+            if (actorsToAdd[i] != game.getplayer()) ; ignore the player having the same name as an actor
+                While (j < Participants.GetSize()) && (break==false)
+                    Actor currentActor = Participants.GetAt(j) as Actor
+                    if (currentActor.GetDisplayName() == actorsToAdd[i].GetDisplayName())
+                        nameCount += 1
+                        if (currentActor == actorsToAdd[i]) ; stop counting when the exact actor is found (not just the same name)
+                            break = true
+                        endIf
+                    endIf
+                    j += 1
+                EndWhile
+
+                if (nameCount > 1)
+                    ; set an ID to this non-uniquely-named actor in the form of a faction rank
+                    ; these uniquely ID'd names can be called via the GetActorName() function
+                    actorsToAdd[i].SetFactionRank(MantellaConversationParticipantsFaction, nameCount)
+                endIf
+            endIf
         endIf
         i += 1
     EndWhile
@@ -468,7 +500,7 @@ Function PrintActorsArray(string prefix, Actor[] actors)
     int i = 0
     string actor_message = ""
     While i < actors.Length
-        actor_message += actors[i].GetDisplayName() + ", "
+        actor_message += GetActorName(actors[i]) + ", "
         i += 1
     EndWhile
     Debug.Notification(prefix + actor_message)
@@ -478,7 +510,7 @@ Function PrintActorsInConversation()
     int i = 0
     string actor_message = ""
     While i < Participants.GetSize()
-        actor_message += (Participants.GetAt(i) as Actor).GetDisplayName() + ", "
+        actor_message += GetActorName(Participants.GetAt(i) as Actor) + ", "
         i += 1
     EndWhile
     Debug.Notification(actor_message)
@@ -517,7 +549,7 @@ endFunction
 int function buildActorSetting(Actor actorToBuild)    
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
-    SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, actorToBuild.GetDisplayName())
+    SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, actorToBuild == game.getplayer())
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_GENDER, actorToBuild.getleveledactorbase().getsex())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_RACE, actorToBuild.getrace())
