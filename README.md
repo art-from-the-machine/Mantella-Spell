@@ -5,8 +5,13 @@
 
 This repository is for the Mantella spell mod, which handles the Skyrim-side logic of Mantella. For the main Mantella repository, see [here](https://github.com/art-from-the-machine/Mantella).
 
+# Setup
+- The SkyUI SDK is required to work with MCM menu code, which can be found [here](https://github.com/schlangster/skyui/wiki).
+
+- The .bsa file of the mod [UIExtenstions](https://www.nexusmods.com/skyrimspecialedition/mods/17561) needs to be extracted by [BAE](https://www.nexusmods.com/fallout4/mods/78?tab=description) in order to access its scripts.
+
+# Relevant Links
+
 The source code for the subtitles plugin can be found [here](https://github.com/swwu/Mantella-Subtitles-Plugin-NG).
 
 The .esp is converted to version-control-friendly .yaml files using [Spriggit](https://github.com/Mutagen-Modding/Spriggit).
-
-The SkyUI SDK is required to work with MCM menu code, which can be found [here](https://github.com/schlangster/skyui/wiki).
