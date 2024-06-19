@@ -4,6 +4,7 @@ Scriptname MantellaMCM extends SKI_ConfigBase
 MantellaRepository property repository auto
 
 int property oid_microphoneEnabledToggle auto
+int property oid_useHotkeyToStartMic auto
 int property oid_responsetimeslider auto
 
 int property oid_keymapStartAddHotkey auto
@@ -134,14 +135,16 @@ EndEvent
 
 Event OnOptionHighlight (Int optionID)
 	if optionID == oid_microphoneEnabledToggle	
-		SetInfoText("Toggles microphone / text input (requires Mantella.exe restart). \nThis setting overrides the `microphone_enabled` option in MantellaSoftware/config.ini.")
-	elseIf optionID == oid_responsetimeslider
-		SetInfoText("Time (in seconds) to enter a text response (microphone disabled only). \nDefault: 180")
+		SetInfoText("Toggles microphone / text input.")
+	elseIf optionID == oid_useHotkeyToStartMic
+		SetInfoText("If this is unchecked recording from the mic will start automatically when it is the players turn to speak. If this is checked recording will only start once the 'Open Text Prompt' hotkey is pressed.")
+    elseIf optionID == oid_responsetimeslider
+		SetInfoText("Time (in seconds) to enter a text response or start the microphone recording using the 'Open Text Prompt' hotkey if the options above are set accordingly. \nDefault: 180")
     
     elseIf optionID == oid_keymapStartAddHotkey
 		SetInfoText("Either starts a conversation or adds an NPC to a conversation.")
 	elseIf optionID == oid_keymapPromptHotkey
-		SetInfoText("Opens the text prompt, depending on the context. \nDefault: H")
+		SetInfoText("Opens the text prompt or starts the mic recording depending on the context and the microphone options above. \nDefault: H")
 	elseIf optionID == oid_keymapEndHotkey
 		SetInfoText("Ends all Mantella conversations.")
 	elseIf optionID == oid_keymapCustomGameEventHotkey	

@@ -15,6 +15,7 @@ quest property gia_FollowerQst auto ;gia
 
 
 bool property microphoneEnabled auto
+bool property useHotkeyToStartMic auto
 float property MantellaEffectResponseTimer auto
 
 int property MantellaStartHotkey auto
@@ -69,6 +70,7 @@ int property HttpPort auto
 
 event OnInit()
     microphoneEnabled = true
+    useHotkeyToStartMic = false
     MantellaEffectResponseTimer = 180
 
     MantellaStartHotkey = -1
@@ -174,7 +176,12 @@ Event OnKeyDown(int KeyCode)
                 if(conversation.IsRunning())
                     conversation.GetPlayerTextInput()
                 endIf
-            endif
+            elseIf (useHotkeyToStartMic)
+                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+                if(conversation.IsRunning())
+                    conversation.sendRequestForVoiceTranscribe()
+                endIf
+            endIf
         elseIf KeyCode == MantellaEndHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
