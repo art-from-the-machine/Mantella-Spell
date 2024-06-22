@@ -1,17 +1,27 @@
 FormKey: 10CD39:Mantella.esp
-VersionControl: 12476
 EditorID: MantellaIsTalkingEffect
 VirtualMachineAdapter:
   Scripts:
   - Name: MantellaIsTalkingEffectScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaConversationQuest
+      Object: 03D41A:Mantella.esp
 Name:
   TargetLanguage: English
   Value: MantellaIsTalkingEffect
 Archetype:
   MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
 DualCastScale: 1
 CastingSoundLevel: Normal
 Sounds: []
 Description:
   TargetLanguage: English
   Value: ''
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: IsTalkingConditionData
+  ComparisonValue: 1
