@@ -39,6 +39,7 @@ event OnUpdate()
 endEvent
 
 event OnPlayerLoadGame()
+    EndConversation()
     CleanupConversation()
 endEvent
 
@@ -152,6 +153,7 @@ function ProcessNpcSpeak(int handle)
         RaiseActionEvent(speaker, lineToSpeak, actions)
         Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
         NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+        _lastNpcToSpeak = speaker
     endIf
 endFunction
 
@@ -291,7 +293,6 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
         if (lastNpcToSpeak != None)
             NpcToLookAt = lastNpcToSpeak
         else
-            lastNpcToSpeak = speaker
             int i = 0
             while i < CountActorsInConversation()
                 Actor tmpActor = GetActorInConversationByIndex(i)
