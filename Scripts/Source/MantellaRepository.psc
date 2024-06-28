@@ -30,8 +30,14 @@ bool property radiantEnabled auto
 float property radiantDistance auto
 float property radiantFrequency auto
 
-
+string property playerCharacterDescription1 auto
+string property playerCharacterDescription2 auto
+bool property playerCharacterUsePlayerDescription2 auto
+bool property playerCharacterVoicePlayerInput auto
+string property playerCharacterVoiceModel auto
 bool property playerTrackingUsePCName auto
+
+
 bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
 bool property playerTrackingOnSpellCast auto
@@ -43,6 +49,14 @@ bool property playerTrackingOnPlayerBowShot auto
 bool property playerTrackingOnSit auto
 bool property playerTrackingOnGetUp auto
 
+bool property playerEquipmentBody auto
+bool property playerEquipmentHead auto
+bool property playerEquipmentHands auto
+bool property playerEquipmentFeet auto
+bool property playerEquipmentAmulet auto
+bool property playerEquipmentRightHand auto
+bool property playerEquipmentLeftHand auto
+
 
 bool property targetTrackingItemAdded auto 
 bool property targetTrackingItemRemoved auto
@@ -53,6 +67,14 @@ bool property targetTrackingOnObjectEquipped auto
 bool property targetTrackingOnObjectUnequipped auto
 bool property targetTrackingOnSit auto
 bool property targetTrackingOnGetUp auto
+
+bool property targetEquipmentBody auto
+bool property targetEquipmentHead auto
+bool property targetEquipmentHands auto
+bool property targetEquipmentFeet auto
+bool property targetEquipmentAmulet auto
+bool property targetEquipmentRightHand auto
+bool property targetEquipmentLeftHand auto
 
 
 bool property AllowForNPCtoFollow auto ;gia
@@ -87,7 +109,14 @@ event OnInit()
     radiantFrequency = 10
 
 
+    playerCharacterDescription1 = ""
+    playerCharacterDescription2 = ""
+    playerCharacterUsePlayerDescription2 = false
+    playerCharacterVoicePlayerInput = false
+    playerCharacterVoiceModel = ""
     playerTrackingUsePCName = true
+
+    
     playerTrackingOnItemAdded = true
     playerTrackingOnItemRemoved = true
     playerTrackingOnSpellCast = true
@@ -98,7 +127,15 @@ event OnInit()
     playerTrackingOnPlayerBowShot = true
     playerTrackingOnSit = true
     playerTrackingOnGetUp = true
-    
+
+    playerEquipmentBody = true
+    playerEquipmentHead = true
+    playerEquipmentHands = true
+    playerEquipmentFeet = true
+    playerEquipmentAmulet = true
+    playerEquipmentRightHand = true
+    playerEquipmentLeftHand = true
+
 
     targetTrackingItemAdded = true
     targetTrackingItemRemoved = true
@@ -109,6 +146,14 @@ event OnInit()
     targetTrackingOnObjectUnequipped = true
     targetTrackingOnSit = true
     targetTrackingOnGetUp = true
+
+    targetEquipmentBody = true
+    targetEquipmentHead = true
+    targetEquipmentHands = true
+    targetEquipmentFeet = true
+    targetEquipmentAmulet = true
+    targetEquipmentRightHand = true
+    targetEquipmentLeftHand = true
 	
 
 	;followingNPCsit = false ;gia
@@ -159,6 +204,10 @@ function BindRadiantHotkey(int keyCode)
     MantellaRadiantHotkey=keyCode
     RegisterForKey(keyCode)
 endfunction
+
+bool Function IsVR()
+    return Debug.GetPlatformName() != "Win64" 
+EndFunction
 
 Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2

@@ -40,6 +40,12 @@ string property KEY_ACTOR_RELATIONSHIPRANK = "mantella_actor_relationshiprank" a
 string property KEY_ACTOR_VOICETYPE = "mantella_actor_voicetype" auto
 string property KEY_ACTOR_ISINCOMBAT = "mantella_actor_is_in_combat" auto
 string property KEY_ACTOR_ISENEMY = "mantella_actor_is_enemy" auto
+string property KEY_ACTOR_CUSTOMVALUES = "mantella_actor_custom_values" auto
+
+string property KEY_ACTOR_PC_DESCRIPTION = "mantella_pc_description" auto
+string property KEY_ACTOR_PC_VOICEPLAYERINPUT = "mantella_pc_voiceplayerinput" auto
+string property KEY_ACTOR_PC_VOICEMODEL = "mantella_pc_voicemodel" auto
+
 
 ;sentence
 string property KEY_ACTOR_SPEAKER = "mantella_actor_speaker" auto
@@ -51,6 +57,9 @@ string property KEY_ACTOR_ACTIONS = "mantella_actor_actions" auto
 ;context
 string property KEY_CONTEXT = "mantella_context" auto
 string property KEY_CONTEXT_LOCATION = "mantella_location" auto
+string property KEY_CONTEXT_WEATHER = "mantella_weather" auto
+string property KEY_CONTEXT_WEATHER_ID = "mantella_weather_id" auto
+string property KEY_CONTEXT_WEATHER_CLASSIFICATION = "mantella_weather_classification" auto
 string property KEY_CONTEXT_TIME = "mantella_time" auto
 string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
 

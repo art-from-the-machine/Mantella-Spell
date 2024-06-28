@@ -10,7 +10,7 @@ Faction Property MantellaConversationParticipantsFaction Auto
 FormList Property Participants auto
 Quest Property MantellaConversationParticipantsQuest auto
 SPELL Property MantellaIsTalkingSpell Auto
-
+MantellaEquipmentDescriber Property EquipmentDescriber auto
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -39,7 +39,7 @@ event OnUpdate()
 endEvent
 
 event OnPlayerLoadGame()
-    EndConversation()
+    ;EndConversation()
     CleanupConversation()
 endEvent
 
@@ -93,7 +93,7 @@ event OnHttpReplyReceived(int typedDictionaryHandle)
     If (replyType != "error")
         ContinueConversation(typedDictionaryHandle)        
     Else
-        string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Could not retrieve error message")
+        string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Received an error reply from MantellaSoftware but there was no error message attached.")
         Debug.Notification(errorMessage)
         CleanupConversation()
     EndIf
@@ -104,6 +104,7 @@ function ContinueConversation(int handle)
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         _hasBeenStopped = false
+        Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
         int npcTalkHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCTALK)
@@ -293,6 +294,7 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
         if (lastNpcToSpeak != None)
             NpcToLookAt = lastNpcToSpeak
         else
+            lastNpcToSpeak = speaker
             int i = 0
             while i < CountActorsInConversation()
                 Actor tmpActor = GetActorInConversationByIndex(i)
@@ -389,7 +391,7 @@ EndFunction
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 event OnReloadConversationActionReceived(Form speaker, string sentence)
-    Debug.Notification("OnReloadConversationActionReceived triggered")
+    ; Debug.Notification("OnReloadConversationActionReceived triggered")
     AddExtraRequestAction(mConsts.ACTION_RELOADCONVERSATION)
 endEvent
 
@@ -403,7 +405,7 @@ event OnHttpErrorReceived(int typedDictionaryHandle)
         Debug.Notification("Received SKSE_HTTP error: " + errorMessage)        
         CleanupConversation()
     Else
-        Debug.Notification("Error: Could not retrieve error")
+        Debug.Notification("Error: Received an error event from SKSE_HTTP but did not receive an error message.")
         CleanupConversation()
     EndIf
 endEvent
@@ -574,15 +576,34 @@ int function buildActorSetting(Actor actorToBuild)
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
-    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, actorToBuild == game.getplayer())
+    bool isPlayerCharacter = actorToBuild == game.getplayer()
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, isPlayerCharacter)
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_GENDER, actorToBuild.getleveledactorbase().getsex())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_RACE, actorToBuild.getrace())
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(game.getplayer()))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == game.getplayer())
+    EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild)
+    int customActorValuesHandle = SKSE_HTTP.createDictionary()
+    If (isPlayerCharacter)
+        AddCustomPCValues(customActorValuesHandle, actorToBuild)
+    EndIf
+    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_ACTOR_CUSTOMVALUES, customActorValuesHandle)
     return handle
 endFunction
+
+Function AddCustomPCValues(int customActorValuesHandle, Actor actorToBuildCustomValuesFor)
+    string description = repository.playerCharacterDescription1
+    If (repository.playerCharacterUsePlayerDescription2)
+        description = repository.playerCharacterDescription2
+    EndIf
+    SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_DESCRIPTION, description)
+    SKSE_HTTP.setBool(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEPLAYERINPUT, repository.playerCharacterVoicePlayerInput)
+    If (repository.playerCharacterVoicePlayerInput)
+        SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEMODEL, repository.playerCharacterVoiceModel)
+    EndIf
+EndFunction
 
 int function BuildContext()
     int handle = SKSE_HTTP.createDictionary()
@@ -591,11 +612,22 @@ int function BuildContext()
         currLoc = "Skyrim"
     endIf
     SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, currLoc)
+    AddCurrentWeather(handle)
     SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, GetCurrentHourOfDay())
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
     return handle
+endFunction
+
+int function AddCurrentWeather(int contextHandle)
+    If (!Game.GetPlayer().IsInInterior())
+        int handle = SKSE_HTTP.createDictionary()
+        Weather currentWeather = Weather.GetCurrentWeather()
+        SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_WEATHER_ID, currentWeather.GetFormID())
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_WEATHER_CLASSIFICATION, currentWeather.GetClassification())
+        SKSE_HTTP.setNestedDictionary(contextHandle, mConsts.KEY_CONTEXT_WEATHER, handle)
+    EndIf
 endFunction
 
 int function GetCurrentHourOfDay()

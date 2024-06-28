@@ -20,6 +20,13 @@ int property oid_radiantdistance auto
 int property oid_radiantfrequency auto
 
 
+int property oid_playerCharacterDescription1 auto
+int property oid_playerCharacterDescription2 auto
+int property oid_playerCharacterUsePlayerDescription2 auto
+int property oid_playerCharacterVoicePlayerInput auto
+int property oid_playerCharacterVoiceModel auto
+
+
 int property oid_playerTrackingUsePCName auto
 int property oid_playerTrackingOnItemAdded auto
 int property oid_playerTrackingOnItemRemoved auto
@@ -33,6 +40,16 @@ int property oid_playerTrackingOnSit auto
 int property oid_playerTrackingOnGetUp auto
 int property oid_playerTrackingAll auto
 bool property playerAllToggle auto
+
+int property oid_playerEquipmentBody auto
+int property oid_playerEquipmentHead auto
+int property oid_playerEquipmentHands auto
+int property oid_playerEquipmentFeet auto
+int property oid_playerEquipmentAmulet auto
+int property oid_playerEquipmentRightHand auto
+int property oid_playerEquipmentLeftHand auto
+int property oid_playerEquipmentAll auto
+bool property playerEquipmentAllToggle auto
 
 
 int property oid_targetTrackingItemAddedToggle auto
@@ -48,6 +65,16 @@ int property oid_targetTrackingOnDyingToggle auto
 int property oid_targetTrackingAll auto
 bool property targetAllToggle auto
 
+int property oid_targetEquipmentBody auto
+int property oid_targetEquipmentHead auto
+int property oid_targetEquipmentHands auto
+int property oid_targetEquipmentFeet auto
+int property oid_targetEquipmentAmulet auto
+int property oid_targetEquipmentRightHand auto
+int property oid_targetEquipmentLeftHand auto
+int property oid_targetEquipmentAll auto
+bool property targetEquipmentAllToggle auto
+
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
@@ -56,20 +83,30 @@ int property oid_NPCPackageToggle auto
 int property oid_debugNPCSelectMode auto
 int property oid_httpPort auto
 
+string property PAGE_GENERAL = "General" auto
+string property PAGE_PLAYER = "Player" auto
+string property PAGE_PLAYERTRACKING = "Player Tracking" auto
+string property PAGE_TARGETTRACKING = "Target Tracking" auto
+string property PAGE_EQUIPMENT = "Equipment slots" auto
+string property PAGE_ADVANCED = "Advanced" auto
+
 string MantellaMCMcurrentPage
 
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
     ModName = "Mantella"
-	Pages = new string[4]
-    Pages[0] = "General"
-	Pages[1] = "Player Tracking"
-	Pages[2] = "Target Tracking"
- 	Pages[3] = "Advanced"
+	Pages = new string[6]
+    Pages[0] = PAGE_GENERAL
+    Pages[1] = PAGE_PLAYER
+	Pages[2] = PAGE_PLAYERTRACKING
+	Pages[3] = PAGE_TARGETTRACKING
+    Pages[4] = PAGE_EQUIPMENT
+ 	Pages[5] = PAGE_ADVANCED
  
+    playerAllToggle=true
+    playerEquipmentAllToggle=true
 	targetAllToggle=true
-	playerAllToggle=true
-
+    targetEquipmentAllToggle = true
 EndEvent
 
 Event OnPageReset(string page)
@@ -80,56 +117,72 @@ Event OnPageReset(string page)
 	else 
 		unloadcustomcontent()
 	endif
-	if page=="General"
+	if page==PAGE_GENERAL
 		MantellaMCM_GeneralSettings.Render(self, repository)
-		MantellaMCMcurrentPage="General"
-	elseif page=="Player Tracking"
+		MantellaMCMcurrentPage=PAGE_GENERAL
+    elseif page==PAGE_PLAYER
+		MantellaMCM_PlayerSettings.Render(self, repository)
+		MantellaMCMcurrentPage=PAGE_PLAYER
+	elseif page==PAGE_PLAYERTRACKING
 		MantellaMCM_PlayerTrackingSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Player Tracking"
-	elseif page=="Target Tracking"
+		MantellaMCMcurrentPage=PAGE_PLAYERTRACKING
+	elseif page==PAGE_TARGETTRACKING
 		MantellaMCM_TargetTrackingSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Target Tracking"
-	elseif page=="Advanced"
+		MantellaMCMcurrentPage=PAGE_TARGETTRACKING
+    elseif page==PAGE_EQUIPMENT
+		MantellaMCM_EquipmentSettings.Render(self, repository)
+		MantellaMCMcurrentPage=PAGE_EQUIPMENT
+	elseif page==PAGE_ADVANCED
 		MantellaMCM_AdvancedSettings.Render(self, repository)
-		MantellaMCMcurrentPage="Advanced"
+		MantellaMCMcurrentPage=PAGE_ADVANCED
  	endif		
 EndEvent
 
 ;This part of the MCM below is a bunch of event listeners, they all use functions to link to the appropriate MCM scripts 
 Event OnOptionSelect(int optionID)
-	if MantellaMCMcurrentPage =="General"
+	if MantellaMCMcurrentPage ==PAGE_GENERAL
 		MantellaMCM_GeneralSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Player Tracking"
+    elseif MantellaMCMcurrentPage ==PAGE_PLAYER
+		MantellaMCM_PlayerSettings.OptionUpdate(self,optionID, repository)
+	elseif MantellaMCMcurrentPage ==PAGE_PLAYERTRACKING
 		MantellaMCM_PlayerTrackingSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Target Tracking"
-		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)	
-	elseif MantellaMCMcurrentPage =="Advanced"
+	elseif MantellaMCMcurrentPage ==PAGE_TARGETTRACKING
+		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)
+    elseif MantellaMCMcurrentPage ==PAGE_EQUIPMENT
+		MantellaMCM_EquipmentSettings.OptionUpdate(self,optionID, repository)	
+	elseif MantellaMCMcurrentPage ==PAGE_ADVANCED
 		MantellaMCM_AdvancedSettings.OptionUpdate(self,optionID, repository)
 	endif
 EndEvent 
 
 Event OnOptionSliderOpen(Int optionId)
-    If MantellaMCMcurrentPage =="General"
+    If MantellaMCMcurrentPage == PAGE_GENERAL
 		MantellaMCM_GeneralSettings.SliderOptionOpen(self,optionID, repository)
-    EndIf
+    elseif MantellaMCMcurrentPage == PAGE_ADVANCED
+        MantellaMCM_AdvancedSettings.SliderOptionOpen(self,optionID, repository)
+    endIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
-	If MantellaMCMcurrentPage =="General"
+	If MantellaMCMcurrentPage == PAGE_GENERAL
 		MantellaMCM_GeneralSettings.SliderOptionAccept(self,optionID, value, repository)
-    EndIf
+    elseif MantellaMCMcurrentPage == PAGE_ADVANCED
+        MantellaMCM_AdvancedSettings.SliderOptionAccept(self,optionID, value, repository)
+    endIf
 EndEvent
 
 Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl, String a_conflictName)
     {Called when a key has been remapped}
-    If 	MantellaMCMcurrentPage =="General"
+    If 	MantellaMCMcurrentPage ==PAGE_GENERAL
 		MantellaMCM_GeneralSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
 	EndIf
 EndEvent
 
 event OnOptionInputAccept(int optionID, string inputText)
-	if MantellaMCMcurrentPage =="Advanced"
+	if MantellaMCMcurrentPage ==PAGE_ADVANCED
 		MantellaMCM_AdvancedSettings.OptionInputUpdate(self, optionID, inputText, repository)
+    ; elseif MantellaMCMcurrentPage == PAGE_PLAYER
+    ;     MantellaMCM_PlayerSettings.OptionInputUpdate(self, optionID, inputText, repository)
 	endif
 EndEvent
 
@@ -162,10 +215,20 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_radiantfrequency
 		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
 
-	
+    elseIf optionID == oid_playerCharacterDescription1	
+		SetInfoText("The description of your PC used in the prompt for the LLM. This is not a bio of your PC. \nTry to only put things here that are obvious about your character when the NPC meets them. e.g.'A tall and broad Nord man with long red hair''")
+    elseIf optionID == oid_playerCharacterDescription2	
+		SetInfoText("Alternative description of your PC. Used in the same way as the first description. Can potentially be used if a PC can change its appearance.")
+    elseIf optionID == oid_playerCharacterUsePlayerDescription2
+		SetInfoText("If checked the alternative PC description will be used, otherwise the default one.")
+    elseIf optionID == oid_playerCharacterVoicePlayerInput
+		SetInfoText("If checked the input of the player will be spoken by the PC.")
+	elseIf optionID == oid_playerCharacterDescription1	
+		SetInfoText("The TTS voice model to use when the PC speaks the player input.")
     elseIf optionID == oid_playerTrackingUsePCName	
 		SetInfoText("Use the name of the player character when tracking events. Uses 'Player' otherwise.")
-	elseIf optionID == oid_playerTrackingOnItemAdded	
+
+    elseIf optionID == oid_playerTrackingOnItemAdded	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnItemRemoved	
 		SetInfoText("Tracks items dropped / removed while a Mantella conversation is active.")
@@ -187,7 +250,24 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Tracks furniture stood up from while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingAll	
 		SetInfoText("Enable / disable all tracking options for the player.")
-	
+
+    elseIf optionID == oid_playerEquipmentBody	
+		SetInfoText("Describe item in the body slot (32) of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentHead	
+		SetInfoText("Describe item in the head slot (30) of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentHands	
+		SetInfoText("Describe item in the hands slot (33) of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentFeet	
+		SetInfoText("Describe item in the feet slot (37) of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentAmulet
+		SetInfoText("Describe item in the amulet slot (35) of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentRightHand
+		SetInfoText("Describe item in the right hand of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentLeftHand
+		SetInfoText("Describe item in the left hand of the player to the LLM.")
+	elseIf optionID == oid_playerEquipmentAll
+		SetInfoText("Enable / disable all description options for the player.")
+
 	
 	elseIf optionID == oid_targetTrackingItemAddedToggle	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")
@@ -209,6 +289,23 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Tracks furniture stood up from while a Mantella conversation is active.")
 	elseIf optionID == oid_targetTrackingOnGetUpToggle	
 		SetInfoText("Enable / disable all tracking options for the target.")
+
+    elseIf optionID == oid_targetEquipmentBody	
+		SetInfoText("Describe item in the body slot (32) of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentHead	
+		SetInfoText("Describe item in the head slot (30) of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentHands	
+		SetInfoText("Describe item in the hands slot (33) of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentFeet	
+		SetInfoText("Describe item in the feet slot (37) of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentAmulet
+		SetInfoText("Describe item in the amulet slot (35) of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentRightHand
+		SetInfoText("Describe item in the right hand of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentLeftHand
+		SetInfoText("Describe item in the left hand of the target to the LLM.")
+	elseIf optionID == oid_targetEquipmentAll
+		SetInfoText("Enable / disable all description options for the target.")
 
 
 	elseIf optionID == oid_AllowForNPCtoFollowToggle ;gia
