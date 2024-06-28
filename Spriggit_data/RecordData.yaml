@@ -1,13 +1,11 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.20.0
+  Version: 0.24.0
 ModKey: Mantella.esp
 GameRelease: SkyrimSE
 ModHeader:
   Stats:
     Version: 1.7
-    NumRecords: 67
-    NextFormID: 1101115
   Author: DEFAULT
   MasterReferences:
   - Master: Skyrim.esm

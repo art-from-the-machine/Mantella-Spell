@@ -163,8 +163,10 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
             lastHitSource = hitSource
             lastAggressor = aggressor
             timesHitSameAggressorSource = 0
-
-            if (hitSource == "None") || (hitSource == "")
+            
+            if (aggressor == "None") || (aggressor == "")
+                AddIngameEventToConversation(getPlayerName() + " took damage.")
+            elseif (hitSource == "None") || (hitSource == "")
                 ;Debug.MessageBox(aggressor + " punched the player.")
                 AddIngameEventToConversation(aggressor + " punched " + getPlayerName(False) + " .")
             else

@@ -138,5 +138,6 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         Repository.targetTrackingOnGetUp=mcm.targetAllToggle
         ;not using dying toggle cause this one is to end conversations on NPC death
         ;Repository.targetTrackingOnDying=mcm.targetAllToggle
+        
     endif
 endfunction 
