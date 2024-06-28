@@ -206,7 +206,7 @@ function BindRadiantHotkey(int keyCode)
 endfunction
 
 bool Function IsVR()
-    return Debug.GetPlatformName() != "Win64" 
+    return Debug.GetVersionNumber() == "1.4.15.0"
 EndFunction
 
 Event OnKeyDown(int KeyCode)

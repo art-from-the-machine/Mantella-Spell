@@ -13,7 +13,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
     mcm.AddHeaderOption ("Player character setup")
     If (Repository.IsVR())
-        mcm.AddTextOption("For VR you have to use the setup in Mantella Software", true)
+        mcm.AddTextOption("For VR, use Mantella Software config", true)
     else
         mcm.oid_playerCharacterDescription1 = mcm.AddTextOption("Set default PC description", Repository.playerCharacterDescription1)
         mcm.oid_playerCharacterDescription2 = mcm.AddTextOption("Set alternative PC description", Repository.playerCharacterDescription2)
