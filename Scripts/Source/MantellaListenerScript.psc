@@ -77,16 +77,14 @@ event OnUpdate()
                         ;have spell casted on Actor 1 by Actor 2
                         MantellaSpell.Cast(Actor2 as ObjectReference, Actor1 as ObjectReference)
                     else
-                        ;TODO: make this notification optional
-                        Debug.Notification("Radiant dialogue attempted. No NPCs available")
+                        ;Debug.Notification("Radiant dialogue attempted. No NPCs available.")
                     endIf
                 else
-                    ;TODO: make this notification optional
-                    Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceToClosestActor) + " meters")
-                    Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                    ;Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceToClosestActor) + " meters")
+                    ;Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
                 endIf
             else
-                Debug.Notification("Radiant dialogue attempted. No NPCs available")
+                ;Debug.Notification("Radiant dialogue attempted. No NPCs available.")
             endIf
 
             MantellaActorPicker.stop()
