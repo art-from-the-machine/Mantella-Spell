@@ -114,7 +114,7 @@ event OnInit()
 	;NPCstopandTalk = false ;gia
 	AllowForNPCtoFollow = false ;gia
 	NPCAnger = false ;gia
-    NPCPackage = false
+    NPCPackage = true
 	;NPCForgive = false ;gia
 	NPCDialogue = True ;gia
     
@@ -196,9 +196,9 @@ Event OnKeyDown(int KeyCode)
         elseIf KeyCode == MantellaRadiantHotkey
             radiantEnabled =! radiantEnabled
             if radiantEnabled == True
-                Debug.Notification("Radiant Dialogue Enabled")
+                Debug.Notification("Radiant Dialogue enabled.")
             else
-                Debug.Notification("Radiant Dialogue Disabled")
+                Debug.Notification("Radiant Dialogue disabled.")
             endIf
         endIf
     endIf
