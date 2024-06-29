@@ -40,14 +40,14 @@ endEvent
 
 function StartConversation(Actor[] actorsToStartConversationWith)
     if(actorsToStartConversationWith.Length > 2)
-        Debug.Notification("Can not start conversation. Conversation is already running.")
+        Debug.Notification("Cannot start conversation. Conversation is already running.")
         return
     endIf
     
     AddActors(actorsToStartConversationWith)
 
     if(actorsToStartConversationWith.Length < 2)
-        Debug.Notification("Not enough characters to start a conversation")
+        Debug.Notification("Not enough characters to start a conversation.")
         return
     endIf
     
@@ -85,7 +85,7 @@ event OnHttpReplyReceived(int typedDictionaryHandle)
         ContinueConversation(typedDictionaryHandle)        
     Else
         string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Could not retrieve error message")
-        Debug.Notification(errorMessage)
+        ;Debug.Notification(errorMessage)
         CleanupConversation()
     EndIf
 endEvent
@@ -295,12 +295,19 @@ function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
     Utility.Wait(0.01)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     bool waitingToSpeakMessage = true
+    float waitTime = 0.01
+    float totalWaitTime = 0
     while _isTalking == true
         if waitingToSpeakMessage == true
             ;Debug.Notification("Waiting for NPC to finish speaking before next line...")
             waitingToSpeakMessage = false
         endIf
-        Utility.Wait(0.01)
+        Utility.Wait(waitTime)
+        totalWaitTime += waitTime
+        if totalWaitTime > 20
+            Debug.Notification("NPC speaking too long, ending wait...")
+            _isTalking = false
+        endIf
     endWhile
     if lastNpcToSpeak != None
         speaker.RemoveSpell(MantellaIsTalkingSpell)
@@ -319,7 +326,7 @@ Function RaiseActionEvent(Actor speaker, string lineToSpeak, string[] actions)
     int i = 0
     While i < actions.Length
         string extraAction = actions[i]
-        Debug.Notification("Recieved action " + extraAction + ". Sending out event!")
+        ;Debug.Notification("Recieved action " + extraAction + ". Sending out event!")
         int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
         if (handle)
             ModEvent.PushForm(handle, speaker)
@@ -366,7 +373,7 @@ EndFunction
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 event OnReloadConversationActionReceived(Form speaker, string sentence)
-    Debug.Notification("OnReloadConversationActionReceived triggered")
+    ;Debug.Notification("OnReloadConversationActionReceived triggered")
     AddExtraRequestAction(mConsts.ACTION_RELOADCONVERSATION)
 endEvent
 
@@ -380,7 +387,7 @@ event OnHttpErrorReceived(int typedDictionaryHandle)
         Debug.Notification("Received SKSE_HTTP error: " + errorMessage)        
         CleanupConversation()
     Else
-        Debug.Notification("Error: Could not retrieve error")
+        ;Debug.Notification("Error: Could not retrieve error")
         CleanupConversation()
     EndIf
 endEvent
@@ -408,10 +415,10 @@ EndFunction
 
 Function CauseReassignmentOfParticipantAlias()
     If (MantellaConversationParticipantsQuest.IsRunning())
-        Debug.Notification("Stopping MantellaConversationParticipantsQuest")
+        ;Debug.Notification("Stopping MantellaConversationParticipantsQuest")
         MantellaConversationParticipantsQuest.Stop()
     EndIf
-    Debug.Notification("Starting MantellaConversationParticipantsQuest to asign QuestAlias")
+    ;Debug.Notification("Starting MantellaConversationParticipantsQuest to asign QuestAlias")
     MantellaConversationParticipantsQuest.Start()
 EndFunction
 
@@ -454,7 +461,7 @@ Function AddActors(Actor[] actorsToAdd)
         CauseReassignmentOfParticipantAlias()
     EndIf
     
-    PrintActorsInConversation()
+    ;PrintActorsInConversation()
 EndFunction
 
 Function RemoveActors(Actor[] actorsToRemove)
@@ -474,7 +481,7 @@ Function RemoveActors(Actor[] actorsToRemove)
     ElseIf (wasActorRemoved)
         CauseReassignmentOfParticipantAlias()
     endIf
-    PrintActorsInConversation()
+    ;PrintActorsInConversation()
 EndFunction
 
 Function ClearParticipants()
@@ -504,7 +511,7 @@ Function PrintActorsArray(string prefix, Actor[] actors)
         actor_message += GetActorName(actors[i]) + ", "
         i += 1
     EndWhile
-    Debug.Notification(prefix + actor_message)
+    ;Debug.Notification(prefix + actor_message)
 EndFunction
 
 Function PrintActorsInConversation()
