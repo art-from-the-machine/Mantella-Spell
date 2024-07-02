@@ -19,7 +19,9 @@ String[] _ingameEvents
 String[] _extraRequestActions
 bool _does_accept_player_input = false
 bool _isTalking = false
+bool _hasBeenStopped = true
 Actor _lastNpcToSpeak = None
+string _repeatingMessage = ""
 
 event OnInit()    
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
@@ -27,6 +29,13 @@ event OnInit()
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+endEvent
+
+event OnUpdate()
+    If (_repeatingMessage != "")
+        Debug.Notification(_repeatingMessage)
+        RegisterForSingleUpdate(2)
+    EndIf
 endEvent
 
 event OnPlayerLoadGame()
@@ -94,19 +103,21 @@ function ContinueConversation(int handle)
     string nextAction = SKSE_HTTP.getString(handle, mConsts.KEY_REPLYTYPE, "Error: Did not receive reply type")
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
+        _hasBeenStopped = false
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
         int npcTalkHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCTALK)
         ProcessNpcSpeak(npcTalkHandle)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_PLAYERTALK)
-        If (repository.microphoneEnabled)
+        _does_accept_player_input = True
+        If (repository.microphoneEnabled && !repository.useHotkeyToStartMic)
             sendRequestForVoiceTranscribe()
         Else
-            Debug.Notification("Awaiting player text input...")
-            _does_accept_player_input = True
+            ShowRepeatingMessage("Awaiting player input...")
         EndIf
     elseIf (nextAction == mConsts.KEY_REQUESTTYPE_TTS)
+        ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
         sendRequestForPlayerInput(transcribe)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
@@ -115,16 +126,18 @@ function ContinueConversation(int handle)
 endFunction
 
 function RequestContinueConversation()
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
-    AddCurrentActorsAndContext(handle)
-    if(_extraRequestActions && _extraRequestActions.Length > 0)
-        Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
-        SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
-        ClearExtraRequestAction()
-        Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
-    endif
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    if(!_hasBeenStopped)    
+        int handle = SKSE_HTTP.createDictionary()
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+        AddCurrentActorsAndContext(handle)
+        if(_extraRequestActions && _extraRequestActions.Length > 0)
+            ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
+            SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
+            ClearExtraRequestAction()
+            ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
+        endif
+        SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    EndIf
 endFunction
 
 function ProcessNpcSpeak(int handle)
@@ -186,6 +199,7 @@ event OnEndConversationActionReceived(Form speaker, string sentence)
 endEvent
 
 Function EndConversation()
+    _hasBeenStopped = true
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
@@ -194,6 +208,7 @@ EndFunction
 Function CleanupConversation()
     int i = 0
     ClearParticipants()
+    ClearRepeatingMessage()
     _ingameEvents = None
     _does_accept_player_input = false
     _isTalking = false
@@ -221,18 +236,24 @@ endEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 function sendRequestForPlayerInput(string playerInput)
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
-    int[] handlesNpcs = BuildNpcsInConversationArray()
-    SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)    
-    int handleContext = BuildContext()
-    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
+    if(!_hasBeenStopped)
+        int handle = SKSE_HTTP.createDictionary()
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
+        int[] handlesNpcs = BuildNpcsInConversationArray()
+        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)    
+        int handleContext = BuildContext()
+        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
 
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+        SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    EndIf
 endFunction
 
 function sendRequestForVoiceTranscribe()
+    if(!_does_accept_player_input)
+        return
+    endif
+
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_TTS)
     string[] namesInConversation = Utility.CreateStringArray(Participants.GetSize())
@@ -243,6 +264,7 @@ function sendRequestForVoiceTranscribe()
     EndWhile
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_INPUT_NAMESINCONVERSATION, namesInConversation)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_STT)
+    ShowRepeatingMessage("Listening...")
 endFunction
 
 function GetPlayerTextInput()
@@ -257,6 +279,7 @@ function GetPlayerTextInput()
     if (result && result != "")
         sendRequestForPlayerInput(result)
         _does_accept_player_input = False
+        ClearRepeatingMessage()
     endIf
 endFunction
 
@@ -599,3 +622,12 @@ string[] function deepcopy(string[] array_to_copy)
     EndWhile
     return result
 endFunction
+
+Function ShowRepeatingMessage(string messageToShow)
+    _repeatingMessage = messageToShow
+    RegisterForSingleUpdate(0)
+EndFunction
+
+Function ClearRepeatingMessage()
+    _repeatingMessage = ""
+EndFunction

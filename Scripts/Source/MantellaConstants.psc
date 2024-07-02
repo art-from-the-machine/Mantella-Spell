@@ -1,6 +1,6 @@
 Scriptname MantellaConstants extends Quest hidden
 
-string property HTTP_ROUTE_MAIN = "mantella" auto
+string property HTTP_ROUTE_MAIN = "Mantella" auto
 string property HTTP_ROUTE_STT = "stt" auto
 
 string property HTTP_ERROR = "SKSE_HTTP_error" auto
