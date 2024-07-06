@@ -13,6 +13,14 @@ Faction Property giafac_Following  Auto ;gia
 Faction Property giafac_Mantella  Auto ;gia
 quest property gia_FollowerQst auto ;gia
 
+;;;;;;;;;;;;;;;;;;;
+;Vision variables ;
+;;;;;;;;;;;;;;;;;;;
+bool property allowVision auto
+bool property hasPendingVisionCheck auto
+string property visionResolution auto
+int property visionResolutionIndex auto
+;;;;;;;;;;;;;;;;;;;
 
 bool property microphoneEnabled auto
 float property MantellaEffectResponseTimer auto
@@ -68,6 +76,11 @@ bool property NPCdebugSelectModeEnabled auto
 int property HttpPort auto
 
 event OnInit()
+    allowVision = false ; to add to MCM eventually
+    hasPendingVisionCheck = false
+    visionResolution = "auto"
+    visionResolutionIndex=0
+
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
 
