@@ -53,6 +53,7 @@ string property KEY_CONTEXT = "mantella_context" auto
 string property KEY_CONTEXT_LOCATION = "mantella_location" auto
 string property KEY_CONTEXT_TIME = "mantella_time" auto
 string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
+string property KEY_CONTEXT_CUSTOMVALUES = "mantella_custom_context_values" auto
 
 ;player input
 string property KEY_REQUESTTYPE_TTS = "mantella_tts" auto
@@ -71,3 +72,10 @@ string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;   Custom values            ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_READY = "mantella_vision_ready" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_RES = "mantella_vision_resolution" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE = "mantella_vision_resize" auto

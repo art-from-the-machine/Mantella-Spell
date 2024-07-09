@@ -50,6 +50,7 @@ EndFunction
 
 Event OnPlayerLoadGame()
     RegisterForSingleUpdate(repository.radiantFrequency)
+    repository.currentSKversion = Debug.GetVersionNumber()
 EndEvent
 
 event OnUpdate()

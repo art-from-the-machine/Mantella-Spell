@@ -2,6 +2,7 @@ Scriptname MantellaRepository extends Quest Conditional
 Spell property MantellaSpell auto
 Spell property MantellaRemoveNpcSpell auto
 Spell Property MantellaEndSpell auto
+string property currentSKversion auto ;ex : returns "1.6.640.0" 
 ;Faction Property giafac_Sitters  Auto ;gia
 ;Faction Property giafac_Sleepers  Auto ;gia
 ;Faction Property giafac_talktome  Auto ;gia
@@ -12,7 +13,21 @@ Faction Property giafac_AllowDialogue  Auto ;gia
 Faction Property giafac_Following  Auto ;gia
 Faction Property giafac_Mantella  Auto ;gia
 quest property gia_FollowerQst auto ;gia
+Sound Property ScreenshotSound Auto
 
+
+
+;;;;;;;;;;;;;;;;;;;
+;Vision variables ;
+;;;;;;;;;;;;;;;;;;;
+bool property allowVision auto
+bool property hasPendingVisionCheck auto
+string property visionResolution auto
+int property visionResolutionIndex auto
+int property visionResize auto
+int property MantellaVisionHotkey auto
+bool property allowHideInterfaceDuringScreenshot auto
+;;;;;;;;;;;;;;;;;;;
 
 bool property microphoneEnabled auto
 float property MantellaEffectResponseTimer auto
@@ -68,6 +83,12 @@ bool property NPCdebugSelectModeEnabled auto
 int property HttpPort auto
 
 event OnInit()
+    allowVision = false ; to add to MCM eventually
+    hasPendingVisionCheck = false
+    visionResolution = "auto"
+    visionResolutionIndex=0
+    visionResize=1024
+
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
 
@@ -77,6 +98,7 @@ event OnInit()
     MantellaEndHotkey = -1
     MantellaCustomGameEventHotkey = -1
     MantellaRadiantHotkey = -1
+    MantellaVisionHotkey = -1
 
     showDialogueItems = true
 
@@ -123,6 +145,13 @@ event OnInit()
     HttpPort = 4999
 endEvent
 
+function BindVisionHotkey(int keyCode)
+    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
+    UnregisterForKey(MantellaVisionHotkey)
+    MantellaVisionHotkey=keyCode
+    RegisterForKey(keyCode)
+endfunction
+
 function BindStartAddHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
     UnregisterForKey(MantellaStartHotkey)
@@ -162,6 +191,10 @@ Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
     if !utility.IsInMenuMode()
+        if KeyCode == MantellaVisionHotkey
+            MantellaVisionScript.GenerateMantellaVision(self)
+            ScreenshotSound.play(game.getplayer())
+        endif
         if KeyCode == MantellaStartHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it

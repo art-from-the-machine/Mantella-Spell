@@ -55,19 +55,37 @@ int property oid_NPCPackageToggle auto
 int property oid_debugNPCSelectMode auto
 int property oid_httpPort auto
 
+
+;Vision properties
+int property oid_automaticVisionAnalysis auto
+int property oid_SteamVisionAnalysis auto
+int property oid_visionResolution auto
+int property oid_hideInterfaceDuringScreenshot auto
+int property oid_keymapVisionHotkey auto
+int property oid_resize auto
+string[] property resolutionMenuList auto
+int property resolutionMenuDefaultIndex auto
+
 string MantellaMCMcurrentPage
 
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
     ModName = "Mantella"
-	Pages = new string[4]
+	Pages = new string[5]
     Pages[0] = "General"
 	Pages[1] = "Player Tracking"
 	Pages[2] = "Target Tracking"
  	Pages[3] = "Advanced"
+	Pages[4] = "Vision"
  
 	targetAllToggle=true
 	playerAllToggle=true
+
+	resolutionMenuList = new string[3]
+	resolutionMenuList[0] = "auto"
+	resolutionMenuList[1] = "high"
+	resolutionMenuList[2] = "low"
+    resolutionMenuDefaultIndex = 1
 
 EndEvent
 
@@ -91,7 +109,10 @@ Event OnPageReset(string page)
 	elseif page=="Advanced"
 		MantellaMCM_AdvancedSettings.Render(self, repository)
 		MantellaMCMcurrentPage="Advanced"
- 	endif		
+ 	elseif page=="Vision"
+		MantellaMCM_VisionSettings.Render(self, repository)
+		MantellaMCMcurrentPage="Vision"
+	endif		
 EndEvent
 
 ;This part of the MCM below is a bunch of event listeners, they all use functions to link to the appropriate MCM scripts 
@@ -104,18 +125,24 @@ Event OnOptionSelect(int optionID)
 		MantellaMCM_TargetTrackingSettings.OptionUpdate(self,optionID, repository)	
 	elseif MantellaMCMcurrentPage =="Advanced"
 		MantellaMCM_AdvancedSettings.OptionUpdate(self,optionID, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.OptionUpdate(self,optionID, repository)	
 	endif
 EndEvent 
 
 Event OnOptionSliderOpen(Int optionId)
     If MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.SliderOptionOpen(self,optionID, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.SliderOptionOpen(self,optionID, repository)	
     EndIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
 	If MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.SliderOptionAccept(self,optionID, value, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.SliderOptionAccept(self,optionID, value, repository)
     EndIf
 EndEvent
 
@@ -123,6 +150,8 @@ Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl
     {Called when a key has been remapped}
     If 	MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
 	EndIf
 EndEvent
 
@@ -131,6 +160,18 @@ event OnOptionInputAccept(int optionID, string inputText)
 		MantellaMCM_AdvancedSettings.OptionInputUpdate(self, optionID, inputText, repository)
 	endif
 EndEvent
+
+event OnOptionMenuOpen(int optionID)
+	if MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.OptionInputMenuOpen(self, optionID, resolutionMenuList, resolutionMenuDefaultIndex, repository)
+	endif
+endEvent
+
+event OnOptionMenuAccept(int optionID, int indexID)
+	if MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.OptionInputMenuAccept(self, optionID, indexID, repository)
+	endif
+endEvent
 
 Event OnOptionHighlight (Int optionID)
 	if optionID == oid_microphoneEnabledToggle	
@@ -219,6 +260,19 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
 	elseif optionID == oid_httpPort
 		SetInfoText("HTTP port for Mantella to call. If you need to change the default port, change it here and the port for MantellaSoftware's server in its config.ini. Default: 4999")
+	
+	elseIf optionID == oid_automaticVisionAnalysis
+		SetInfoText("Toggle this option to enable automatic vision analysis. A screenshot of the player's vision will be sent automatically with each reply to the AI (LLM)")
+	elseIf optionID == oid_SteamVisionAnalysis
+		SetInfoText("Toggle this option to enable vision analysis. A screenshot must be taken using the Steam Interface (usually left trigger + left menu button) and will be sent to the LLM on the next reply (must be sent within 2 minutes)")
+	elseif optionID == oid_visionResolution
+		SetInfoText("Select this option to choose the resolution of the screenshots sent to the AI. Lower it to reduce token use and reponse generation time.")
+	elseif optionID == oid_hideInterfaceDuringScreenshot
+		SetInfoText("Select this option to hide the HUD when screenshots are captured by Mantella to avoid confusing the AI or reduce the chance of it breaking character")
+	elseif optionID == oid_keymapVisionHotkey
+		SetInfoText("Use this hotkey to take a screenshot that will be later sent to the the AI on your next reply")	
+	elseif optionID == oid_resize
+		SetInfoText("Lower this value to resize the image (width in pixels) before sending it to the LLM to accelerate response time and diminish token use (recommended minimum : 512, recommended maximum : 2000). If a value greater than the actual screen resolution is used, Mantella Software will default to the actual screen resolution value.")	
 	EndIf
 endEvent
 

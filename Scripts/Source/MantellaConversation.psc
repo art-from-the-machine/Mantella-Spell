@@ -19,6 +19,8 @@ String[] _ingameEvents
 String[] _extraRequestActions
 bool _does_accept_player_input = false
 bool _isTalking = false
+bool _hasPendingVisionGeneration = false
+string _PlayerTextInput
 Actor _lastNpcToSpeak = None
 
 event OnInit()    
@@ -108,6 +110,9 @@ function ContinueConversation(int handle)
         EndIf
     elseIf (nextAction == mConsts.KEY_REQUESTTYPE_TTS)
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
+        if repository.allowVision
+            MantellaVisionScript.GenerateMantellaVision(repository)
+        endif
         sendRequestForPlayerInput(transcribe)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
         CleanupConversation()
@@ -198,7 +203,7 @@ Function CleanupConversation()
     _does_accept_player_input = false
     _isTalking = false
     _lastNpcToSpeak = None
-    ;SKSE_HTTP.clearAllDictionaries()
+    SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
     EndIf
@@ -255,10 +260,33 @@ function GetPlayerTextInput()
 
     string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
     if (result && result != "")
-        sendRequestForPlayerInput(result)
-        _does_accept_player_input = False
+        _PlayerTextInput=result
+        if repository.allowVision
+            _hasPendingVisionGeneration=true
+            RegisterForSingleUpdate(0.3);Spacing out the GenerateMantellaVision() to avoid taking a screenshot of the interface
+        else
+            sendRequestForPlayerInput(_PlayerTextInput)
+            _does_accept_player_input = False
+            Debug.Notification("Thinking...")
+        endif
     endIf
 endFunction
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;     Event OnUpdate management (timer mangement)          ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Event OnUpdate()
+    ;Spacing out the GenerateMantellaVision() to avoid taking a screenshot of the interface
+    if _hasPendingVisionGeneration==true ;checking if the OnUpdate call is coming from a pending vision generation request
+        if repository.allowVision
+            MantellaVisionScript.GenerateMantellaVision(repository)
+            _hasPendingVisionGeneration=false
+        endif
+        sendRequestForPlayerInput(_PlayerTextInput)
+        _does_accept_player_input = False
+        Debug.Notification("Thinking...")
+    endif
+endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;     Handle NPC speaking     ;
@@ -579,8 +607,20 @@ int function BuildContext()
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
+    ;new lines below for custom vision values
+    int customValuesHandle = BuildCustomContextValues()
+    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT_CUSTOMVALUES, customValuesHandle)
     return handle
 endFunction
+
+int Function BuildCustomContextValues()
+    ;new custom context values that pertains to vision related variables that Mantella Software will use
+    int handleCustomContextValues = SKSE_HTTP.createDictionary()
+    SKSE_HTTP.setBool(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_READY, MantellaVisionScript.checkAndUpdateVisionPipeline(repository))
+    SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RES, repository.visionResolution)
+    SKSE_HTTP.setInt(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE, repository.visionResize)
+    return handleCustomContextValues
+EndFunction
 
 int function GetCurrentHourOfDay()
 	float Time = Utility.GetCurrentGameTime()
