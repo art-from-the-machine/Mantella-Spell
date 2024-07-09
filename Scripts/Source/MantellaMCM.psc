@@ -58,7 +58,11 @@ int property oid_httpPort auto
 
 ;Vision properties
 int property oid_automaticVisionAnalysis auto
+int property oid_SteamVisionAnalysis auto
 int property oid_visionResolution auto
+int property oid_hideInterfaceDuringScreenshot auto
+int property oid_keymapVisionHotkey auto
+int property oid_resize auto
 string[] property resolutionMenuList auto
 int property resolutionMenuDefaultIndex auto
 
@@ -129,12 +133,16 @@ EndEvent
 Event OnOptionSliderOpen(Int optionId)
     If MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.SliderOptionOpen(self,optionID, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.SliderOptionOpen(self,optionID, repository)	
     EndIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
 	If MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.SliderOptionAccept(self,optionID, value, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.SliderOptionAccept(self,optionID, value, repository)
     EndIf
 EndEvent
 
@@ -142,6 +150,8 @@ Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl
     {Called when a key has been remapped}
     If 	MantellaMCMcurrentPage =="General"
 		MantellaMCM_GeneralSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.KeyMapChange(self,a_option, a_keyCode, a_conflictControl, a_conflictName, repository)
 	EndIf
 EndEvent
 
@@ -253,8 +263,16 @@ Event OnOptionHighlight (Int optionID)
 	
 	elseIf optionID == oid_automaticVisionAnalysis
 		SetInfoText("Toggle this option to enable automatic vision analysis. A screenshot of the player's vision will be sent automatically with each reply to the AI (LLM)")
+	elseIf optionID == oid_SteamVisionAnalysis
+		SetInfoText("Toggle this option to enable vision analysis. A screenshot must be taken using the Steam Interface (usually left trigger + left menu button) and will be sent to the LLM on the next reply (must be sent within 2 minutes)")
 	elseif optionID == oid_visionResolution
-		SetInfoText("Select this option to choose the resolution of the screenshots sent to the AI. Lower it to reduce token use and reponse generation time")
+		SetInfoText("Select this option to choose the resolution of the screenshots sent to the AI. Lower it to reduce token use and reponse generation time.")
+	elseif optionID == oid_hideInterfaceDuringScreenshot
+		SetInfoText("Select this option to hide the HUD when screenshots are captured by Mantella to avoid confusing the AI or reduce the chance of it breaking character")
+	elseif optionID == oid_keymapVisionHotkey
+		SetInfoText("Use this hotkey to take a screenshot that will be later sent to the the AI on your next reply")	
+	elseif optionID == oid_resize
+		SetInfoText("Lower this value to resize the image (width in pixels) before sending it to the LLM to accelerate response time and diminish token use (recommended minimum : 512, recommended maximum : 2000). If a value greater than the actual screen resolution is used, Mantella Software will default to the actual screen resolution value.")	
 	EndIf
 endEvent
 

@@ -607,15 +607,18 @@ int function BuildContext()
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
+    ;new lines below for custom vision values
     int customValuesHandle = BuildCustomContextValues()
     SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT_CUSTOMVALUES, customValuesHandle)
     return handle
 endFunction
 
 int Function BuildCustomContextValues()
+    ;new custom context values that pertains to vision related variables that Mantella Software will use
     int handleCustomContextValues = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setBool(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_READY, MantellaVisionScript.checkAndUpdateVisionPipeline(repository))
     SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RES, repository.visionResolution)
+    SKSE_HTTP.setInt(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE, repository.visionResize)
     return handleCustomContextValues
 EndFunction
 

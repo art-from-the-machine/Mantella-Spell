@@ -28,7 +28,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -574551456
+    SecondUnusedIntParameter: -254928512
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
@@ -99,10 +99,6 @@ Data:
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-- Key: 25
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
 - Key: 21
   Value:
     MutagenObjectType: PackageDataBool
@@ -110,6 +106,10 @@ Data:
 - Key: 23
   Value:
     MutagenObjectType: PackageDataFloat
+- Key: 25
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
 XnamMarker: 0x1A
 OnBegin:
   Topics:
