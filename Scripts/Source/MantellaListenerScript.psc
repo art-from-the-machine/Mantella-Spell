@@ -10,7 +10,8 @@ MantellaRepository property repository auto
 Quest Property MantellaActorPicker auto  
 ReferenceAlias Property PotentialActor1 auto  
 ReferenceAlias Property PotentialActor2 auto  
-MantellaConversation Property conversation auto 
+MantellaConversation Property conversation auto
+MantellaMCM Property MantellaMCMQuest auto
 
 event OnInit()
     Game.GetPlayer().AddSpell(MantellaSpell)
@@ -49,6 +50,16 @@ string Function getPlayerName(bool isStartOfSentence = True)
 EndFunction
 
 Event OnPlayerLoadGame()
+    If(conversation.IsRunning())
+        conversation.EndConversation()
+    endif
+    If (MantellaMCMQuest.IsRunning() && MantellaMCMQuest.IsNotProperlyInitialised())
+        Debug.MessageBox("Detecting old version of Mantella in this save. MCM settings will be reset once.")
+        MantellaMCMQuest.Stop()
+        MantellaMCMQuest.Start()
+        MantellaMCMQuest.OnConfigInit()
+        repository.assignDefaultSettings(0,true)
+    EndIf
     RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
@@ -76,16 +87,14 @@ event OnUpdate()
                     if (distanceBetweenActors <= 1000)
                         ;have spell casted on Actor 1 by Actor 2
                         MantellaSpell.Cast(Actor2 as ObjectReference, Actor1 as ObjectReference)
-                    else
-                        ;TODO: make this notification optional
+                    elseif(repository.showRadiantDialogueMessages)
                         Debug.Notification("Radiant dialogue attempted. No NPCs available")
                     endIf
-                else
-                    ;TODO: make this notification optional
+                elseif(repository.showRadiantDialogueMessages)
                     Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceToClosestActor) + " meters")
                     Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
                 endIf
-            else
+            elseif(repository.showRadiantDialogueMessages)
                 Debug.Notification("Radiant dialogue attempted. No NPCs available")
             endIf
 

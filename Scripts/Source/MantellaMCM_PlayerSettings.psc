@@ -15,8 +15,8 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     If (Repository.IsVR())
         mcm.AddTextOption("For VR, use Mantella Software config", true)
     else
-        mcm.oid_playerCharacterDescription1 = mcm.AddTextOption("Set default PC description", Repository.playerCharacterDescription1)
-        mcm.oid_playerCharacterDescription2 = mcm.AddTextOption("Set alternative PC description", Repository.playerCharacterDescription2)
+        mcm.oid_playerCharacterDescription1 = mcm.AddTextOption("Set default PC description", repository.playerCharacterDescription1)
+        mcm.oid_playerCharacterDescription2 = mcm.AddTextOption("Set alternative PC description", repository.playerCharacterDescription2)
         mcm.oid_playerCharacterUsePlayerDescription2 = mcm.AddToggleOption("Use alternative description", Repository.playerCharacterUsePlayerDescription2)
         mcm.oid_playerCharacterVoicePlayerInput = mcm.AddToggleOption("Voice player input", Repository.playerCharacterVoicePlayerInput)
         mcm.oid_playerCharacterVoiceModel = mcm.AddTextOption("Set PC voice model", Repository.playerCharacterVoiceModel)
@@ -29,10 +29,11 @@ function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 string Function GetTextInput(string existingValue) global
-    UIExtensions.SetMenuPropertyString("UITextEntryMenu","text", existingValue)
-    UIExtensions.InitMenu("UITextEntryMenu")
-    UIExtensions.OpenMenu("UITextEntryMenu")    
-    return UIExtensions.GetMenuResultString("UITextEntryMenu")    
+    ;Debug.MessageBox("After entering the value you need to close the whole MCM menu to make it responsive again.")
+    UITextEntryMenu menu = uiextensions.GetMenu("UITextEntryMenu", true) as UITextEntryMenu
+    menu.SetPropertyString("text", existingValue)
+    menu.OpenMenu()
+    return menu.GetResultString()    
 EndFunction
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -53,5 +54,4 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     ElseIf (optionID == mcm.oid_playerCharacterVoiceModel)
         Repository.playerCharacterVoiceModel = GetTextInput(Repository.playerCharacterVoiceModel)
     endIf
-endfunction 
-
+endfunction

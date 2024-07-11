@@ -38,11 +38,6 @@ event OnUpdate()
     EndIf
 endEvent
 
-event OnPlayerLoadGame()
-    ;EndConversation()
-    CleanupConversation()
-endEvent
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;    Start new conversation   ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -315,7 +310,7 @@ endFunction
 
 function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
     if lastNpcToSpeak != None
-        speaker.AddSpell(MantellaIsTalkingSpell)
+        speaker.AddSpell(MantellaIsTalkingSpell, False)
     endIf
     Utility.Wait(0.01)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())

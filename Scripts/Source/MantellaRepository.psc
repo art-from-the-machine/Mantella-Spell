@@ -29,6 +29,7 @@ bool property showDialogueItems auto Conditional
 bool property radiantEnabled auto
 float property radiantDistance auto
 float property radiantFrequency auto
+bool property showRadiantDialogueMessages auto
 
 string property playerCharacterDescription1 auto
 string property playerCharacterDescription2 auto
@@ -90,85 +91,98 @@ bool property NPCdebugSelectModeEnabled auto
 
 int property HttpPort auto
 
+
 event OnInit()
-    microphoneEnabled = true
-    useHotkeyToStartMic = false
-    MantellaEffectResponseTimer = 180
-
-    MantellaStartHotkey = -1
-    MantellaListenerTextHotkey = 35
-    BindPromptHotkey(MantellaListenerTextHotkey)
-    MantellaEndHotkey = -1
-    MantellaCustomGameEventHotkey = -1
-    MantellaRadiantHotkey = -1
-
-    showDialogueItems = true
-
-    radiantEnabled = false
-    radiantDistance = 20
-    radiantFrequency = 10
-
-
-    playerCharacterDescription1 = ""
-    playerCharacterDescription2 = ""
-    playerCharacterUsePlayerDescription2 = false
-    playerCharacterVoicePlayerInput = false
-    playerCharacterVoiceModel = ""
-    playerTrackingUsePCName = true
-
-    
-    playerTrackingOnItemAdded = true
-    playerTrackingOnItemRemoved = true
-    playerTrackingOnSpellCast = true
-    playerTrackingOnHit = true
-    playerTrackingOnLocationChange = true
-    playerTrackingOnObjectEquipped = true
-    playerTrackingOnObjectUnequipped = true
-    playerTrackingOnPlayerBowShot = true
-    playerTrackingOnSit = true
-    playerTrackingOnGetUp = true
-
-    playerEquipmentBody = true
-    playerEquipmentHead = true
-    playerEquipmentHands = true
-    playerEquipmentFeet = true
-    playerEquipmentAmulet = true
-    playerEquipmentRightHand = true
-    playerEquipmentLeftHand = true
-
-
-    targetTrackingItemAdded = true
-    targetTrackingItemRemoved = true
-    targetTrackingOnSpellCast = true
-    targetTrackingOnHit = true
-    targetTrackingOnCombatStateChanged = true
-    targetTrackingOnObjectEquipped = true
-    targetTrackingOnObjectUnequipped = true
-    targetTrackingOnSit = true
-    targetTrackingOnGetUp = true
-
-    targetEquipmentBody = true
-    targetEquipmentHead = true
-    targetEquipmentHands = true
-    targetEquipmentFeet = true
-    targetEquipmentAmulet = true
-    targetEquipmentRightHand = true
-    targetEquipmentLeftHand = true
-	
-
-	;followingNPCsit = false ;gia
-	;followingNPCsleep = false ;gia
-	;NPCstopandTalk = false ;gia
-	AllowForNPCtoFollow = false ;gia
-	NPCAnger = false ;gia
-    NPCPackage = false
-	;NPCForgive = false ;gia
-	NPCDialogue = True ;gia
-    
-    NPCdebugSelectModeEnabled = false
-
-    HttpPort = 4999
+    assignDefaultSettings(0, true)
 endEvent
+
+; lastVersion is the MCM version number defined in 'MantellaMCM.psc'.
+; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
+; and add the corresponding default value here in a block corresponding to the version number like the examples below
+function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 2 || isFirstInit)
+        showRadiantDialogueMessages = true
+    EndIf
+    If (lastVersion < 1 || isFirstInit)
+        microphoneEnabled = true
+        useHotkeyToStartMic = false
+        MantellaEffectResponseTimer = 180
+
+        MantellaStartHotkey = -1
+        MantellaListenerTextHotkey = 35
+        BindPromptHotkey(MantellaListenerTextHotkey)
+        MantellaEndHotkey = -1
+        MantellaCustomGameEventHotkey = -1
+        MantellaRadiantHotkey = -1
+
+        showDialogueItems = true
+
+        radiantEnabled = false
+        radiantDistance = 20
+        radiantFrequency = 10
+
+
+        playerCharacterDescription1 = ""
+        playerCharacterDescription2 = ""
+        playerCharacterUsePlayerDescription2 = false
+        playerCharacterVoicePlayerInput = false
+        playerCharacterVoiceModel = ""
+        playerTrackingUsePCName = true
+
+        
+        playerTrackingOnItemAdded = true
+        playerTrackingOnItemRemoved = true
+        playerTrackingOnSpellCast = true
+        playerTrackingOnHit = true
+        playerTrackingOnLocationChange = true
+        playerTrackingOnObjectEquipped = true
+        playerTrackingOnObjectUnequipped = true
+        playerTrackingOnPlayerBowShot = true
+        playerTrackingOnSit = true
+        playerTrackingOnGetUp = true
+
+        playerEquipmentBody = true
+        playerEquipmentHead = true
+        playerEquipmentHands = true
+        playerEquipmentFeet = true
+        playerEquipmentAmulet = true
+        playerEquipmentRightHand = true
+        playerEquipmentLeftHand = true
+
+
+        targetTrackingItemAdded = true
+        targetTrackingItemRemoved = true
+        targetTrackingOnSpellCast = true
+        targetTrackingOnHit = true
+        targetTrackingOnCombatStateChanged = true
+        targetTrackingOnObjectEquipped = true
+        targetTrackingOnObjectUnequipped = true
+        targetTrackingOnSit = true
+        targetTrackingOnGetUp = true
+
+        targetEquipmentBody = true
+        targetEquipmentHead = true
+        targetEquipmentHands = true
+        targetEquipmentFeet = true
+        targetEquipmentAmulet = true
+        targetEquipmentRightHand = true
+        targetEquipmentLeftHand = true
+        
+
+        ;followingNPCsit = false ;gia
+        ;followingNPCsleep = false ;gia
+        ;NPCstopandTalk = false ;gia
+        AllowForNPCtoFollow = false ;gia
+        NPCAnger = false ;gia
+        NPCPackage = false
+        ;NPCForgive = false ;gia
+        NPCDialogue = True ;gia
+        
+        NPCdebugSelectModeEnabled = false
+
+        HttpPort = 4999
+    EndIf
+endFunction
 
 function BindStartAddHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange

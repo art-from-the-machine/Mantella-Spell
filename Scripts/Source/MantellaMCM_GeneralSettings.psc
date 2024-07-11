@@ -22,18 +22,19 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Dialogue items")
+    mcm.AddHeaderOption("Conversation settings")
     mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
+    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
 
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
     mcm.oid_radiantfrequency = mcm.AddSliderOption("Trigger Frequency",repository.radiantFrequency)
+    mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show messages", repository.showRadiantDialogueMessages)
 
-    mcm.AddHeaderOption("Actions")
+    mcm.AddHeaderOption("Actions settings")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
-	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
-    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
+	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)    
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -123,6 +124,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)
+    elseIf optionID == mcm.oid_showRadiantDialogueMessages
+        repository.showRadiantDialogueMessages =! repository.showRadiantDialogueMessages
+        mcm.SetToggleOptionValue(optionID, repository.showRadiantDialogueMessages)
     elseIf optionID == mcm.oid_AllowForNPCtoFollowToggle
         Repository.AllowForNPCtoFollow =! Repository.AllowForNPCtoFollow
         mcm.SetToggleOptionValue(mcm.oid_AllowForNPCtoFollowToggle, Repository.AllowForNPCtoFollow)

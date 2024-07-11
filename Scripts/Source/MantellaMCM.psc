@@ -18,6 +18,7 @@ int property oid_showDialogueItems auto
 int property oid_radiantenabled auto
 int property oid_radiantdistance auto
 int property oid_radiantfrequency auto
+int property oid_showRadiantDialogueMessages auto
 
 
 int property oid_playerCharacterDescription1 auto
@@ -90,7 +91,23 @@ string property PAGE_TARGETTRACKING = "Target Tracking" auto
 string property PAGE_EQUIPMENT = "Equipment slots" auto
 string property PAGE_ADVANCED = "Advanced" auto
 
+
+
+ReferenceAlias property PlayerAlias auto
+
 string MantellaMCMcurrentPage
+
+
+; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
+; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
+int Function GetVersion()
+    Return 2
+EndFunction
+
+event OnVersionUpdate(int a_version)
+    repository.assignDefaultSettings(CurrentVersion)
+    self.OnConfigInit()
+EndEvent
 
 Event OnConfigInit()
 	;this part right here name all the pages we'll need (we can add more pages at the end as long as we update the numbers) and declares some variables
@@ -110,7 +127,7 @@ Event OnConfigInit()
 EndEvent
 
 Event OnPageReset(string page)
-	;this is the event that triggers when the pages get clicked, so I link to the other MCM scripts that are basically just used for global functions
+    ;this is the event that triggers when the pages get clicked, so I link to the other MCM scripts that are basically just used for global functions
 	if page==""
 		loadcustomcontent("Mantella/splash.dds")
 		MantellaMCMcurrentPage="Intro"
@@ -214,6 +231,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("How far from the player (in meters) radiant dialogues can begin. \nDefault: 20")
 	elseIf optionID == oid_radiantfrequency
 		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
+    elseIf optionID == oid_showRadiantDialogueMessages
+		SetInfoText("Shows the radiant dialogue tracking messages in the top left corner.")
 
     elseIf optionID == oid_playerCharacterDescription1	
 		SetInfoText("The description of your PC used in the prompt for the LLM. This is not a bio of your PC. \nTry to only put things here that are obvious about your character when the NPC meets them. e.g.'A tall and broad Nord man with long red hair''")
@@ -321,4 +340,12 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("HTTP port for Mantella to call. If you need to change the default port, change it here and the port for MantellaSoftware's server in its config.ini. Default: 4999")
 	EndIf
 endEvent
+
+bool Function IsNotProperlyInitialised()
+    if(!PlayerAlias);Checks if the PlayerAlias is not asssigned. Should only happen when updating from an old version of Mantella where the Quest is still running        
+        return true
+    Else
+        return false
+    endif
+EndFunction
 
