@@ -169,16 +169,16 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
         targetEquipmentLeftHand = true
         
 
-        ;followingNPCsit = false ;gia
-        ;followingNPCsleep = false ;gia
-        ;NPCstopandTalk = false ;gia
-        AllowForNPCtoFollow = false ;gia
-        NPCAnger = false ;gia
-        NPCPackage = false
-        ;NPCForgive = false ;gia
-        NPCDialogue = True ;gia
-        
-        NPCdebugSelectModeEnabled = false
+	;followingNPCsit = false ;gia
+	;followingNPCsleep = false ;gia
+	;NPCstopandTalk = false ;gia
+	AllowForNPCtoFollow = false ;gia
+	NPCAnger = false ;gia
+    NPCPackage = true
+	;NPCForgive = false ;gia
+	NPCDialogue = True ;gia
+    
+    NPCdebugSelectModeEnabled = false
 
         HttpPort = 4999
     EndIf
@@ -266,9 +266,9 @@ Event OnKeyDown(int KeyCode)
         elseIf KeyCode == MantellaRadiantHotkey
             radiantEnabled =! radiantEnabled
             if radiantEnabled == True
-                Debug.Notification("Radiant Dialogue Enabled")
+                Debug.Notification("Radiant Dialogue enabled.")
             else
-                Debug.Notification("Radiant Dialogue Disabled")
+                Debug.Notification("Radiant Dialogue disabled.")
             endIf
         endIf
     endIf

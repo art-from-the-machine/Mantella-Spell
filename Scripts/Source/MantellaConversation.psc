@@ -44,14 +44,14 @@ endEvent
 
 function StartConversation(Actor[] actorsToStartConversationWith)
     if(actorsToStartConversationWith.Length > 2)
-        Debug.Notification("Can not start conversation. Conversation is already running.")
+        Debug.Notification("Cannot start conversation. Conversation is already running.")
         return
     endIf
     
     AddActors(actorsToStartConversationWith)
 
     if(actorsToStartConversationWith.Length < 2)
-        Debug.Notification("Not enough characters to start a conversation")
+        Debug.Notification("Not enough characters to start a conversation.")
         return
     endIf
     
@@ -209,7 +209,7 @@ Function CleanupConversation()
     _does_accept_player_input = false
     _isTalking = false
     _lastNpcToSpeak = None
-    SKSE_HTTP.clearAllDictionaries()
+    ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
     EndIf
@@ -315,12 +315,19 @@ function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
     Utility.Wait(0.01)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     bool waitingToSpeakMessage = true
+    float waitTime = 0.01
+    float totalWaitTime = 0
     while _isTalking == true
         if waitingToSpeakMessage == true
             ;Debug.Notification("Waiting for NPC to finish speaking before next line...")
             waitingToSpeakMessage = false
         endIf
-        Utility.Wait(0.01)
+        Utility.Wait(waitTime)
+        totalWaitTime += waitTime
+        if totalWaitTime > 20
+            Debug.Notification("NPC speaking too long, ending wait...")
+            _isTalking = false
+        endIf
     endWhile
     if lastNpcToSpeak != None
         speaker.RemoveSpell(MantellaIsTalkingSpell)
@@ -524,7 +531,7 @@ Function PrintActorsArray(string prefix, Actor[] actors)
         actor_message += GetActorName(actors[i]) + ", "
         i += 1
     EndWhile
-    Debug.Notification(prefix + actor_message)
+    ;Debug.Notification(prefix + actor_message)
 EndFunction
 
 Function PrintActorsInConversation()
