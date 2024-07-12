@@ -27,6 +27,8 @@ int property oid_playerCharacterUsePlayerDescription2 auto
 int property oid_playerCharacterVoicePlayerInput auto
 int property oid_playerCharacterVoiceModel auto
 
+int property oid_worldID auto
+
 
 int property oid_playerTrackingUsePCName auto
 int property oid_playerTrackingOnItemAdded auto
@@ -101,7 +103,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 2
+    Return 3
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -175,6 +177,8 @@ EndEvent
 Event OnOptionSliderOpen(Int optionId)
     If MantellaMCMcurrentPage == PAGE_GENERAL
 		MantellaMCM_GeneralSettings.SliderOptionOpen(self,optionID, repository)
+    elseif MantellaMCMcurrentPage == PAGE_PLAYER
+        MantellaMCM_PlayerSettings.SliderOptionOpen(self,optionID, repository)
     elseif MantellaMCMcurrentPage == PAGE_ADVANCED
         MantellaMCM_AdvancedSettings.SliderOptionOpen(self,optionID, repository)
     endIf
@@ -183,6 +187,8 @@ EndEvent
 Event OnOptionSliderAccept(Int optionId, Float value)
 	If MantellaMCMcurrentPage == PAGE_GENERAL
 		MantellaMCM_GeneralSettings.SliderOptionAccept(self,optionID, value, repository)
+    elseif MantellaMCMcurrentPage == PAGE_PLAYER
+        MantellaMCM_PlayerSettings.SliderOptionAccept(self,optionID, value, repository)
     elseif MantellaMCMcurrentPage == PAGE_ADVANCED
         MantellaMCM_AdvancedSettings.SliderOptionAccept(self,optionID, value, repository)
     endIf
@@ -246,6 +252,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("The TTS voice model to use when the PC speaks the player input.")
     elseIf optionID == oid_playerTrackingUsePCName	
 		SetInfoText("Use the name of the player character when tracking events. Uses 'Player' otherwise.")
+    elseIf optionID == oid_worldID	
+		SetInfoText("Used to uniquely identify a world/save game/player-through. The unique world id is the name of the player character followed by this number.\nIf you are using the same player chaarcter name for different playthroughs you can change this number to differentiate them.")
 
     elseIf optionID == oid_playerTrackingOnItemAdded	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")

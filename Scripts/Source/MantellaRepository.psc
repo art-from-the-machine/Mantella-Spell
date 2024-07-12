@@ -58,6 +58,8 @@ bool property playerEquipmentAmulet auto
 bool property playerEquipmentRightHand auto
 bool property playerEquipmentLeftHand auto
 
+int property worldID auto
+
 
 bool property targetTrackingItemAdded auto 
 bool property targetTrackingItemRemoved auto
@@ -100,6 +102,9 @@ endEvent
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 3 || isFirstInit)
+        worldID = 1
+    EndIf
     If (lastVersion < 2 || isFirstInit)
         showRadiantDialogueMessages = true
     EndIf

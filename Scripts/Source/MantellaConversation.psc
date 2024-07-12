@@ -57,6 +57,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
+    SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, Game.GetPlayer().GetDisplayName() + repository.worldID)
     AddCurrentActorsAndContext(handle)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN

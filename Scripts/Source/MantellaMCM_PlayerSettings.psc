@@ -21,6 +21,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
         mcm.oid_playerCharacterVoicePlayerInput = mcm.AddToggleOption("Voice player input", Repository.playerCharacterVoicePlayerInput)
         mcm.oid_playerCharacterVoiceModel = mcm.AddTextOption("Set PC voice model", Repository.playerCharacterVoiceModel)
     EndIf
+    mcm.oid_worldID = mcm.AddSliderOption("World ID", Repository.worldID)
     mcm.AddHeaderOption ("Event tracking options")
     mcm.oid_playerTrackingUsePCName=mcm.AddToggleOption("Use name of player character", repository.playerTrackingUsePCName)
 endfunction
@@ -35,6 +36,24 @@ string Function GetTextInput(string existingValue) global
     menu.OpenMenu()
     return menu.GetResultString()    
 EndFunction
+
+function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
+    ; SliderOptionOpen is used to choose what to display when the user clicks on the slider
+    if optionID==mcm.oid_worldID
+        mcm.SetSliderDialogStartValue(repository.worldID)
+        mcm.SetSliderDialogDefaultValue(1)
+        mcm.SetSliderDialogRange(1, 20)
+        mcm.SetSliderDialogInterval(1)    
+    endif
+endfunction
+
+function SliderOptionAccept(MantellaMCM mcm, int optionID, float value, MantellaRepository Repository) global
+    ;SliderOptionAccept is used to update the Repository with the user input (that input will then be used by the Mantella effect script
+    If  optionId == mcm.oid_worldID
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.worldID = value as int
+    EndIf
+endfunction
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
     ;checks option per option what the toggle is and the updates the var repository MantellaRepository so the ListenerScript can access it

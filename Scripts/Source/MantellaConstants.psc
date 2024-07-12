@@ -29,6 +29,8 @@ string property KEY_REPLYTYPE_NPCTALK = "mantella_npc_talk" auto
 string property KEY_REPLYTYPE_PLAYERTALK = "mantella_player_talk" auto
 string property KEY_REPLYTYPE_ENDCONVERSATION = "mantella_end_conversation" auto
 
+string property KEY_STARTCONVERSATION_WORLDID = "mantella_worldid" auto
+
 ;Actors
 string property KEY_ACTORS = "mantella_actors" auto
 string property KEY_ACTOR_ID = "mantella_actor_id" auto
