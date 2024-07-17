@@ -596,15 +596,17 @@ int function buildActorSetting(Actor actorToBuild)
 endFunction
 
 Function AddCustomPCValues(int customActorValuesHandle, Actor actorToBuildCustomValuesFor)
-    string description = repository.playerCharacterDescription1
-    If (repository.playerCharacterUsePlayerDescription2)
-        description = repository.playerCharacterDescription2
-    EndIf
-    SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_DESCRIPTION, description)
-    SKSE_HTTP.setBool(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEPLAYERINPUT, repository.playerCharacterVoicePlayerInput)
-    If (repository.playerCharacterVoicePlayerInput)
-        SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEMODEL, repository.playerCharacterVoiceModel)
-    EndIf
+    if(!repository.IsVR())
+        string description = repository.playerCharacterDescription1
+        If (repository.playerCharacterUsePlayerDescription2)
+            description = repository.playerCharacterDescription2
+        EndIf
+        SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_DESCRIPTION, description)
+        SKSE_HTTP.setBool(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEPLAYERINPUT, repository.playerCharacterVoicePlayerInput)
+        If (repository.playerCharacterVoicePlayerInput)
+            SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEMODEL, repository.playerCharacterVoiceModel)
+        EndIf
+    endIf
 EndFunction
 
 int function BuildContext()
