@@ -11,19 +11,19 @@ endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
-    mcm.AddHeaderOption ("Player character setup")
+    mcm.AddHeaderOption ("Player Character")
     If (Repository.IsVR())
         mcm.AddTextOption("For VR, use Mantella Software config", true)
     else
-        mcm.oid_playerCharacterDescription1 = mcm.AddTextOption("Set default PC description", repository.playerCharacterDescription1)
-        mcm.oid_playerCharacterDescription2 = mcm.AddTextOption("Set alternative PC description", repository.playerCharacterDescription2)
-        mcm.oid_playerCharacterUsePlayerDescription2 = mcm.AddToggleOption("Use alternative description", Repository.playerCharacterUsePlayerDescription2)
-        mcm.oid_playerCharacterVoicePlayerInput = mcm.AddToggleOption("Voice player input", Repository.playerCharacterVoicePlayerInput)
-        mcm.oid_playerCharacterVoiceModel = mcm.AddTextOption("Set PC voice model", Repository.playerCharacterVoiceModel)
+        mcm.oid_playerCharacterDescription1 = mcm.AddTextOption("Default Player Description", repository.playerCharacterDescription1)
+        mcm.oid_playerCharacterDescription2 = mcm.AddTextOption("Alternative Player Description", repository.playerCharacterDescription2)
+        mcm.oid_playerCharacterUsePlayerDescription2 = mcm.AddToggleOption("Use Alternative Description", Repository.playerCharacterUsePlayerDescription2)
+        mcm.oid_playerCharacterVoicePlayerInput = mcm.AddToggleOption("Voice Player Input", Repository.playerCharacterVoicePlayerInput)
+        mcm.oid_playerCharacterVoiceModel = mcm.AddTextOption("Player Voice Model", Repository.playerCharacterVoiceModel)
     EndIf
     mcm.oid_worldID = mcm.AddSliderOption("World ID", Repository.worldID)
-    mcm.AddHeaderOption ("Event tracking options")
-    mcm.oid_playerTrackingUsePCName=mcm.AddToggleOption("Use name of player character", repository.playerTrackingUsePCName)
+    mcm.AddHeaderOption ("Event Tracking")
+    mcm.oid_playerTrackingUsePCName=mcm.AddToggleOption("Use Player Name", repository.playerTrackingUsePCName)
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global    

@@ -90,7 +90,7 @@ string property PAGE_GENERAL = "General" auto
 string property PAGE_PLAYER = "Player" auto
 string property PAGE_PLAYERTRACKING = "Player Tracking" auto
 string property PAGE_TARGETTRACKING = "Target Tracking" auto
-string property PAGE_EQUIPMENT = "Equipment slots" auto
+string property PAGE_EQUIPMENT = "Equipment" auto
 string property PAGE_ADVANCED = "Advanced" auto
 
 
@@ -213,7 +213,7 @@ Event OnOptionHighlight (Int optionID)
 	if optionID == oid_microphoneEnabledToggle	
 		SetInfoText("Toggles microphone / text input.")
 	elseIf optionID == oid_useHotkeyToStartMic
-		SetInfoText("If this is unchecked recording from the mic will start automatically when it is the players turn to speak. If this is checked recording will only start once the 'Open Text Prompt' hotkey is pressed.")
+		SetInfoText("If this is unchecked recording from the mic will start automatically when it is the player's turn to speak. If this is checked recording will only start once the 'Open Text Prompt' hotkey is pressed.")
     elseIf optionID == oid_responsetimeslider
 		SetInfoText("Time (in seconds) to enter a text response or start the microphone recording using the 'Open Text Prompt' hotkey if the options above are set accordingly. \nDefault: 180")
     
@@ -238,22 +238,22 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_radiantfrequency
 		SetInfoText("How frequently (in seconds) radiant dialogues should attempt to begin. \nDefault: 10")
     elseIf optionID == oid_showRadiantDialogueMessages
-		SetInfoText("Shows the radiant dialogue tracking messages in the top left corner.")
+		SetInfoText("Enable radiant dialogue debuggging messages.")
 
     elseIf optionID == oid_playerCharacterDescription1	
-		SetInfoText("The description of your PC used in the prompt for the LLM. This is not a bio of your PC. \nTry to only put things here that are obvious about your character when the NPC meets them. e.g.'A tall and broad Nord man with long red hair''")
+		SetInfoText("The description of the player used in the prompt for the LLM. This is not a bio of the player. \nTry to only put things here that are obvious about your character when the NPC meets them. e.g.'A tall and broad Nord man with long red hair''")
     elseIf optionID == oid_playerCharacterDescription2	
-		SetInfoText("Alternative description of your PC. Used in the same way as the first description. Can potentially be used if a PC can change its appearance.")
+		SetInfoText("Alternative description of the player. Used in the same way as the first description. Can potentially be used if a player can change their appearance.")
     elseIf optionID == oid_playerCharacterUsePlayerDescription2
-		SetInfoText("If checked the alternative PC description will be used, otherwise the default one.")
+		SetInfoText("If checked the alternative player description will be used, otherwise the default one is selected.")
     elseIf optionID == oid_playerCharacterVoicePlayerInput
-		SetInfoText("If checked the input of the player will be spoken by the PC.")
+		SetInfoText("If checked the input of the player will be spoken aloud.")
 	elseIf optionID == oid_playerCharacterDescription1	
-		SetInfoText("The TTS voice model to use when the PC speaks the player input.")
+		SetInfoText("The TTS voice model to use when the player speaks.")
     elseIf optionID == oid_playerTrackingUsePCName	
 		SetInfoText("Use the name of the player character when tracking events. Uses 'Player' otherwise.")
     elseIf optionID == oid_worldID	
-		SetInfoText("Used to uniquely identify a world/save game/player-through. The unique world id is the name of the player character followed by this number.\nIf you are using the same player chaarcter name for different playthroughs you can change this number to differentiate them.")
+		SetInfoText("Used to uniquely identify a world/save game/player-through. The unique world id is the name of the player character followed by this number.\nIf you are using the same player character name for different playthroughs you can change this number to differentiate them.")
 
     elseIf optionID == oid_playerTrackingOnItemAdded	
 		SetInfoText("Tracks items picked up / acquired while a Mantella conversation is active.")

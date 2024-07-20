@@ -10,7 +10,7 @@ endfunction
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption("Microphone")
     mcm.oid_microphoneEnabledToggle = mcm.AddToggleOption("Enabled", repository.microphoneEnabled)
-    mcm.oid_useHotkeyToStartMic = mcm.AddToggleOption("Use Hotkey to start mic", repository.useHotkeyToStartMic)
+    mcm.oid_useHotkeyToStartMic = mcm.AddToggleOption("Use Hotkey to Start Mic", repository.useHotkeyToStartMic)
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
 
     mcm.AddHeaderOption("Controls")
@@ -22,19 +22,19 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Conversation settings")
-    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
-    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
+    mcm.AddHeaderOption("Conversation")
+    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems)
 
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
     mcm.oid_radiantfrequency = mcm.AddSliderOption("Trigger Frequency",repository.radiantFrequency)
-    mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show messages", repository.showRadiantDialogueMessages)
+    mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show Debug Messages", repository.showRadiantDialogueMessages)
 
-    mcm.AddHeaderOption("Actions settings")
+    mcm.AddHeaderOption("Actions")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
-	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)    
+	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
+    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)   
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
