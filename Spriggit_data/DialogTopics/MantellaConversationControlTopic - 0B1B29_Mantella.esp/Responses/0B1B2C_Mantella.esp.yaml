@@ -3,12 +3,12 @@ VirtualMachineAdapter:
   Scripts:
   - Name: MantellaDialogueItems
     Properties:
-    - MutagenObjectType: ScriptStringProperty
-      Name: TriggeredDialogueItem
-      Data: mantella_remove_character
     - MutagenObjectType: ScriptObjectProperty
       Name: conversation
       Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_remove_character
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: MantellaDialogueItems
@@ -51,7 +51,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -599274304
+    SecondUnusedIntParameter: -670174912
     VariableName: ::showDialogueItems_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat

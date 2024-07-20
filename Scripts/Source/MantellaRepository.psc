@@ -15,6 +15,7 @@ quest property gia_FollowerQst auto ;gia
 
 
 bool property microphoneEnabled auto
+bool property useHotkeyToStartMic auto
 float property MantellaEffectResponseTimer auto
 
 int property MantellaStartHotkey auto
@@ -28,9 +29,16 @@ bool property showDialogueItems auto Conditional
 bool property radiantEnabled auto
 float property radiantDistance auto
 float property radiantFrequency auto
+bool property showRadiantDialogueMessages auto
 
-
+string property playerCharacterDescription1 auto
+string property playerCharacterDescription2 auto
+bool property playerCharacterUsePlayerDescription2 auto
+bool property playerCharacterVoicePlayerInput auto
+string property playerCharacterVoiceModel auto
 bool property playerTrackingUsePCName auto
+
+
 bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
 bool property playerTrackingOnSpellCast auto
@@ -42,6 +50,16 @@ bool property playerTrackingOnPlayerBowShot auto
 bool property playerTrackingOnSit auto
 bool property playerTrackingOnGetUp auto
 
+bool property playerEquipmentBody auto
+bool property playerEquipmentHead auto
+bool property playerEquipmentHands auto
+bool property playerEquipmentFeet auto
+bool property playerEquipmentAmulet auto
+bool property playerEquipmentRightHand auto
+bool property playerEquipmentLeftHand auto
+
+int property worldID auto
+
 
 bool property targetTrackingItemAdded auto 
 bool property targetTrackingItemRemoved auto
@@ -52,6 +70,14 @@ bool property targetTrackingOnObjectEquipped auto
 bool property targetTrackingOnObjectUnequipped auto
 bool property targetTrackingOnSit auto
 bool property targetTrackingOnGetUp auto
+
+bool property targetEquipmentBody auto
+bool property targetEquipmentHead auto
+bool property targetEquipmentHands auto
+bool property targetEquipmentFeet auto
+bool property targetEquipmentAmulet auto
+bool property targetEquipmentRightHand auto
+bool property targetEquipmentLeftHand auto
 
 
 bool property AllowForNPCtoFollow auto ;gia
@@ -67,47 +93,86 @@ bool property NPCdebugSelectModeEnabled auto
 
 int property HttpPort auto
 
+
 event OnInit()
-    microphoneEnabled = true
-    MantellaEffectResponseTimer = 180
+    assignDefaultSettings(0, true)
+endEvent
 
-    MantellaStartHotkey = -1
-    MantellaListenerTextHotkey = 35
-    BindPromptHotkey(MantellaListenerTextHotkey)
-    MantellaEndHotkey = -1
-    MantellaCustomGameEventHotkey = -1
-    MantellaRadiantHotkey = -1
+; lastVersion is the MCM version number defined in 'MantellaMCM.psc'.
+; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
+; and add the corresponding default value here in a block corresponding to the version number like the examples below
+function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 3 || isFirstInit)
+        worldID = 1
+    EndIf
+    If (lastVersion < 2 || isFirstInit)
+        showRadiantDialogueMessages = true
+    EndIf
+    If (lastVersion < 1 || isFirstInit)
+        microphoneEnabled = true
+        useHotkeyToStartMic = false
+        MantellaEffectResponseTimer = 180
 
-    showDialogueItems = true
+        MantellaStartHotkey = -1
+        MantellaListenerTextHotkey = 35
+        BindPromptHotkey(MantellaListenerTextHotkey)
+        MantellaEndHotkey = -1
+        MantellaCustomGameEventHotkey = -1
+        MantellaRadiantHotkey = -1
 
-    radiantEnabled = false
-    radiantDistance = 20
-    radiantFrequency = 10
+        showDialogueItems = true
+
+        radiantEnabled = false
+        radiantDistance = 20
+        radiantFrequency = 10
 
 
-    playerTrackingUsePCName = true
-    playerTrackingOnItemAdded = true
-    playerTrackingOnItemRemoved = true
-    playerTrackingOnSpellCast = true
-    playerTrackingOnHit = true
-    playerTrackingOnLocationChange = true
-    playerTrackingOnObjectEquipped = true
-    playerTrackingOnObjectUnequipped = true
-    playerTrackingOnPlayerBowShot = true
-    playerTrackingOnSit = true
-    playerTrackingOnGetUp = true
-    
+        playerCharacterDescription1 = ""
+        playerCharacterDescription2 = ""
+        playerCharacterUsePlayerDescription2 = false
+        playerCharacterVoicePlayerInput = false
+        playerCharacterVoiceModel = ""
+        playerTrackingUsePCName = true
 
-    targetTrackingItemAdded = true
-    targetTrackingItemRemoved = true
-    targetTrackingOnSpellCast = true
-    targetTrackingOnHit = true
-    targetTrackingOnCombatStateChanged = true
-    targetTrackingOnObjectEquipped = true
-    targetTrackingOnObjectUnequipped = true
-    targetTrackingOnSit = true
-    targetTrackingOnGetUp = true
-	
+        
+        playerTrackingOnItemAdded = true
+        playerTrackingOnItemRemoved = true
+        playerTrackingOnSpellCast = true
+        playerTrackingOnHit = true
+        playerTrackingOnLocationChange = true
+        playerTrackingOnObjectEquipped = true
+        playerTrackingOnObjectUnequipped = true
+        playerTrackingOnPlayerBowShot = true
+        playerTrackingOnSit = true
+        playerTrackingOnGetUp = true
+
+        playerEquipmentBody = true
+        playerEquipmentHead = true
+        playerEquipmentHands = true
+        playerEquipmentFeet = true
+        playerEquipmentAmulet = true
+        playerEquipmentRightHand = true
+        playerEquipmentLeftHand = true
+
+
+        targetTrackingItemAdded = true
+        targetTrackingItemRemoved = true
+        targetTrackingOnSpellCast = true
+        targetTrackingOnHit = true
+        targetTrackingOnCombatStateChanged = true
+        targetTrackingOnObjectEquipped = true
+        targetTrackingOnObjectUnequipped = true
+        targetTrackingOnSit = true
+        targetTrackingOnGetUp = true
+
+        targetEquipmentBody = true
+        targetEquipmentHead = true
+        targetEquipmentHands = true
+        targetEquipmentFeet = true
+        targetEquipmentAmulet = true
+        targetEquipmentRightHand = true
+        targetEquipmentLeftHand = true
+        
 
 	;followingNPCsit = false ;gia
 	;followingNPCsleep = false ;gia
@@ -120,8 +185,9 @@ event OnInit()
     
     NPCdebugSelectModeEnabled = false
 
-    HttpPort = 4999
-endEvent
+        HttpPort = 4999
+    EndIf
+endFunction
 
 function BindStartAddHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
@@ -158,6 +224,10 @@ function BindRadiantHotkey(int keyCode)
     RegisterForKey(keyCode)
 endfunction
 
+bool Function IsVR()
+    return Debug.GetVersionNumber() == "1.4.15.0"
+EndFunction
+
 Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
@@ -174,7 +244,12 @@ Event OnKeyDown(int KeyCode)
                 if(conversation.IsRunning())
                     conversation.GetPlayerTextInput()
                 endIf
-            endif
+            elseIf (useHotkeyToStartMic)
+                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+                if(conversation.IsRunning())
+                    conversation.sendRequestForVoiceTranscribe()
+                endIf
+            endIf
         elseIf KeyCode == MantellaEndHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it

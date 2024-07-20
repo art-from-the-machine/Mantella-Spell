@@ -3,6 +3,7 @@ EditorID: MantellaIsTalkingSpell
 Name:
   TargetLanguage: English
   Value: MantellaIsTalkingSpell
+EquipmentType: 013F44:Skyrim.esm
 Description:
   TargetLanguage: English
   Value: ''

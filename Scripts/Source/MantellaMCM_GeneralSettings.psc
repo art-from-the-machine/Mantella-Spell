@@ -10,6 +10,7 @@ endfunction
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption("Microphone")
     mcm.oid_microphoneEnabledToggle = mcm.AddToggleOption("Enabled", repository.microphoneEnabled)
+    mcm.oid_useHotkeyToStartMic = mcm.AddToggleOption("Use Hotkey to Start Mic", repository.useHotkeyToStartMic)
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
 
     mcm.AddHeaderOption("Controls")
@@ -21,18 +22,19 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Dialogue items")
-    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
+    mcm.AddHeaderOption("Conversation")
+    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems)
 
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
     mcm.oid_radiantfrequency = mcm.AddSliderOption("Trigger Frequency",repository.radiantFrequency)
+    mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show Debug Messages", repository.showRadiantDialogueMessages)
 
     mcm.AddHeaderOption("Actions")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
 	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
-    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
+    mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)   
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -110,8 +112,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     if optionID == mcm.oid_microphoneEnabledToggle
         Repository.microphoneEnabled =! Repository.microphoneEnabled
         mcm.SetToggleOptionValue(mcm.oid_microphoneEnabledToggle, Repository.microphoneEnabled)
-        ; MiscUtil.WriteToFile("_mantella_microphone_enabled.txt", Repository.microphoneEnabled,  append=false)
-        ;debug.MessageBox("Please restart Mantella and start a new conversation for this option to take effect")
+    elseif optionID == mcm.oid_useHotkeyToStartMic
+        Repository.useHotkeyToStartMic =! Repository.useHotkeyToStartMic
+        mcm.SetToggleOptionValue(mcm.oid_useHotkeyToStartMic, Repository.useHotkeyToStartMic)
     elseIf optionID == mcm.oid_debugNPCselectMode
         Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled
         mcm.SetToggleOptionValue(mcm.oid_debugNPCselectMode, Repository.NPCdebugSelectModeEnabled)
@@ -121,6 +124,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)
+    elseIf optionID == mcm.oid_showRadiantDialogueMessages
+        repository.showRadiantDialogueMessages =! repository.showRadiantDialogueMessages
+        mcm.SetToggleOptionValue(optionID, repository.showRadiantDialogueMessages)
     elseIf optionID == mcm.oid_AllowForNPCtoFollowToggle
         Repository.AllowForNPCtoFollow =! Repository.AllowForNPCtoFollow
         mcm.SetToggleOptionValue(mcm.oid_AllowForNPCtoFollowToggle, Repository.AllowForNPCtoFollow)

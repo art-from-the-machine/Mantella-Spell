@@ -10,7 +10,7 @@ Faction Property MantellaConversationParticipantsFaction Auto
 FormList Property Participants auto
 Quest Property MantellaConversationParticipantsQuest auto
 SPELL Property MantellaIsTalkingSpell Auto
-
+MantellaEquipmentDescriber Property EquipmentDescriber auto
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -19,7 +19,9 @@ String[] _ingameEvents
 String[] _extraRequestActions
 bool _does_accept_player_input = false
 bool _isTalking = false
+bool _hasBeenStopped = true
 Actor _lastNpcToSpeak = None
+string _repeatingMessage = ""
 
 event OnInit()    
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
@@ -29,9 +31,11 @@ event OnInit()
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
 endEvent
 
-event OnPlayerLoadGame()
-    EndConversation()
-    CleanupConversation()
+event OnUpdate()
+    If (_repeatingMessage != "")
+        Debug.Notification(_repeatingMessage)
+        RegisterForSingleUpdate(10)
+    EndIf
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -53,6 +57,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
+    SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, Game.GetPlayer().GetDisplayName() + repository.worldID)
     AddCurrentActorsAndContext(handle)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
@@ -84,8 +89,8 @@ event OnHttpReplyReceived(int typedDictionaryHandle)
     If (replyType != "error")
         ContinueConversation(typedDictionaryHandle)        
     Else
-        string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Could not retrieve error message")
-        ;Debug.Notification(errorMessage)
+        string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Received an error reply from MantellaSoftware but there was no error message attached.")
+        Debug.Notification(errorMessage)
         CleanupConversation()
     EndIf
 endEvent
@@ -94,19 +99,22 @@ function ContinueConversation(int handle)
     string nextAction = SKSE_HTTP.getString(handle, mConsts.KEY_REPLYTYPE, "Error: Did not receive reply type")
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
+        _hasBeenStopped = false
+        ;Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
         int npcTalkHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCTALK)
         ProcessNpcSpeak(npcTalkHandle)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_PLAYERTALK)
-        If (repository.microphoneEnabled)
+        _does_accept_player_input = True
+        If (repository.microphoneEnabled && !repository.useHotkeyToStartMic)
             sendRequestForVoiceTranscribe()
         Else
-            Debug.Notification("Awaiting player text input...")
-            _does_accept_player_input = True
+            ShowRepeatingMessage("Awaiting player input...")
         EndIf
     elseIf (nextAction == mConsts.KEY_REQUESTTYPE_TTS)
+        ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
         sendRequestForPlayerInput(transcribe)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
@@ -115,16 +123,18 @@ function ContinueConversation(int handle)
 endFunction
 
 function RequestContinueConversation()
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
-    AddCurrentActorsAndContext(handle)
-    if(_extraRequestActions && _extraRequestActions.Length > 0)
-        Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
-        SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
-        ClearExtraRequestAction()
-        Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
-    endif
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    if(!_hasBeenStopped)    
+        int handle = SKSE_HTTP.createDictionary()
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+        AddCurrentActorsAndContext(handle)
+        if(_extraRequestActions && _extraRequestActions.Length > 0)
+            ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
+            SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
+            ClearExtraRequestAction()
+            ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
+        endif
+        SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    EndIf
 endFunction
 
 function ProcessNpcSpeak(int handle)
@@ -186,6 +196,7 @@ event OnEndConversationActionReceived(Form speaker, string sentence)
 endEvent
 
 Function EndConversation()
+    _hasBeenStopped = true
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
@@ -194,6 +205,7 @@ EndFunction
 Function CleanupConversation()
     int i = 0
     ClearParticipants()
+    ClearRepeatingMessage()
     _ingameEvents = None
     _does_accept_player_input = false
     _isTalking = false
@@ -221,18 +233,24 @@ endEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 function sendRequestForPlayerInput(string playerInput)
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
-    int[] handlesNpcs = BuildNpcsInConversationArray()
-    SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)    
-    int handleContext = BuildContext()
-    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
+    if(!_hasBeenStopped)
+        int handle = SKSE_HTTP.createDictionary()
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
+        SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
+        int[] handlesNpcs = BuildNpcsInConversationArray()
+        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)    
+        int handleContext = BuildContext()
+        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
 
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+        SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
+    EndIf
 endFunction
 
 function sendRequestForVoiceTranscribe()
+    if(!_does_accept_player_input)
+        return
+    endif
+
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_TTS)
     string[] namesInConversation = Utility.CreateStringArray(Participants.GetSize())
@@ -243,6 +261,7 @@ function sendRequestForVoiceTranscribe()
     EndWhile
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_INPUT_NAMESINCONVERSATION, namesInConversation)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_STT)
+    ShowRepeatingMessage("Listening...")
 endFunction
 
 function GetPlayerTextInput()
@@ -257,6 +276,7 @@ function GetPlayerTextInput()
     if (result && result != "")
         sendRequestForPlayerInput(result)
         _does_accept_player_input = False
+        ClearRepeatingMessage()
     endIf
 endFunction
 
@@ -270,6 +290,7 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
         if (lastNpcToSpeak != None)
             NpcToLookAt = lastNpcToSpeak
         else
+            lastNpcToSpeak = speaker
             int i = 0
             while i < CountActorsInConversation()
                 Actor tmpActor = GetActorInConversationByIndex(i)
@@ -290,7 +311,7 @@ endFunction
 
 function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
     if lastNpcToSpeak != None
-        speaker.AddSpell(MantellaIsTalkingSpell)
+        speaker.AddSpell(MantellaIsTalkingSpell, False)
     endIf
     Utility.Wait(0.01)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
@@ -373,7 +394,7 @@ EndFunction
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 event OnReloadConversationActionReceived(Form speaker, string sentence)
-    ;Debug.Notification("OnReloadConversationActionReceived triggered")
+    ; Debug.Notification("OnReloadConversationActionReceived triggered")
     AddExtraRequestAction(mConsts.ACTION_RELOADCONVERSATION)
 endEvent
 
@@ -387,7 +408,7 @@ event OnHttpErrorReceived(int typedDictionaryHandle)
         Debug.Notification("Received SKSE_HTTP error: " + errorMessage)        
         CleanupConversation()
     Else
-        ;Debug.Notification("Error: Could not retrieve error")
+        Debug.Notification("Error: Received an error event from SKSE_HTTP but did not receive an error message.")
         CleanupConversation()
     EndIf
 endEvent
@@ -558,15 +579,36 @@ int function buildActorSetting(Actor actorToBuild)
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
-    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, actorToBuild == game.getplayer())
+    bool isPlayerCharacter = actorToBuild == game.getplayer()
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, isPlayerCharacter)
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_GENDER, actorToBuild.getleveledactorbase().getsex())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_RACE, actorToBuild.getrace())
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(game.getplayer()))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == game.getplayer())
+    EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild)
+    int customActorValuesHandle = SKSE_HTTP.createDictionary()
+    If (isPlayerCharacter)
+        AddCustomPCValues(customActorValuesHandle, actorToBuild)
+    EndIf
+    SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_ACTOR_CUSTOMVALUES, customActorValuesHandle)
     return handle
 endFunction
+
+Function AddCustomPCValues(int customActorValuesHandle, Actor actorToBuildCustomValuesFor)
+    if(!repository.IsVR())
+        string description = repository.playerCharacterDescription1
+        If (repository.playerCharacterUsePlayerDescription2)
+            description = repository.playerCharacterDescription2
+        EndIf
+        SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_DESCRIPTION, description)
+        SKSE_HTTP.setBool(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEPLAYERINPUT, repository.playerCharacterVoicePlayerInput)
+        If (repository.playerCharacterVoicePlayerInput)
+            SKSE_HTTP.setString(customActorValuesHandle, mConsts.KEY_ACTOR_PC_VOICEMODEL, repository.playerCharacterVoiceModel)
+        EndIf
+    endIf
+EndFunction
 
 int function BuildContext()
     int handle = SKSE_HTTP.createDictionary()
@@ -575,11 +617,22 @@ int function BuildContext()
         currLoc = "Skyrim"
     endIf
     SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, currLoc)
+    AddCurrentWeather(handle)
     SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, GetCurrentHourOfDay())
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
     return handle
+endFunction
+
+int function AddCurrentWeather(int contextHandle)
+    If (!Game.GetPlayer().IsInInterior())
+        int handle = SKSE_HTTP.createDictionary()
+        Weather currentWeather = Weather.GetCurrentWeather()
+        SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_WEATHER_ID, currentWeather.GetFormID())
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_WEATHER_CLASSIFICATION, currentWeather.GetClassification())
+        SKSE_HTTP.setNestedDictionary(contextHandle, mConsts.KEY_CONTEXT_WEATHER, handle)
+    EndIf
 endFunction
 
 int function GetCurrentHourOfDay()
@@ -599,3 +652,12 @@ string[] function deepcopy(string[] array_to_copy)
     EndWhile
     return result
 endFunction
+
+Function ShowRepeatingMessage(string messageToShow)
+    _repeatingMessage = messageToShow
+    RegisterForSingleUpdate(0)
+EndFunction
+
+Function ClearRepeatingMessage()
+    _repeatingMessage = ""
+EndFunction
