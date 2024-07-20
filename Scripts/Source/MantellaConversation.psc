@@ -34,7 +34,7 @@ endEvent
 event OnUpdate()
     If (_repeatingMessage != "")
         Debug.Notification(_repeatingMessage)
-        RegisterForSingleUpdate(2)
+        RegisterForSingleUpdate(10)
     EndIf
 endEvent
 
@@ -100,7 +100,7 @@ function ContinueConversation(int handle)
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         _hasBeenStopped = false
-        Debug.Notification("Conversation started.")
+        ;Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
         int npcTalkHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCTALK)
