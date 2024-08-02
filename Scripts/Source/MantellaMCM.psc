@@ -35,7 +35,6 @@ int property oid_playerTrackingOnItemAdded auto
 int property oid_playerTrackingOnItemRemoved auto
 int property oid_playerTrackingOnSpellCast auto
 int property oid_playerTrackingOnHit auto
-int property oid_playerTrackingOnLocationChange auto
 int property oid_playerTrackingOnObjectEquipped auto
 int property oid_playerTrackingOnObjectUnequipped auto
 int property oid_playerTrackingOnPlayerBowShot auto
@@ -43,6 +42,11 @@ int property oid_playerTrackingOnSit auto
 int property oid_playerTrackingOnGetUp auto
 int property oid_playerTrackingAll auto
 bool property playerAllToggle auto
+
+int property oid_playerTrackingOnLocationChange auto
+int property oid_playerTrackingOnTimeChange auto
+int property oid_playerTrackingOnWeatherChange auto
+
 
 int property oid_playerEquipmentBody auto
 int property oid_playerEquipmentHead auto
@@ -103,7 +107,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 3
+    Return 4
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -263,8 +267,6 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Tracks spells / shouts / effects casted while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnHit	
 		SetInfoText("Tracks damage taken (and the source of the damage) while a Mantella conversation is active.")
-	elseIf optionID == oid_playerTrackingOnLocationChange	
-		SetInfoText("Tracks location changes while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnObjectEquipped	
 		SetInfoText("Tracks items / spells / shouts equipped while a Mantella conversation is active.")
 	elseIf optionID == oid_playerTrackingOnObjectEquipped	
@@ -278,10 +280,17 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_playerTrackingAll	
 		SetInfoText("Enable / disable all tracking options for the player.")
 
+    elseIf optionID == oid_playerTrackingOnLocationChange	
+		SetInfoText("Tracks location changes while a Mantella conversation is active.")
+    elseIf optionID == oid_playerTrackingOnTimeChange	
+		SetInfoText("Tracks time changes while a Mantella conversation is active.")
+    elseIf optionID == oid_playerTrackingOnWeatherChange	
+		SetInfoText("Tracks weather changes while a Mantella conversation is active.")
+
     elseIf optionID == oid_playerEquipmentBody	
 		SetInfoText("Describe item in the body slot (32) of the player to the LLM.")
 	elseIf optionID == oid_playerEquipmentHead	
-		SetInfoText("Describe item in the head slot (30) of the player to the LLM.")
+		SetInfoText("Describe item in the helmet/hair slot (31) of the player to the LLM.")
 	elseIf optionID == oid_playerEquipmentHands	
 		SetInfoText("Describe item in the hands slot (33) of the player to the LLM.")
 	elseIf optionID == oid_playerEquipmentFeet	
@@ -320,7 +329,7 @@ Event OnOptionHighlight (Int optionID)
     elseIf optionID == oid_targetEquipmentBody	
 		SetInfoText("Describe item in the body slot (32) of the target to the LLM.")
 	elseIf optionID == oid_targetEquipmentHead	
-		SetInfoText("Describe item in the head slot (30) of the target to the LLM.")
+		SetInfoText("Describe item in the helmet/hair slot (31) of the target to the LLM.")
 	elseIf optionID == oid_targetEquipmentHands	
 		SetInfoText("Describe item in the hands slot (33) of the target to the LLM.")
 	elseIf optionID == oid_targetEquipmentFeet	
