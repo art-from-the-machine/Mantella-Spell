@@ -1,6 +1,6 @@
 SpriggitSource:
   PackageName: Spriggit.Yaml.Skyrim
-  Version: 0.24.0
+  Version: 0.25.0
 ModKey: Mantella.esp
 GameRelease: SkyrimSE
 ModHeader:

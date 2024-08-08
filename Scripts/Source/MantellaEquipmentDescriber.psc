@@ -19,7 +19,7 @@ event OnInit()
     _constants = new string[5]
     _armorSlots[0] = 32
     _constants[0] = BODY
-    _armorSlots[1] = 30
+    _armorSlots[1] = 31
     _constants[1] = HEAD
     _armorSlots[2] = 33
     _constants[2] = HANDS

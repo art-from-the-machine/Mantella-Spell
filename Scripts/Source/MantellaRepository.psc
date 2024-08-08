@@ -43,12 +43,16 @@ bool property playerTrackingOnItemAdded auto
 bool property playerTrackingOnItemRemoved auto
 bool property playerTrackingOnSpellCast auto
 bool property playerTrackingOnHit auto
-bool property playerTrackingOnLocationChange auto
 bool property playerTrackingOnObjectEquipped auto
 bool property playerTrackingOnObjectUnequipped auto
 bool property playerTrackingOnPlayerBowShot auto
 bool property playerTrackingOnSit auto
 bool property playerTrackingOnGetUp auto
+
+bool property playerTrackingOnLocationChange auto
+bool property playerTrackingOnTimeChange auto
+bool property playerTrackingOnWeatherChange auto
+
 
 bool property playerEquipmentBody auto
 bool property playerEquipmentHead auto
@@ -98,10 +102,15 @@ event OnInit()
     assignDefaultSettings(0, true)
 endEvent
 
-; lastVersion is the MCM version number defined in 'MantellaMCM.psc'.
+; lastVersion is the previous MCM version number defined in 'MantellaMCM.psc' before the new update is applied.
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
+; Doing it like this will only assign the defaul values to settings that haven't been initialised prior.
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 4 || isFirstInit)
+        playerTrackingOnTimeChange = true
+        playerTrackingOnWeatherChange = true
+    EndIf
     If (lastVersion < 3 || isFirstInit)
         worldID = 1
     EndIf

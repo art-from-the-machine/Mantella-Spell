@@ -22,6 +22,8 @@ bool _isTalking = false
 bool _hasBeenStopped = true
 Actor _lastNpcToSpeak = None
 string _repeatingMessage = ""
+string _location = ""
+int _initialTime = 0
 
 event OnInit()    
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
@@ -58,7 +60,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, Game.GetPlayer().GetDisplayName() + repository.worldID)
-    AddCurrentActorsAndContext(handle)
+    AddCurrentActorsAndContext(handle, true)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
     ; Debug.Notification("Sent StartConversation http request to " + address)  
@@ -377,12 +379,14 @@ EndFunction
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Function AddIngameEvent(string eventText)
-    if(!_ingameEvents)
-        _ingameEvents = Utility.CreateStringArray(1)
-    Else
-        _ingameEvents = Utility.ResizeStringArray(_ingameEvents, _ingameEvents.Length + 1)
-    endif
-    _ingameEvents[_ingameEvents.Length - 1] = eventText
+    if (eventText != "")
+        if(!_ingameEvents)
+            _ingameEvents = Utility.CreateStringArray(1)
+        Else
+            _ingameEvents = Utility.ResizeStringArray(_ingameEvents, _ingameEvents.Length + 1)
+        endif
+        _ingameEvents[_ingameEvents.Length - 1] = eventText
+    endIf
 EndFunction
 
 Function ClearIngameEvent()
@@ -556,12 +560,12 @@ Actor Function GetActorInConversationByIndex(int indexOfActor)
     return none
 EndFunction
 
-Function AddCurrentActorsAndContext(int handleToAddTo)
+Function AddCurrentActorsAndContext(int handleToAddTo, bool isConversationStart = false)
     ;Add Actors
     int[] handlesNpcs = BuildNpcsInConversationArray()
     SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, handlesNpcs)
     ;add context
-    int handleContext = BuildContext()
+    int handleContext = BuildContext(isConversationStart)
     SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, handleContext)
 EndFunction
 
@@ -610,15 +614,25 @@ Function AddCustomPCValues(int customActorValuesHandle, Actor actorToBuildCustom
     endIf
 EndFunction
 
-int function BuildContext()
+int function BuildContext(bool isConversationStart = false)
     int handle = SKSE_HTTP.createDictionary()
-    String currLoc = ((Participants.GetAt(0) as Actor).GetCurrentLocation() as Form).getName()
-    if currLoc == ""
-        currLoc = "Skyrim"
+    if (isConversationStart || repository.playerTrackingOnLocationChange)
+        _location = ((Participants.GetAt(0) as Actor).GetCurrentLocation() as Form).getName()
+        if _location == ""
+            _location = "Skyrim"
+        endIf
     endIf
-    SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, currLoc)
-    AddCurrentWeather(handle)
-    SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, GetCurrentHourOfDay())
+    SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, _location)
+
+    if (isConversationStart || repository.playerTrackingOnWeatherChange)
+        AddCurrentWeather(handle)
+    endIf
+
+    if (isConversationStart || repository.playerTrackingOnTimeChange)
+        _initialTime = GetCurrentHourOfDay()
+    endIf
+    SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, _initialTime)
+
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()

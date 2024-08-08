@@ -194,16 +194,6 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
     If (conversation.IsRunning() && !conversation.IsPlayerInConversation())
         conversation.EndConversation()
     EndIf
-
-    if repository.playerTrackingOnLocationChange
-        String currLoc = (akNewLoc as form).getname()
-        if currLoc == ""
-            currLoc = "Skyrim"
-        endIf
-        ;Debug.MessageBox("Current location is now " + currLoc)
-        ;ToDo: Set the location as a context and not as an ingame event
-        AddIngameEventToConversation("Current location is now " + currLoc)
-    endif
 endEvent
 
 
