@@ -11,6 +11,8 @@ FormList Property Participants auto
 Quest Property MantellaConversationParticipantsQuest auto
 SPELL Property MantellaIsTalkingSpell Auto
 MantellaEquipmentDescriber Property EquipmentDescriber auto
+Actor Property PlayerRef Auto
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -59,7 +61,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
-    SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, Game.GetPlayer().GetDisplayName() + repository.worldID)
+    SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     AddCurrentActorsAndContext(handle, true)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
@@ -302,11 +304,11 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
                 i += 1
             endWhile
             if IsPlayerInConversation()
-                NpcToLookAt = Game.GetPlayer()
+                NpcToLookAt = PlayerRef
             endIf
         endIf
     elseIf IsPlayerInConversation()
-        NpcToLookAt = Game.GetPlayer()
+        NpcToLookAt = PlayerRef
     endIf
     return NpcToLookAt
 endFunction
@@ -430,7 +432,7 @@ endEvent
 bool Function IsPlayerInConversation()
     int i = 0
     While i < Participants.GetSize()
-        if (Participants.GetAt(i) == Game.GetPlayer())
+        if (Participants.GetAt(i) == PlayerRef)
             return true
         endif
         i += 1
@@ -461,7 +463,7 @@ Function AddActors(Actor[] actorsToAdd)
             int nameCount = 0
             int j = 0
             bool break = false
-            if (actorsToAdd[i] != game.getplayer()) ; ignore the player having the same name as an actor
+            if (actorsToAdd[i] != PlayerRef) ; ignore the player having the same name as an actor
                 While (j < Participants.GetSize()) && (break==false)
                     Actor currentActor = Participants.GetAt(j) as Actor
                     if (currentActor.GetDisplayName() == actorsToAdd[i].GetDisplayName())
@@ -583,14 +585,14 @@ int function buildActorSetting(Actor actorToBuild)
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
-    bool isPlayerCharacter = actorToBuild == game.getplayer()
+    bool isPlayerCharacter = actorToBuild == PlayerRef
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, isPlayerCharacter)
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_GENDER, actorToBuild.getleveledactorbase().getsex())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_RACE, actorToBuild.getrace())
-    SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(game.getplayer()))
+    SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(PlayerRef))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
-    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == game.getplayer())
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild)
     int customActorValuesHandle = SKSE_HTTP.createDictionary()
     If (isPlayerCharacter)
@@ -640,7 +642,7 @@ int function BuildContext(bool isConversationStart = false)
 endFunction
 
 int function AddCurrentWeather(int contextHandle)
-    If (!Game.GetPlayer().IsInInterior())
+    If (!PlayerRef.IsInInterior())
         int handle = SKSE_HTTP.createDictionary()
         Weather currentWeather = Weather.GetCurrentWeather()
         SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_WEATHER_ID, currentWeather.GetFormID())

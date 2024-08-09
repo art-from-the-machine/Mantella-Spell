@@ -12,15 +12,16 @@ ReferenceAlias Property PotentialActor1 auto
 ReferenceAlias Property PotentialActor2 auto  
 MantellaConversation Property conversation auto
 MantellaMCM Property MantellaMCMQuest auto
+Actor Property PlayerRef Auto
 
 event OnInit()
-    Game.GetPlayer().AddSpell(MantellaSpell)
-    Game.GetPlayer().AddSpell(MantellaPower);gia
-    Game.GetPlayer().AddSpell(MantellaEndSpell)
-    Game.GetPlayer().AddSpell(MantellaEndPower)
-    Game.GetPlayer().AddSpell(MantellaRemoveNpcSpell)
-    Game.GetPlayer().AddSpell(MantellaRemoveNpcPower)
-    Game.GetPlayer().AddToFaction(repository.giafac_AllowDialogue);gia
+    PlayerRef.AddSpell(MantellaSpell)
+    PlayerRef.AddSpell(MantellaPower);gia
+    PlayerRef.AddSpell(MantellaEndSpell)
+    PlayerRef.AddSpell(MantellaEndPower)
+    PlayerRef.AddSpell(MantellaRemoveNpcSpell)
+    PlayerRef.AddSpell(MantellaRemoveNpcPower)
+    PlayerRef.AddToFaction(repository.giafac_AllowDialogue);gia
     Debug.Notification("Please save and reload to activate Mantella.")
 endEvent
 
@@ -41,7 +42,7 @@ EndFunction
 
 string Function getPlayerName(bool isStartOfSentence = True)
     if (repository.playerTrackingUsePCName)
-        return Game.GetPlayer().GetDisplayName()
+        return PlayerRef.GetDisplayName()
     Elseif (isStartOfSentence)
         return "The player"
     Else
@@ -76,7 +77,7 @@ event OnUpdate()
                 Actor Actor1 = PotentialActor1.GetReference() as Actor
                 Actor Actor2 = PotentialActor2.GetReference() as Actor
 
-                float distanceToClosestActor = game.getplayer().GetDistance(Actor1)
+                float distanceToClosestActor = PlayerRef.GetDistance(Actor1)
                 float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
                 if distanceToClosestActor <= maxDistance
                     String Actor1Name = Actor1.getdisplayname()

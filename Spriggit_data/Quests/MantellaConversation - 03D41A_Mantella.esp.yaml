@@ -3,6 +3,7 @@ EditorID: MantellaConversation
 VirtualMachineAdapter:
   Scripts:
   - Name: mantellaequipmentdescriber
+  - Name: mantellaconstants
   - Name: MantellaConversation
     Properties:
     - MutagenObjectType: ScriptObjectProperty
@@ -12,24 +13,26 @@ VirtualMachineAdapter:
       Name: MantellaConversationParticipantsQuest
       Object: 0DF435:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: Participants
-      Object: 0E4537:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: mConsts
-      Object: 03D41A:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsFaction
       Object: 06FE24:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: EquipmentDescriber
-      Object: 03D41A:Mantella.esp
+      Name: MantellaDialogueLine
+      Object: 001D8A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: Participants
+      Object: 0E4537:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaDialogueLine
-      Object: 001D8A:Mantella.esp
-  - Name: mantellaconstants
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EquipmentDescriber
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
   Versioning:
   - Break0
   ExtraBindDataVersion: 0

@@ -1,4 +1,4 @@
-Scriptname MantellaMCM_GeneralSettings  Hidden 
+Scriptname MantellaMCM_GeneralSettings  Hidden
 
 function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)

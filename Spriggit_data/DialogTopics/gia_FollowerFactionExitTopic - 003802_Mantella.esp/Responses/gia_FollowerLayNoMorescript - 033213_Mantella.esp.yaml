@@ -5,6 +5,9 @@ VirtualMachineAdapter:
   - Name: gia_castMantellaSpell
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: gia_MantellaSpell
+      Object: 0022EF:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Follower
       Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
@@ -13,9 +16,6 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
       Data: NPCkickfac
-    - MutagenObjectType: ScriptObjectProperty
-      Name: gia_MantellaSpell
-      Object: 0022EF:Mantella.esp
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: gia_castMantellaSpell
