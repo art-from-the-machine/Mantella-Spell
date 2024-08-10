@@ -68,7 +68,7 @@ String lastHitSource = ""
 String lastAggressor = ""
 Int timesHitSameAggressorSource = 0
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
-    if repository.targetTrackingOnSpellCast 
+    if repository.targetTrackingOnHit 
         String aggressor
         if akAggressor == Game.GetPlayer()
             aggressor = "The player"
