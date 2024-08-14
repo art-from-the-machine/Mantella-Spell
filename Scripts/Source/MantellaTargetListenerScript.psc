@@ -1,5 +1,7 @@
 Scriptname MantellaTargetListenerScript extends ReferenceAlias
 ;new property added after Mantella 0.9.2
+
+Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
 
@@ -70,7 +72,7 @@ Int timesHitSameAggressorSource = 0
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
     if repository.targetTrackingOnHit 
         String aggressor
-        if akAggressor == Game.GetPlayer()
+        if akAggressor == PlayerRef
             aggressor = "The player"
         else
             aggressor = akAggressor.getdisplayname()
@@ -105,7 +107,7 @@ Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
     if repository.targetTrackingOnCombatStateChanged
         String selfName = self.GetActorReference().getdisplayname()
         String targetName
-        if akTarget == Game.GetPlayer()
+        if akTarget == PlayerRef
             targetName = "the player"
         else
             targetName = akTarget.getdisplayname()

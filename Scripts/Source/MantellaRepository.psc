@@ -1,4 +1,7 @@
 Scriptname MantellaRepository extends Quest Conditional
+
+Actor Property PlayerRef Auto
+
 Spell property MantellaSpell auto
 Spell property MantellaRemoveNpcSpell auto
 Spell Property MantellaEndSpell auto
@@ -244,7 +247,7 @@ Event OnKeyDown(int KeyCode)
         if KeyCode == MantellaStartHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
-                MantellaSpell.cast(Game.GetPlayer(), targetRef)
+                MantellaSpell.cast(PlayerRef, targetRef)
                 Utility.Wait(0.5)
             endIf        
         elseIf KeyCode == MantellaListenerTextHotkey
@@ -262,9 +265,9 @@ Event OnKeyDown(int KeyCode)
         elseIf KeyCode == MantellaEndHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
-                MantellaRemoveNpcSpell.cast(Game.GetPlayer(), targetRef)
+                MantellaRemoveNpcSpell.cast(PlayerRef, targetRef)
             else
-                MantellaEndSpell.cast(Game.GetPlayer())
+                MantellaEndSpell.cast(PlayerRef)
             endIf
         elseIf KeyCode == MantellaCustomGameEventHotkey
             MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
