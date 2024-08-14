@@ -194,7 +194,13 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
     ; check if radiant dialogue is playing, and end conversation if the player leaves the area
     If (conversation.IsRunning() && !conversation.IsPlayerInConversation())
         conversation.EndConversation()
-    EndIf
+    elseIf repository.playerTrackingOnLocationChange
+        string _location = (akNewLoc as Form).GetName()
+        if _location == ""
+            _location = "Skyrim"
+        endIf
+        AddIngameEventToConversation("The location is now " + _location)
+    endIf
 endEvent
 
 
