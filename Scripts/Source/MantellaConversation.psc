@@ -567,13 +567,9 @@ EndFunction
 
 Function AddCurrentActorsAndContext(int handleToAddTo, bool isConversationStart = false)
     ;Add Actors
-    Debug.Trace("Building actors...")
     SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, _actorHandles)
-    Debug.Trace("Built actors.")
     ;add context
-    Debug.Trace("Building context...")
     SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, _contextHandle)
-    Debug.Trace("Built context.")
 EndFunction
 
 int[] function BuildNpcsInConversationArray()
@@ -586,9 +582,7 @@ int[] function BuildNpcsInConversationArray()
 endFunction
 
 int function buildActorSetting(Actor actorToBuild)  
-    Debug.Trace("buildActorSetting start: " + Utility.GetCurrentGameTime())  
     int handle = SKSE_HTTP.createDictionary()
-    Debug.Trace("int handle = SKSE_HTTP.createDictionary(): " + Utility.GetCurrentGameTime())  
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
     bool isPlayerCharacter = actorToBuild == PlayerRef
@@ -599,17 +593,12 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
-    Debug.Trace("set values: " + Utility.GetCurrentGameTime())  
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild)
-    Debug.Trace("added equipment: " + Utility.GetCurrentGameTime())  
     int customActorValuesHandle = SKSE_HTTP.createDictionary()
     If (isPlayerCharacter)
-        Debug.Trace("Adding CustomPCValues: " + Utility.GetCurrentGameTime())  
         AddCustomPCValues(customActorValuesHandle, actorToBuild)
-        Debug.Trace("Added CustomPCValues: " + Utility.GetCurrentGameTime())  
     EndIf
     SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_ACTOR_CUSTOMVALUES, customActorValuesHandle)
-    Debug.Trace("setNestedDictionaryt: " + Utility.GetCurrentGameTime())  
     return handle
 endFunction
 
