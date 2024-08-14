@@ -564,11 +564,15 @@ EndFunction
 
 Function AddCurrentActorsAndContext(int handleToAddTo, bool isConversationStart = false)
     ;Add Actors
+    Debug.Trace("Building actors...")
     int[] handlesNpcs = BuildNpcsInConversationArray()
     SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, handlesNpcs)
+    Debug.Trace("Built actors.")
     ;add context
+    Debug.Trace("Building context...")
     int handleContext = BuildContext(isConversationStart)
     SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, handleContext)
+    Debug.Trace("Built context.")
 EndFunction
 
 int[] function BuildNpcsInConversationArray()
