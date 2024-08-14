@@ -19,6 +19,8 @@ Actor Property PlayerRef Auto
 
 String[] _ingameEvents
 String[] _extraRequestActions
+int[] _actorHandles = None
+int _contextHandle = 0
 bool _does_accept_player_input = false
 bool _isTalking = false
 bool _hasBeenStopped = true
@@ -62,6 +64,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
+    BuildContext()
     AddCurrentActorsAndContext(handle, true)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
@@ -130,7 +133,6 @@ function RequestContinueConversation()
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
-        AddCurrentActorsAndContext(handle)
         if(_extraRequestActions && _extraRequestActions.Length > 0)
             ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
             SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
@@ -241,10 +243,9 @@ function sendRequestForPlayerInput(string playerInput)
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
-        int[] handlesNpcs = BuildNpcsInConversationArray()
-        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, handlesNpcs)    
-        int handleContext = BuildContext()
-        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, handleContext)
+        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)    
+        BuildContext()
+        SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
 
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
@@ -486,6 +487,7 @@ Function AddActors(Actor[] actorsToAdd)
     EndWhile
     If (wasNewActorAdded)
         CauseReassignmentOfParticipantAlias()
+        BuildNpcsInConversationArray()
     EndIf
     
     ;PrintActorsInConversation()
@@ -507,6 +509,7 @@ Function RemoveActors(Actor[] actorsToRemove)
         EndConversation()
     ElseIf (wasActorRemoved)
         CauseReassignmentOfParticipantAlias()
+        BuildNpcsInConversationArray()
     endIf
     ;PrintActorsInConversation()
 EndFunction
@@ -565,24 +568,21 @@ EndFunction
 Function AddCurrentActorsAndContext(int handleToAddTo, bool isConversationStart = false)
     ;Add Actors
     Debug.Trace("Building actors...")
-    int[] handlesNpcs = BuildNpcsInConversationArray()
-    SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, handlesNpcs)
+    SKSE_HTTP.setNestedDictionariesArray(handleToAddTo, mConsts.KEY_ACTORS, _actorHandles)
     Debug.Trace("Built actors.")
     ;add context
     Debug.Trace("Building context...")
-    int handleContext = BuildContext(isConversationStart)
-    SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, handleContext)
+    SKSE_HTTP.setNestedDictionary(handleToAddTo, mConsts.KEY_CONTEXT, _contextHandle)
     Debug.Trace("Built context.")
 EndFunction
 
 int[] function BuildNpcsInConversationArray()
-    int[] actorHandles =  Utility.CreateIntArray(Participants.GetSize())
+    _actorHandles =  Utility.CreateIntArray(Participants.GetSize())
     int i = 0
     While i < Participants.GetSize()
-        actorHandles[i] = buildActorSetting(Participants.GetAt(i) as Actor)
+        _actorHandles[i] = buildActorSetting(Participants.GetAt(i) as Actor)
         i += 1
     EndWhile
-    return actorHandles
 endFunction
 
 int function buildActorSetting(Actor actorToBuild)  
@@ -628,28 +628,27 @@ Function AddCustomPCValues(int customActorValuesHandle, Actor actorToBuildCustom
 EndFunction
 
 int function BuildContext(bool isConversationStart = false)
-    int handle = SKSE_HTTP.createDictionary()
+    _contextHandle = SKSE_HTTP.createDictionary()
     if (isConversationStart)
         _location = ((Participants.GetAt(0) as Actor).GetCurrentLocation() as Form).getName()
         if _location == ""
             _location = "Skyrim"
         endIf
-        SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, _location)
+        SKSE_HTTP.setString(_contextHandle, mConsts.KEY_CONTEXT_LOCATION, _location)
     endIf
 
     if (isConversationStart || repository.playerTrackingOnWeatherChange)
-        AddCurrentWeather(handle)
+        AddCurrentWeather(_contextHandle)
     endIf
 
     if (isConversationStart || repository.playerTrackingOnTimeChange)
         _initialTime = GetCurrentHourOfDay()
     endIf
-    SKSE_HTTP.setInt(handle, mConsts.KEY_CONTEXT_TIME, _initialTime)
+    SKSE_HTTP.setInt(_contextHandle, mConsts.KEY_CONTEXT_TIME, _initialTime)
 
     string[] past_events = deepcopy(_ingameEvents)
-    SKSE_HTTP.setStringArray(handle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
+    SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
-    return handle
 endFunction
 
 int function AddCurrentWeather(int contextHandle)
