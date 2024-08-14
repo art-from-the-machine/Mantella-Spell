@@ -28,7 +28,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: 7520672
+    SecondUnusedIntParameter: -638758496
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
@@ -40,10 +40,20 @@ Conditions:
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
   Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 05C84E:Skyrim.esm
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Unknown1: 0x000000
+  Data:
+    MutagenObjectType: HasKeywordConditionData
+    Keyword: 153B3B:Mantella.esp
   ComparisonValue: 1
 OwnerQuest: 0DF435:Mantella.esp
 PackageTemplate: 0750BE:Skyrim.esm
