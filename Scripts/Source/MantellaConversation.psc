@@ -585,8 +585,10 @@ int[] function BuildNpcsInConversationArray()
     return actorHandles
 endFunction
 
-int function buildActorSetting(Actor actorToBuild)    
+int function buildActorSetting(Actor actorToBuild)  
+    Debug.Trace("buildActorSetting start: " + Utility.GetCurrentGameTime())  
     int handle = SKSE_HTTP.createDictionary()
+    Debug.Trace("int handle = SKSE_HTTP.createDictionary(): " + Utility.GetCurrentGameTime())  
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
     bool isPlayerCharacter = actorToBuild == PlayerRef
@@ -597,12 +599,17 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
+    Debug.Trace("set values: " + Utility.GetCurrentGameTime())  
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild)
+    Debug.Trace("added equipment: " + Utility.GetCurrentGameTime())  
     int customActorValuesHandle = SKSE_HTTP.createDictionary()
     If (isPlayerCharacter)
+        Debug.Trace("Adding CustomPCValues: " + Utility.GetCurrentGameTime())  
         AddCustomPCValues(customActorValuesHandle, actorToBuild)
+        Debug.Trace("Added CustomPCValues: " + Utility.GetCurrentGameTime())  
     EndIf
     SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_ACTOR_CUSTOMVALUES, customActorValuesHandle)
+    Debug.Trace("setNestedDictionaryt: " + Utility.GetCurrentGameTime())  
     return handle
 endFunction
 
@@ -622,13 +629,13 @@ EndFunction
 
 int function BuildContext(bool isConversationStart = false)
     int handle = SKSE_HTTP.createDictionary()
-    if (isConversationStart || repository.playerTrackingOnLocationChange)
+    if (isConversationStart)
         _location = ((Participants.GetAt(0) as Actor).GetCurrentLocation() as Form).getName()
         if _location == ""
             _location = "Skyrim"
         endIf
+        SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, _location)
     endIf
-    SKSE_HTTP.setString(handle, mConsts.KEY_CONTEXT_LOCATION, _location)
 
     if (isConversationStart || repository.playerTrackingOnWeatherChange)
         AddCurrentWeather(handle)
