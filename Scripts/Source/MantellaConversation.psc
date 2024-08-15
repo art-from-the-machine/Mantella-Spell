@@ -40,7 +40,7 @@ endEvent
 event OnUpdate()
     If (_repeatingMessage != "")
         Debug.Notification(_repeatingMessage)
-        RegisterForSingleUpdate(10)
+        RegisterForSingleUpdate(60)
     EndIf
 endEvent
 
