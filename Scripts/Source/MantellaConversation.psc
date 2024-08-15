@@ -583,7 +583,7 @@ endFunction
 
 int function buildActorSetting(Actor actorToBuild)  
     int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild.getactorbase() as form).getformid())
+    SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_ID, (actorToBuild as form).getformid())
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_NAME, GetActorName(actorToBuild))
     bool isPlayerCharacter = actorToBuild == PlayerRef
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISPLAYER, isPlayerCharacter)
