@@ -248,7 +248,7 @@ Event OnKeyDown(int KeyCode)
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
                 MantellaSpell.cast(PlayerRef, targetRef)
-                Utility.Wait(0.5)
+                ;Utility.Wait(0.5)
             endIf        
         elseIf KeyCode == MantellaListenerTextHotkey
             If(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
