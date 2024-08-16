@@ -20,6 +20,7 @@ quest property gia_FollowerQst auto ;gia
 bool property microphoneEnabled auto
 bool property useHotkeyToStartMic auto
 float property MantellaEffectResponseTimer auto
+bool property showReminderMessages auto
 
 int property MantellaStartHotkey auto
 int property MantellaListenerTextHotkey auto
@@ -110,6 +111,9 @@ endEvent
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
 ; Doing it like this will only assign the defaul values to settings that haven't been initialised prior.
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 5 || isFirstInit)
+        showReminderMessages = true
+    EndIf
     If (lastVersion < 4 || isFirstInit)
         playerTrackingOnTimeChange = true
         playerTrackingOnWeatherChange = true
