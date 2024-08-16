@@ -2,7 +2,7 @@ FormKey: 0CB032:Mantella.esp
 EditorID: MantellaRemoveNpcPower
 Name:
   TargetLanguage: English
-  Value: Mantella Remove Npc
+  Value: Mantella Remove NPC
 MenuDisplayObject: 10A046:Skyrim.esm
 EquipmentType: 025BEE:Skyrim.esm
 Description:
