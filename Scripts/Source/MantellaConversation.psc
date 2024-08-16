@@ -504,6 +504,7 @@ Function RemoveActors(Actor[] actorsToRemove)
         If (Participants.HasForm(actorsToRemove[i]))
             Participants.RemoveAddedForm(actorsToRemove[i])
             actorsToRemove[i].RemoveFromFaction(MantellaConversationParticipantsFaction)
+            Debug.Notification(actorsToRemove[i].GetDisplayName()+" left the conversation.")
             wasActorRemoved = true
         EndIf
         i += 1

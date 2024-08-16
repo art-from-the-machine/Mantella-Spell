@@ -12,6 +12,7 @@ event OnEffectStart(Actor target, Actor caster)
         conversation.Start()
         conversation.StartConversation(actors)
     Else
+        Debug.Notification("Adding "+actors[1].GetDisplayName()+" to conversation...")
         conversation.AddActorsToConversation(actors)
     endIf
 endEvent
