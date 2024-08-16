@@ -145,14 +145,12 @@ endEvent
 
 
 Event OnSpellCast(Form akSpell)
-    if repository.playerTrackingOnSpellCast
-    string spellCast = (akSpell as form).getname()
-        if spellCast
-            if spellCast == "Mantella"
-                ; Do not save event if Mantella itself is cast
-            else
+    if (repository.playerTrackingOnSpellCast) 
+        string spellCast = (akSpell as form).getname()
+        if spellCast 
+            if (spellCast != "Mantella") && (spellCast != "Mantella Remove NPC") && (spellCast != "Mantella End Conversation")
                 ;Debug.Notification("The player casted the spell "+ spellCast)
-                AddIngameEventToConversation(getPlayerName() + " casted the spell " + spellCast )
+                AddIngameEventToConversation(getPlayerName() + " casted the spell / consumed " + spellCast )
             endIf
         endIf
     endif
@@ -169,7 +167,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
         ; avoid writing events too often (continuous spells record very frequently)
         ; if the actor and weapon hasn't changed, only record the event every 5 hits
-        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5)
+        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5) && (hitSource != "Mantella") && (hitSource != "Mantella Remove NPC") && (hitSource != "Mantella End Conversation")
             lastHitSource = hitSource
             lastAggressor = aggressor
             timesHitSameAggressorSource = 0
@@ -207,8 +205,11 @@ endEvent
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectEquipped
         string itemEquipped = akBaseObject.getname()
-        ;Debug.MessageBox("The player equipped " + itemEquipped)
-        AddIngameEventToConversation(getPlayerName() + " equipped " + itemEquipped )
+
+        if (itemEquipped != "Mantella") && (itemEquipped != "Mantella Remove NPC") && (itemEquipped != "Mantella End Conversation")
+            ;Debug.MessageBox("The player equipped " + itemEquipped)
+            AddIngameEventToConversation(getPlayerName() + " equipped " + itemEquipped)
+        endIf
     endif
 endEvent
 
@@ -216,8 +217,11 @@ endEvent
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
     if repository.playerTrackingOnObjectUnequipped
         string itemUnequipped = akBaseObject.getname()
-        ;Debug.MessageBox("The player unequipped " + itemUnequipped)
-        AddIngameEventToConversation(getPlayerName() + " unequipped " + itemUnequipped )
+
+        if (itemUnequipped != "Mantella") && (itemUnequipped != "Mantella Remove NPC") && (itemUnequipped != "Mantella End Conversation")
+            ;Debug.MessageBox("The player unequipped " + itemUnequipped)
+            AddIngameEventToConversation(getPlayerName() + " unequipped " + itemUnequipped )
+        endIf
     endif
 endEvent
 
