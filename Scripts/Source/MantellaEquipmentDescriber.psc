@@ -2,14 +2,14 @@ Scriptname MantellaEquipmentDescriber extends Quest hidden
 
 Import SKSE_HTTP
 
-string property EQUIPMENT = "mantella_equipment" auto
-string property BODY = "body" auto
-string property HEAD = "head" auto
-string property HANDS = "hands" auto
-string property FEET = "feet" auto
-string property AMULET = "amulet" auto
-string property RIGHTHAND = "righthand" auto
-string property LEFTHAND = "lefthand" auto
+string property Equipment = "mantella_equipment" auto
+string property Body = "body" auto
+string property Head = "head" auto
+string property hands = "hands" auto
+string property Feet = "feet" auto
+string property Amulet = "amulet" auto
+string property RightHand = "righthand" auto
+string property LeftHand = "lefthand" auto
 
 int[] _armorSlots
 string[] _constants
@@ -18,15 +18,15 @@ event OnInit()
     _armorSlots = new int[5]
     _constants = new string[5]
     _armorSlots[0] = 32
-    _constants[0] = BODY
+    _constants[0] = Body
     _armorSlots[1] = 31
-    _constants[1] = HEAD
+    _constants[1] = Head
     _armorSlots[2] = 33
-    _constants[2] = HANDS
+    _constants[2] = hands
     _armorSlots[3] = 37
-    _constants[3] = FEET
+    _constants[3] = Feet
     _armorSlots[4] = 35
-    _constants[4] = AMULET
+    _constants[4] = Amulet
 endEvent
 
 int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentOf)
@@ -43,13 +43,13 @@ int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentO
     ;Right Hand
     Weapon equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(false)
     If (equippedWeapon)
-        SKSE_HTTP.setString(equipmentHandle, RIGHTHAND, equippedWeapon.GetName())
+        SKSE_HTTP.setString(equipmentHandle, RightHand, equippedWeapon.GetName())
     EndIf
     ;Offhand
     equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(true)
     If (equippedWeapon)
-        SKSE_HTTP.setString(equipmentHandle, LEFTHAND, equippedWeapon.GetName())
+        SKSE_HTTP.setString(equipmentHandle, LeftHand, equippedWeapon.GetName())
     EndIf
-    SKSE_HTTP.setNestedDictionary(handle, EQUIPMENT, equipmentHandle)
+    SKSE_HTTP.setNestedDictionary(handle, Equipment, equipmentHandle)
 EndFunction
 

@@ -11,8 +11,8 @@ endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption ("Player Equipment")
-    mcm.oid_playerEquipmentBody=mcm.AddToggleOption("Body", repository.playerEquipmentBody)
-    mcm.oid_playerEquipmentHead=mcm.AddToggleOption("Head", repository.playerEquipmentHead)
+    mcm.oid_playerEquipmentBody=mcm.AddToggleOption("Body ", repository.playerEquipmentBody)
+    mcm.oid_playerEquipmentHead=mcm.AddToggleOption("Head ", repository.playerEquipmentHead)
     mcm.oid_playerEquipmentHands=mcm.AddToggleOption("Hands", repository.playerEquipmentHands)
     mcm.oid_playerEquipmentFeet=mcm.AddToggleOption("Feet", repository.playerEquipmentFeet)
     mcm.oid_playerEquipmentAmulet=mcm.AddToggleOption("Amulet", repository.playerEquipmentAmulet)
@@ -23,8 +23,8 @@ endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption ("NPC Equipment")
-    mcm.oid_targetEquipmentBody=mcm.AddToggleOption("Body", repository.targetEquipmentBody)
-    mcm.oid_targetEquipmentHead=mcm.AddToggleOption("Head", repository.targetEquipmentHead)
+    mcm.oid_targetEquipmentBody=mcm.AddToggleOption("Body ", repository.targetEquipmentBody)
+    mcm.oid_targetEquipmentHead=mcm.AddToggleOption("Head ", repository.targetEquipmentHead)
     mcm.oid_targetEquipmentHands=mcm.AddToggleOption("Hands", repository.targetEquipmentHands)
     mcm.oid_targetEquipmentFeet=mcm.AddToggleOption("Feet", repository.targetEquipmentFeet)
     mcm.oid_targetEquipmentAmulet=mcm.AddToggleOption("Amulet", repository.targetEquipmentAmulet)
