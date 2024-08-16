@@ -40,7 +40,7 @@ endEvent
 event OnUpdate()
     If (_repeatingMessage != "")
         Debug.Notification(_repeatingMessage)
-        RegisterForSingleUpdate(60)
+        RegisterForSingleUpdate(10)
     EndIf
 endEvent
 
@@ -674,7 +674,11 @@ endFunction
 
 Function ShowRepeatingMessage(string messageToShow)
     _repeatingMessage = messageToShow
-    RegisterForSingleUpdate(0)
+    if repository.showReminderMessages
+        Debug.Notification(_repeatingMessage)
+    else
+        RegisterForSingleUpdate(0)
+    endIf
 EndFunction
 
 Function ClearRepeatingMessage()

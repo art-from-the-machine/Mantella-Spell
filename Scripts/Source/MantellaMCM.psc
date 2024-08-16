@@ -6,6 +6,7 @@ MantellaRepository property repository auto
 int property oid_microphoneEnabledToggle auto
 int property oid_useHotkeyToStartMic auto
 int property oid_responsetimeslider auto
+int property oid_showReminderMessages auto
 
 int property oid_keymapStartAddHotkey auto
 int property oid_keymapPromptHotkey auto
@@ -107,7 +108,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 4
+    Return 5
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -220,6 +221,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("If this is unchecked recording from the mic will start automatically when it is the player's turn to speak. If this is checked recording will only start once the 'Open Text Prompt' hotkey is pressed.")
     elseIf optionID == oid_responsetimeslider
 		SetInfoText("Time (in seconds) to enter a text response or start the microphone recording using the 'Open Text Prompt' hotkey if the options above are set accordingly. \nDefault: 180")
+	elseIf optionID == oid_showReminderMessages
+		SetInfoText("Periodically reminds the player it is their turn to speak / input text.")
     
     elseIf optionID == oid_keymapStartAddHotkey
 		SetInfoText("Either starts a conversation or adds an NPC to a conversation.")

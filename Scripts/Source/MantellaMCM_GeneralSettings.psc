@@ -12,6 +12,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_microphoneEnabledToggle = mcm.AddToggleOption("Enabled", repository.microphoneEnabled)
     mcm.oid_useHotkeyToStartMic = mcm.AddToggleOption("Use Hotkey to Start Mic", repository.useHotkeyToStartMic)
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
+    mcm.oid_showReminderMessages = mcm.AddToggleOption("Show Input Reminder Messages", repository.showReminderMessages)
 
     mcm.AddHeaderOption("Controls")
     mcm.oid_keymapStartAddHotkey = mcm.AddKeyMapOption("Start Conversation / Add NPC", repository.MantellaStartHotkey)
@@ -115,6 +116,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseif optionID == mcm.oid_useHotkeyToStartMic
         Repository.useHotkeyToStartMic =! Repository.useHotkeyToStartMic
         mcm.SetToggleOptionValue(mcm.oid_useHotkeyToStartMic, Repository.useHotkeyToStartMic)
+    elseIf optionID == mcm.oid_showReminderMessages
+        repository.showReminderMessages =! repository.showReminderMessages
+        mcm.SetToggleOptionValue(optionID, repository.showReminderMessages)
     elseIf optionID == mcm.oid_debugNPCselectMode
         Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled
         mcm.SetToggleOptionValue(mcm.oid_debugNPCselectMode, Repository.NPCdebugSelectModeEnabled)
