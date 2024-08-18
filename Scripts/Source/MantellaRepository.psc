@@ -98,13 +98,20 @@ bool property NPCPackage auto Conditional
 bool property NPCDialogue auto ;gia
 
 bool property NPCdebugSelectModeEnabled auto
-
+; bool restartMantellaExe = False
 int property HttpPort auto
 
 
 event OnInit()
     assignDefaultSettings(0, true)
 endEvent
+
+; event OnUpdate()
+;     If (restartMantellaExe)
+;         restartMantellaExe = false
+;         MantellaLauncher.LaunchMantellaExe()
+;     EndIf
+; endEvent
 
 ; lastVersion is the previous MCM version number defined in 'MantellaMCM.psc' before the new update is applied.
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
@@ -242,6 +249,15 @@ endfunction
 
 bool Function IsVR()
     return Debug.GetVersionNumber() == "1.4.15.0"
+EndFunction
+
+bool function restartMantellaExe()
+    ; restartMantellaExe = true
+    ; RegisterForSingleUpdate(1)
+    MantellaLauncher.LaunchMantellaExe() 
+    ;Note: If you need to debug this call to the SKSE plugin, you need to call it from the commented out single update above instead
+    ;      or the VS debugger will crash (due to being called from the MCM thread?).
+    ;      Check the corresponding commented out OnUpdate at the beginning of the script.
 EndFunction
 
 Event OnKeyDown(int KeyCode)

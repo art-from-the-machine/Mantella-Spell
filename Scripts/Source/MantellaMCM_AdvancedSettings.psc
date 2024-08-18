@@ -9,6 +9,7 @@ endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 	mcm.AddHeaderOption("Debug")
+    mcm.oid_restartMantellaExe = mcm.AddTextOption("Restart Mantella.exe", "")
 	mcm.oid_debugNPCselectMode = mcm.AddToggleOption("NPC Debug Select Mode", Repository.NPCdebugSelectModeEnabled)
 endfunction
 
@@ -53,5 +54,8 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
 	if optionID == mcm.oid_debugNPCselectMode
 		Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled
 		mcm.SetToggleOptionValue(mcm.oid_debugNPCselectMode, Repository.NPCdebugSelectModeEnabled)
+    elseif optionID == mcm.oid_restartMantellaExe
+        Repository.restartMantellaExe()
+        Debug.MessageBox("Restarting Mantella.exe... This can take a moment.")
 	endIf
 endfunction 

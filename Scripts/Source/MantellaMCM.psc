@@ -89,6 +89,7 @@ int property oid_NPCAngerToggle auto ;gia
 int property oid_NPCPackageToggle auto
 
 int property oid_debugNPCSelectMode auto
+int property oid_restartMantellaExe Auto
 int property oid_httpPort auto
 
 string property PAGE_GENERAL = "General" auto
