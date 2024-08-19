@@ -33,7 +33,8 @@ string property KEY_STARTCONVERSATION_WORLDID = "mantella_worldid" auto
 
 ;Actors
 string property KEY_ACTORS = "mantella_actors" auto
-string property KEY_ACTOR_ID = "mantella_actor_id" auto
+string property KEY_ACTOR_BASEID = "mantella_actor_baseid" auto
+string property KEY_ACTOR_REFID = "mantella_actor_refid" auto
 string property KEY_ACTOR_NAME = "mantella_actor_name" auto
 string property KEY_ACTOR_GENDER = "mantella_actor_gender" auto
 string property KEY_ACTOR_RACE = "mantella_actor_race" auto
