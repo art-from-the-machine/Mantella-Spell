@@ -203,7 +203,7 @@ Function CleanupConversation()
     _does_accept_player_input = false
     _isTalking = false
     _lastNpcToSpeak = None
-    SKSE_HTTP.clearAllDictionaries()
+    ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
     EndIf
@@ -616,10 +616,34 @@ endFunction
 int Function BuildCustomContextValues()
     ;new custom context values that pertains to vision related variables that Mantella Software will use
     int handleCustomContextValues = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setBool(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_READY, MantellaVisionScript.checkAndUpdateVisionPipeline(repository))
-    SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RES, repository.visionResolution)
-    SKSE_HTTP.setInt(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE, repository.visionResize)
+    bool isVisionReady = MantellaVisionScript.checkAndUpdateVisionPipeline(repository) ;Checks if there's a screenshot waiting to be analyzed or if the option to send screenshot to the LLM is enabled
+    if isVisionReady
+        SKSE_HTTP.setBool(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_READY, isVisionReady)
+        SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RES, repository.visionResolution)
+        SKSE_HTTP.setInt(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE, repository.visionResize)
+        SKSE_HTTP.setBool(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_ISUSINGSTEAMSCREENSHOT, repository.isUsingSteamScreenshot) ;IMPORTANT TO FINISH ADD A CHECK IF USING STEAM SCREENSHOT
+        if repository.isUsingSteamScreenshot
+            SKSE_HTTP.setInt(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_STEAMSCREENSHOTDELAY, repository.steamScreenshotDelay)
+        endif
+        BuildVisionHintsValues(handleCustomContextValues)
+    endif
     return handleCustomContextValues
+EndFunction
+
+int Function BuildVisionHintsValues(int handleCustomContextValues)
+    ;new custom context values that pertains to vision related variables that Mantella Software will use
+    if repository.allowVisionHints && repository.ActorsInCellArray!="" && repository.currentSKversion != "1.4.15.0"
+        SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSNAMEARRAY, repository.ActorsInCellArray)
+        SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSDISTANCEARRAY, repository.VisionDistanceArray)
+        MantellaVisionScript.resetVisionHintsArrays(repository)
+    elseif repository.allowVisionHints && repository.currentSKversion == "1.4.15.0" ;basically checking for Skyrim VR
+        MantellaVisionScript.ScanCellForActors(repository, true, true) ;trying to scan for NPC names right before sending the player response to the LLM
+        if repository.ActorsInCellArray!="" 
+            SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSNAMEARRAY, repository.ActorsInCellArray)
+            SKSE_HTTP.setString(handleCustomContextValues, mConsts.KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSDISTANCEARRAY, repository.VisionDistanceArray)
+            MantellaVisionScript.resetVisionHintsArrays(repository)
+        endif
+    endif
 EndFunction
 
 int function GetCurrentHourOfDay()

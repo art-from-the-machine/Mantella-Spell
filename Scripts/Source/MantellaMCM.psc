@@ -59,10 +59,15 @@ int property oid_httpPort auto
 ;Vision properties
 int property oid_automaticVisionAnalysis auto
 int property oid_SteamVisionAnalysis auto
+int property oid_steamScreenshotDelay auto
 int property oid_visionResolution auto
 int property oid_hideInterfaceDuringScreenshot auto
 int property oid_keymapVisionHotkey auto
+int property oid_allowVisionHints auto
+int property oid_allowVisionDebugMode auto
+int property oid_forceSkyrimVersion auto
 int property oid_resize auto
+int property oid_VisionHintsHotkey auto
 string[] property resolutionMenuList auto
 int property resolutionMenuDefaultIndex auto
 
@@ -77,7 +82,7 @@ Event OnConfigInit()
 	Pages[2] = "Target Tracking"
  	Pages[3] = "Advanced"
 	Pages[4] = "Vision"
- 
+	
 	targetAllToggle=true
 	playerAllToggle=true
 
@@ -158,6 +163,8 @@ EndEvent
 event OnOptionInputAccept(int optionID, string inputText)
 	if MantellaMCMcurrentPage =="Advanced"
 		MantellaMCM_AdvancedSettings.OptionInputUpdate(self, optionID, inputText, repository)
+	elseif MantellaMCMcurrentPage =="Vision"
+		MantellaMCM_VisionSettings.OptionInputUpdate(self, optionID, inputText, repository)
 	endif
 EndEvent
 
@@ -264,7 +271,7 @@ Event OnOptionHighlight (Int optionID)
 	elseIf optionID == oid_automaticVisionAnalysis
 		SetInfoText("Toggle this option to enable automatic vision analysis. A screenshot of the player's vision will be sent automatically with each reply to the AI (LLM)")
 	elseIf optionID == oid_SteamVisionAnalysis
-		SetInfoText("Toggle this option to enable vision analysis. A screenshot must be taken using the Steam Interface (usually left trigger + left menu button) and will be sent to the LLM on the next reply (must be sent within 2 minutes)")
+		SetInfoText("Toggle this option to enable vision analysis. A screenshot must be taken using the Steam Interface (usually left trigger + left menu button in VR, usually F12 in desktop) and will be sent to the LLM on the next reply (must be sent within the specified delay in the MCM). The steam overlay must be enabled")
 	elseif optionID == oid_visionResolution
 		SetInfoText("Select this option to choose the resolution of the screenshots sent to the AI. Lower it to reduce token use and reponse generation time.")
 	elseif optionID == oid_hideInterfaceDuringScreenshot
@@ -273,6 +280,16 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Use this hotkey to take a screenshot that will be later sent to the the AI on your next reply")	
 	elseif optionID == oid_resize
 		SetInfoText("Lower this value to resize the image (width in pixels) before sending it to the LLM to accelerate response time and diminish token use (recommended minimum : 512, recommended maximum : 2000). If a value greater than the actual screen resolution is used, Mantella Software will default to the actual screen resolution value.")	
+	elseif optionID == oid_allowVisionHints
+		SetInfoText("Give the names of the NPCs displayed in the screenshots sent to the LLM")	
+	elseif optionID == oid_VisionHintsHotkey
+		SetInfoText("Pressing this hotkey gives the names of the NPCs displayed in the screenshots sent to the LLM, it is recommended to set it to the same key as your screenshot capture key")	
+	elseif optionID == oid_allowVisionDebugMode
+		SetInfoText("Allows access to all vision options. NOTE : Some options may not work on specific setups due to missing components")	
+	elseif optionID == oid_allowVisionDebugMode
+		SetInfoText("Forces Mantella settings to behave according to a user specified version of Skyrim. The version number must be entered in this format '1.6.640.0'.THIS SETTING WILL RESET ON PLAYER LOAD.")	
+	elseif optionID == oid_steamScreenshotDelay
+		SetInfoText("Choose the delay in seconds for Mantella to consider a Steam Screenshot for analsysis. Longer delays give more leeway for the user to take screenshots. A shorter delay helps prevent older screenshots from being analyzed.")	
 	EndIf
 endEvent
 

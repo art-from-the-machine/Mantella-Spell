@@ -79,3 +79,7 @@ string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 string property KEY_CONTEXT_CUSTOMVALUES_VISION_READY = "mantella_vision_ready" auto
 string property KEY_CONTEXT_CUSTOMVALUES_VISION_RES = "mantella_vision_resolution" auto
 string property KEY_CONTEXT_CUSTOMVALUES_VISION_RESIZE = "mantella_vision_resize" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSNAMEARRAY = "mantella_vision_hints_names" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_HINTSDISTANCEARRAY = "mantella_vision_hints_distance" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_ISUSINGSTEAMSCREENSHOT = "mantella_vision_is_using_steam_screenshot" auto
+string property KEY_CONTEXT_CUSTOMVALUES_VISION_STEAMSCREENSHOTDELAY = "mantella_vision_steam_screenshot_delay" auto

@@ -21,12 +21,19 @@ Sound Property ScreenshotSound Auto
 ;Vision variables ;
 ;;;;;;;;;;;;;;;;;;;
 bool property allowVision auto
+bool property allowVisionHints auto
 bool property hasPendingVisionCheck auto
+bool property isUsingSteamScreenshot auto
+bool property allowVisionDebugMode auto
 string property visionResolution auto
 int property visionResolutionIndex auto
 int property visionResize auto
 int property MantellaVisionHotkey auto
+int property MantellaVisionHintsHotkey auto
 bool property allowHideInterfaceDuringScreenshot auto
+String property ActorsInCellArray auto
+String property VisionDistanceArray auto
+int property steamScreenshotDelay auto
 ;;;;;;;;;;;;;;;;;;;
 
 bool property microphoneEnabled auto
@@ -83,11 +90,15 @@ bool property NPCdebugSelectModeEnabled auto
 int property HttpPort auto
 
 event OnInit()
-    allowVision = false ; to add to MCM eventually
+    allowVision = false 
+    allowVisionHints = false
+    isUsingSteamScreenshot = false
     hasPendingVisionCheck = false
     visionResolution = "auto"
     visionResolutionIndex=0
     visionResize=1024
+    allowVisionDebugMode = false
+    steamScreenshotDelay = 120
 
     microphoneEnabled = true
     MantellaEffectResponseTimer = 180
@@ -99,6 +110,7 @@ event OnInit()
     MantellaCustomGameEventHotkey = -1
     MantellaRadiantHotkey = -1
     MantellaVisionHotkey = -1
+    MantellaVisionHintsHotkey = -1
 
     showDialogueItems = true
 
@@ -145,13 +157,6 @@ event OnInit()
     HttpPort = 4999
 endEvent
 
-function BindVisionHotkey(int keyCode)
-    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
-    UnregisterForKey(MantellaVisionHotkey)
-    MantellaVisionHotkey=keyCode
-    RegisterForKey(keyCode)
-endfunction
-
 function BindStartAddHotkey(int keyCode)
     ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
     UnregisterForKey(MantellaStartHotkey)
@@ -187,12 +192,30 @@ function BindRadiantHotkey(int keyCode)
     RegisterForKey(keyCode)
 endfunction
 
+function BindVisionHotkey(int keyCode)
+    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
+    UnregisterForKey(MantellaVisionHotkey)
+    MantellaVisionHotkey=keyCode
+    RegisterForKey(keyCode)
+endfunction
+
+function BindVisionHintsHotkey(int keyCode)
+    ;used by the MCM_GeneralSettings when updating the start hotkey KeyMapChange
+    UnregisterForKey(MantellaVisionHintsHotkey)
+    MantellaVisionHintsHotkey=keyCode
+    RegisterForKey(keyCode)
+endfunction
+
 Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
     if !utility.IsInMenuMode()
         if KeyCode == MantellaVisionHotkey
             MantellaVisionScript.GenerateMantellaVision(self)
+            ScreenshotSound.play(game.getplayer())
+        endif
+        if KeyCode == MantellaVisionHintsHotkey
+            MantellaVisionScript.ScanCellForActors(self, true, true)
             ScreenshotSound.play(game.getplayer())
         endif
         if KeyCode == MantellaStartHotkey
