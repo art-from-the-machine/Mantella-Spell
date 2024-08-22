@@ -152,10 +152,11 @@ function ProcessNpcSpeak(int handle)
         WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, "Error: No line transmitted for actor to speak")
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
-        string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)        
-        RaiseActionEvent(speaker, lineToSpeak, actions)
+        string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+
         Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
         NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+        RaiseActionEvent(speaker, lineToSpeak, actions)
         _lastNpcToSpeak = speaker
     endIf
 endFunction
@@ -356,6 +357,11 @@ Function RaiseActionEvent(Actor speaker, string lineToSpeak, string[] actions)
     While i < actions.Length
         string extraAction = actions[i]
         ;Debug.Notification("Recieved action " + extraAction + ". Sending out event!")
+        ; if the action is to open the inventory menu, wait for the speaker to finish their voiceline first before the menu forces the game to pause
+        if extraAction == mConsts.ACTION_NPC_INVENTORY
+            Utility.Wait(0.5)
+            WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+        endIf
         int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
         if (handle)
             ModEvent.PushForm(handle, speaker)

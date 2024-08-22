@@ -13,7 +13,6 @@ Effects:
   Data: {}
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsTalkingConditionData
     ComparisonValue: 1

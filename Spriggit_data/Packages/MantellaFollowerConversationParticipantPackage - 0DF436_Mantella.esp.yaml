@@ -24,17 +24,15 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -638758496
+    SecondUnusedIntParameter: -1244984032
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
   Flags:
   - OR
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
@@ -42,7 +40,6 @@ Conditions:
 - MutagenObjectType: ConditionFloat
   Flags:
   - OR
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 05C84E:Skyrim.esm
@@ -50,7 +47,6 @@ Conditions:
 - MutagenObjectType: ConditionFloat
   Flags:
   - OR
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: HasKeywordConditionData
     Keyword: 153B3B:Mantella.esp

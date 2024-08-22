@@ -109,13 +109,16 @@ endEvent
 ;All the event listeners  below have 'if' clauses added after Mantella 0.9.2 (except ondying)
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if repository.playerTrackingOnItemAdded
-        
         string itemName = akBaseItem.GetName()
-        string itemPickedUpMessage = getPlayerName() + " picked up " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+        string itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName 
 
         string sourceName = akSourceContainer.getbaseobject().getname()
         if sourceName != ""
-            itemPickedUpMessage = getPlayerName() + " picked up " + itemName + " from " + sourceName 
+            itemPickedUpMessage = getPlayerName() + " picked up / took " + itemCount + itemName + " from " + sourceName 
         endIf
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows
@@ -129,11 +132,15 @@ EndEvent
 Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akDestContainer)
     if Repository.playerTrackingOnItemRemoved
         string itemName = akBaseItem.GetName()
-        string itemDroppedMessage = getPlayerName() + " dropped " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+        string itemDroppedMessage = getPlayerName() + " dropped " + itemCount + itemName 
 
         string destName = akDestContainer.getbaseobject().getname()
         if destName != ""
-            itemDroppedMessage = getPlayerName() + " placed " + itemName + " in/on " + destName 
+            itemDroppedMessage = getPlayerName() + " placed/gave " + itemCount + itemName + " in/on/to " + destName 
         endIf
         
         if itemName != "Iron Arrow" ; Papyrus hallucinates iron arrows

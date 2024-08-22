@@ -32,6 +32,7 @@ function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption("NPC Actions")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
 	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
+    mcm.oid_NPCInventoryToggle = mcm.AddToggleOption("Allow Inventory", Repository.NPCInventory)
     mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
     mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems)   
 endfunction
@@ -144,6 +145,14 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
             game.getplayer().addtofaction(Repository.giafac_AllowAnger)
         elseif (Repository.NPCAnger) == False
             game.getplayer().removefromfaction(Repository.giafac_AllowAnger)
+        endif
+    elseIf optionID == mcm.oid_NPCInventoryToggle
+        Repository.NPCInventory =! Repository.NPCInventory
+        mcm.SetToggleOptionValue(mcm.oid_NPCInventoryToggle, Repository.NPCInventory)
+        if (Repository.NPCInventory) == True 
+            game.getplayer().addtofaction(Repository.fac_AllowInventory)
+        elseif (Repository.NPCInventory) == False
+            game.getplayer().removefromfaction(Repository.fac_AllowInventory)
         endif
     elseIf optionID == mcm.oid_NPCPackageToggle
         Repository.NPCPackage =! Repository.NPCPackage

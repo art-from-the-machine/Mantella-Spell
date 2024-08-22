@@ -16,6 +16,7 @@ Function RegisterForOffendAndForgiveEvents()
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_OFFENDED,"OnNpcOffendedActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_FORGIVEN,"OnNpcForgivenActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_FOLLOW,"OnNpcFollowActionReceived")
+    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_INVENTORY,"OnNpcInventoryActionReceived")
 EndFunction
 
 event OnNpcOffendedActionReceived(Form speaker, string sentence)
@@ -61,6 +62,17 @@ event OnNpcFollowActionReceived(Form speaker, string sentence)
             else
                 Debug.Notification("Follow action not enabled in the Mantella MCM.")
             endif
+        endif
+    endif
+endEvent
+
+event OnNpcInventoryActionReceived(Form speaker, string sentence)
+    Actor aSpeaker = speaker as Actor
+    if (aSpeaker)
+        if PlayerRef.isinfaction(repository.fac_AllowInventory)
+            aSpeaker.OpenInventory(true)
+        else
+            Debug.Notification("Inventory action not enabled in the Mantella MCM.")
         endif
     endif
 endEvent

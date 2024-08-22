@@ -11,6 +11,7 @@ Spell Property MantellaEndSpell auto
 Faction Property giafac_AllowFollower  Auto ;gia
 Faction Property giafac_AllowAnger  Auto ;gia
 ;Faction Property giafac_AllowForgive  Auto ;gia
+Faction Property fac_AllowInventory  Auto
 Faction Property giafac_AllowDialogue  Auto ;gia
 Faction Property giafac_Following  Auto ;gia
 Faction Property giafac_Mantella  Auto ;gia
@@ -93,6 +94,7 @@ bool property AllowForNPCtoFollow auto ;gia
 ;bool property followingNPCsleep auto ;gia
 ;bool property NPCstopandTalk auto ;gia
 bool property NPCAnger auto ;gia
+bool property NPCInventory auto
 bool property NPCPackage auto Conditional
 ;bool property NPCForgive auto ;gia
 bool property NPCDialogue auto ;gia
@@ -118,6 +120,9 @@ endEvent
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
 ; Doing it like this will only assign the defaul values to settings that haven't been initialised prior.
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 6 || isFirstInit)
+        NPCInventory = false
+    EndIf
     If (lastVersion < 5 || isFirstInit)
         showReminderMessages = true
     EndIf
