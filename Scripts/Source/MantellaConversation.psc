@@ -244,6 +244,7 @@ function sendRequestForPlayerInput(string playerInput)
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
+        UpdateNpcsInConversationArray()
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)    
         BuildContext()
         SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
@@ -587,6 +588,16 @@ int[] function BuildNpcsInConversationArray()
     int i = 0
     While i < Participants.GetSize()
         _actorHandles[i] = buildActorSetting(Participants.GetAt(i) as Actor)
+        i += 1
+    EndWhile
+endFunction
+
+int[] function UpdateNpcsInConversationArray()
+    ; Update NPC details where variables are dynamic
+    int i = 0
+    While i < Participants.GetSize()
+        Actor actorToBuild = Participants.GetAt(i) as Actor
+        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
         i += 1
     EndWhile
 endFunction
