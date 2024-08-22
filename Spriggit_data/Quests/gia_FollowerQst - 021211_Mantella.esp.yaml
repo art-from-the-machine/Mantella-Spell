@@ -8,14 +8,12 @@ Flags:
 Priority: 100
 DialogConditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 EventConditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
@@ -32,7 +30,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -52,7 +49,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -72,7 +68,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -92,7 +87,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -112,7 +106,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -132,7 +125,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -152,7 +144,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -172,7 +163,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -192,7 +182,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -212,7 +201,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -232,7 +220,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -252,7 +239,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -272,7 +258,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -292,7 +277,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -312,7 +296,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -332,7 +315,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -352,7 +334,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -372,7 +353,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -392,7 +372,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -412,7 +391,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp
@@ -432,7 +410,6 @@ Aliases:
   - ClearNamesWhenRemoved
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 003806:Mantella.esp

@@ -1,0 +1,9 @@
+FormKey: 15DD3D:Mantella.esp
+EditorID: fac_AllowInventory
+Name:
+  TargetLanguage: English
+  Value: fac_AllowInventory
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

@@ -3,12 +3,12 @@ VirtualMachineAdapter:
   Scripts:
   - Name: MantellaDialogueItems
     Properties:
-    - MutagenObjectType: ScriptStringProperty
-      Name: TriggeredDialogueItem
-      Data: mantella_start_add
     - MutagenObjectType: ScriptObjectProperty
       Name: conversation
       Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_start_add
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: MantellaDialogueItems
@@ -29,28 +29,24 @@ FavorLevel: None
 ResponseData: 0DBA22:Skyrim.esm
 Conditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -638758656
+    SecondUnusedIntParameter: -1244984160
     VariableName: ::showDialogueItems_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetQuestRunningConditionData
     Quest: 03D41A:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
   CompareOperator: GreaterThan
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetRelationshipRankConditionData
     TargetNpc: 000014:Skyrim.esm
   ComparisonValue: -1
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     RunOnType: Reference
@@ -59,7 +55,6 @@ Conditions:
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
   CompareOperator: NotEqualTo
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 06FE24:Mantella.esp
