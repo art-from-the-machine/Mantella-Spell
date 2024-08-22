@@ -86,6 +86,7 @@ bool property targetEquipmentAllToggle auto
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
+int property oid_NPCInventoryToggle auto
 int property oid_NPCPackageToggle auto
 
 int property oid_debugNPCSelectMode auto
@@ -109,7 +110,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 5
+    Return 6
 EndFunction
 
 event OnVersionUpdate(int a_version)

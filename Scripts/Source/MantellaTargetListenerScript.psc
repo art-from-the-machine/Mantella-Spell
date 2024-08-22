@@ -20,14 +20,19 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
     if repository.targetTrackingItemAdded 
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemPickedUpMessage = selfName+" picked up " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+
+        string itemPickedUpMessage = selfName+" picked up " + itemCount + itemName 
 
         string sourceName = akSourceContainer.getbaseobject().getname()
         if sourceName != ""
-            itemPickedUpMessage = selfName+" picked up " + itemName + " from " + sourceName 
+            itemPickedUpMessage = selfName+" picked up " + itemCount + itemName + " from " + sourceName 
         endIf
         
-        if (itemName != "Iron Arrow") && (itemName != "") ;Papyrus hallucinates iron arrows
+        if (itemName != "Iron Arrow") && (itemName != "") && sourceName != PlayerRef.GetDisplayName() ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
             AddIngameEventToConversation( itemPickedUpMessage)
         endIf
@@ -39,14 +44,19 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
     if repository.targetTrackingItemRemoved  
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemDroppedMessage = selfName+" dropped " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+
+        string itemDroppedMessage = selfName+" dropped " + itemCount + itemName
 
         string destName = akDestContainer.getbaseobject().getname()
-        if destName != ""
-            itemDroppedMessage = selfName+" placed " + itemName + " in/on " + destName 
+        if (destName != "")
+            itemDroppedMessage = selfName+" placed " + itemCount + itemName + " in/on " + destName 
         endIf
         
-        if  (itemName != "Iron Arrow") && (itemName != "") ; Papyrus hallucinates iron arrows
+        if  (itemName != "Iron Arrow") && (itemName != "") && destName != PlayerRef.GetDisplayName() ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
             AddIngameEventToConversation(itemDroppedMessage)
         endIf
