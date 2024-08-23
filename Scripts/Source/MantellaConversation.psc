@@ -256,6 +256,8 @@ endFunction
 function sendRequestForVoiceTranscribe()
     if(!_does_accept_player_input)
         return
+    Else
+        _does_accept_player_input = False
     endif
 
     int handle = SKSE_HTTP.createDictionary()
