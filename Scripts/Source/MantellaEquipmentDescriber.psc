@@ -29,27 +29,64 @@ event OnInit()
     _constants[4] = Amulet
 endEvent
 
-int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentOf)
+int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentOf, bool isPlayer, MantellaRepository repository)
     int equipmentHandle = SKSE_HTTP.createDictionary()
+    bool[] trackingOptions
+    If (isPlayer)
+        trackingOptions = GetPlayerSlotTrackingOptions(repository)
+    else
+        trackingOptions = GetTargetSlotTrackingOptions(repository)
+    EndIf
     int i = 0
     While (i < 5)
-        Armor equippedArmor = actorToDescribeEquipmentOf.GetEquippedArmorInSlot(_armorSlots[i])
-        If (equippedArmor)
-            SKSE_HTTP.setString(equipmentHandle, _constants[i], equippedArmor.GetName())
+        if(trackingOptions[i])
+            Armor equippedArmor = actorToDescribeEquipmentOf.GetEquippedArmorInSlot(_armorSlots[i])
+            If (equippedArmor)
+                SKSE_HTTP.setString(equipmentHandle, _constants[i], equippedArmor.GetName())
+            EndIf
         EndIf
         i += 1
     EndWhile
     
     ;Right Hand
-    Weapon equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(false)
-    If (equippedWeapon)
-        SKSE_HTTP.setString(equipmentHandle, RightHand, equippedWeapon.GetName())
+    if(trackingOptions[5])
+        Weapon equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(false)
+        If (equippedWeapon)
+            SKSE_HTTP.setString(equipmentHandle, RightHand, equippedWeapon.GetName())
+        EndIf
     EndIf
     ;Offhand
-    equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(true)
-    If (equippedWeapon)
-        SKSE_HTTP.setString(equipmentHandle, LeftHand, equippedWeapon.GetName())
+    if(trackingOptions[6])
+        Weapon equippedWeapon = actorToDescribeEquipmentOf.GetEquippedWeapon(true)
+        If (equippedWeapon)
+            SKSE_HTTP.setString(equipmentHandle, LeftHand, equippedWeapon.GetName())
+        EndIf
     EndIf
     SKSE_HTTP.setNestedDictionary(handle, Equipment, equipmentHandle)
+EndFunction
+
+
+bool[] Function GetPlayerSlotTrackingOptions(MantellaRepository repository)
+    bool[] result = new bool[7]
+    result[0] = repository.playerEquipmentBody
+    result[1] = repository.playerEquipmentHead
+    result[2] = repository.playerEquipmentHands
+    result[3] = repository.playerEquipmentFeet
+    result[4] = repository.playerEquipmentAmulet
+    result[5] = repository.playerEquipmentRightHand
+    result[6] = repository.playerEquipmentLeftHand
+    return result
+EndFunction
+
+bool[] Function GetTargetSlotTrackingOptions(MantellaRepository repository)
+    bool[] result = new bool[7]
+    result[0] = repository.targetEquipmentBody
+    result[1] = repository.targetEquipmentHead
+    result[2] = repository.targetEquipmentHands
+    result[3] = repository.targetEquipmentFeet
+    result[4] = repository.targetEquipmentAmulet
+    result[5] = repository.targetEquipmentRightHand
+    result[6] = repository.targetEquipmentLeftHand
+    return result
 EndFunction
 

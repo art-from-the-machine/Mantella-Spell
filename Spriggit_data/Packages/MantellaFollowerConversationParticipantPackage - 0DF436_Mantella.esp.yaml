@@ -27,9 +27,14 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -1244984032
+    SecondUnusedIntParameter: -623800032
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: IsRidingMountConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
 - MutagenObjectType: ConditionFloat
   Flags:
   - OR
@@ -73,6 +78,7 @@ Data:
 - Key: 6
   Value:
     MutagenObjectType: PackageDataBool
+    Data: True
 - Key: 9
   Value:
     MutagenObjectType: PackageDataLocation
