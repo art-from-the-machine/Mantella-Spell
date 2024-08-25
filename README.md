@@ -10,6 +10,8 @@ This repository is for the Mantella spell mod, which handles the Skyrim-side log
 
 - The .bsa file of the mod [UIExtenstions](https://www.nexusmods.com/skyrimspecialedition/mods/17561) needs to be extracted by [BAE](https://www.nexusmods.com/fallout4/mods/78?tab=description) in order to access its scripts.
 
+- Leidtier's SKSE HTTP plugin can be found [here](https://github.com/Leidtier/SKSE_HTTP).
+
 # Relevant Links
 
 The source code for the subtitles plugin can be found [here](https://github.com/swwu/Mantella-Subtitles-Plugin-NG).
