@@ -339,7 +339,7 @@ function WaitForSpecificNpcToFinishSpeaking(Actor selectedNpc)
     while _isTalking == true ; wait until the NPC has finished speaking
         Utility.Wait(waitTime)
         totalWaitTime += waitTime
-        if totalWaitTime > 20
+        if totalWaitTime > 10 ; note that this isn't really in seconds due to the overhead of the loop running
             Debug.Notification("NPC speaking too long, ending wait...")
             _isTalking = false
         endIf
