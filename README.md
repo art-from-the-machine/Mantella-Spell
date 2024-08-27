@@ -8,7 +8,7 @@ This repository is for the Mantella spell mod, which handles the Skyrim-side log
 # Setup
 - The SkyUI SDK is required to work with MCM menu code, which can be found [here](https://github.com/schlangster/skyui/wiki).
 
-- The .bsa file of the mod [UIExtenstions](https://www.nexusmods.com/skyrimspecialedition/mods/17561) needs to be extracted by [BAE](https://www.nexusmods.com/fallout4/mods/78?tab=description) in order to access its scripts.
+- The .bsa file of the mod [UIExtensions](https://www.nexusmods.com/skyrimspecialedition/mods/17561) needs to be extracted by [BAE](https://www.nexusmods.com/fallout4/mods/78?tab=description) in order to access its scripts.
 
 - Leidtier's SKSE HTTP plugin can be found [here](https://github.com/Leidtier/SKSE_HTTP).
 
