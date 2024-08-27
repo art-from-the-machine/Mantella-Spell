@@ -124,6 +124,10 @@ function ContinueConversation(int handle)
         ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
         sendRequestForPlayerInput(transcribe)
+    elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
+        int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
+        ProcessNpcSpeak(npcActionHandle)
+        RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
         CleanupConversation()
     endIf
@@ -150,14 +154,17 @@ function ProcessNpcSpeak(int handle)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     if speaker != none
         WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
-        string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, "Error: No line transmitted for actor to speak")
+        string lineToSpeakError = "Error: No line transmitted for actor to speak"
+        string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, lineToSpeakError)
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
 
-        Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
-        NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
-        RaiseActionEvent(speaker, lineToSpeak, actions)
-        _lastNpcToSpeak = speaker
+        if lineToSpeak != lineToSpeakError
+            Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
+            NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+            _lastNpcToSpeak = speaker
+        endIf
+        RaiseActionEvent(speaker, actions)
     endIf
 endFunction
 
@@ -351,7 +358,7 @@ endFunction
 ;       Action handler        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Function RaiseActionEvent(Actor speaker, string lineToSpeak, string[] actions)
+Function RaiseActionEvent(Actor speaker, string[] actions)
     if(!actions || actions.Length == 0)
         return ;dont send out an action event if there are no actions to act upon
     endIf
@@ -368,7 +375,6 @@ Function RaiseActionEvent(Actor speaker, string lineToSpeak, string[] actions)
         int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
         if (handle)
             ModEvent.PushForm(handle, speaker)
-            ModEvent.PushString(handle, lineToSpeak)
             ModEvent.Send(handle)
         endIf 
         i += 1
