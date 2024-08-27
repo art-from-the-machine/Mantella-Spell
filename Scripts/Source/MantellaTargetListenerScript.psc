@@ -92,7 +92,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
         ; avoid writing events too often (continuous spells record very frequently)
         ; if the actor and weapon hasn't changed, only record the event every 5 hits
-        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5)
+        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5) && (hitSource != "Mantella") && (hitSource != "Mantella Remove NPC") && (hitSource != "Mantella End Conversation")
             lastHitSource = hitSource
             lastAggressor = aggressor
             timesHitSameAggressorSource = 0
