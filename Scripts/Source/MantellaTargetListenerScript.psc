@@ -15,6 +15,16 @@ Function AddIngameEventToConversation(string eventText)
     EndIf
 EndFunction
 
+string Function getPlayerName(bool isStartOfSentence = True)
+    if (repository.playerTrackingUsePCName)
+        return PlayerRef.GetDisplayName()
+    Elseif (isStartOfSentence)
+        return "The player"
+    Else
+        return "the player"
+    endif
+EndFunction
+
 ;All the event listeners below have 'if' clauses added after Mantella 0.9.2 (except ondying)
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if repository.targetTrackingItemAdded 
@@ -83,7 +93,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
     if repository.targetTrackingOnHit 
         String aggressor
         if akAggressor == PlayerRef
-            aggressor = "The player"
+            aggressor = getPlayerName()
         else
             aggressor = akAggressor.getdisplayname()
         endif
@@ -118,7 +128,7 @@ Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
         String selfName = self.GetActorReference().getdisplayname()
         String targetName
         if akTarget == PlayerRef
-            targetName = "the player"
+            targetName = getPlayerName()
         else
             targetName = akTarget.getdisplayname()
         endif
