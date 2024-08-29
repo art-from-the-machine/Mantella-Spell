@@ -29,13 +29,21 @@ string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
 
-event OnInit()    
+event OnInit()
+    RegisterForConversationEvents()
+EndEvent
+
+event OnPlayerLoadGame()
+    RegisterForConversationEvents()
+endEvent
+
+Function RegisterForConversationEvents()
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
     RegisterForModEvent("SKSE_HTTP_OnHttpErrorReceived","OnHttpErrorReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
-endEvent
+EndFunction
 
 event OnUpdate()
     If (_repeatingMessage != "")
@@ -372,11 +380,16 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
             Utility.Wait(0.5)
             WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
         endIf
-        int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
-        if (handle)
-            ModEvent.PushForm(handle, speaker)
-            ModEvent.Send(handle)
-        endIf 
+
+        if extraAction == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
+            EndConversation()
+        else
+            int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
+            if (handle)
+                ModEvent.PushForm(handle, speaker)
+                ModEvent.Send(handle)
+            endIf 
+        endIf
         i += 1
     EndWhile
     
