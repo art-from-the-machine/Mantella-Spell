@@ -38,14 +38,14 @@ Int[] function getNestedDictionariesArray(Int object, String key) global native
 
 ;/  Inserts @key: @value pair. Replaces existing pair with the same @key
 /;
-function setString(Int object, String key, String value) global native
+Bool function setString(Int object, String key, String value) global native
 function setInt(Int object, String key, Int value) global native
 function setFloat(Int object, String key, Float value) global native
 function setBool(Int object, String key, Bool value) global native
 function setNestedDictionary(Int object, String key, Int value) global native
 function setIntArray(Int object, String key, Int[] value) global native
 function setFloatArray(Int object, String key, Float[] value) global native
-function setStringArray(Int object, String key, String[] value) global native
+Bool function setStringArray(Int object, String key, String[] value) global native
 function setBoolArray(Int object, String key, Bool[] value) global native
 function setNestedDictionariesArray(Int object, String key, Int[] value) global native
 
