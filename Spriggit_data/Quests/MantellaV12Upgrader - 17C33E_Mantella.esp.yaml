@@ -1,0 +1,14 @@
+FormKey: 17C33E:Mantella.esp
+VersionControl: 12574
+EditorID: MantellaV12Upgrader
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaUpgradeToVersion12
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- RunOnce
+NextAliasID: 0
