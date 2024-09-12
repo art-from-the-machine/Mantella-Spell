@@ -4,12 +4,12 @@ VirtualMachineAdapter:
   Scripts:
   - Name: gia_castMantellaSpell
     Properties:
-    - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Follower
-      Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
       Data: NPCjoinfac
+    - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Follower
+      Object: 003806:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Mantella
       Object: 0F2073:Skyrim.esm

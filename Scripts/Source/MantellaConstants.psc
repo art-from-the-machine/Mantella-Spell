@@ -5,7 +5,15 @@ string property HTTP_ROUTE_STT = "stt" auto
 
 string property HTTP_ERROR = "SKSE_HTTP_error" auto
 
-string property EVENT_ACTIONS = "MantellaConversation_Action_" auto
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;          Mod events         ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; string property EVENT_ACTIONS = "MantellaConversation_Action_" auto
+; string property EVENT_CONVERSATION_STARTED = "MantellaConversation_Started" auto
+; string property EVENT_CONVERSATION_ENDED = "MantellaConversation_Ended" auto
+; string property EVENT_CONVERSATION_NPC_ADDED = "MantellaConversation_NPC_Added" auto
+; string property EVENT_CONVERSATION_NPC_REMOVED = "MantellaConversation_NPC_Removed" auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; JSON keys for communication ;
