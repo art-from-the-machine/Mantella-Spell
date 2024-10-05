@@ -29,6 +29,9 @@ string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
 
+VoiceType MantellaVoice
+
+
 event OnInit()
     RegisterForConversationEvents()
 EndEvent
@@ -43,6 +46,7 @@ Function RegisterForConversationEvents()
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+    MantellaVoice = Game.GetFormFromFile(0x17c33F, "Mantella.esp") as VoiceType
 EndFunction
 
 event OnUpdate()
@@ -168,9 +172,12 @@ function ProcessNpcSpeak(int handle)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
 
         if lineToSpeak != lineToSpeakError
+            VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
+            SKSE_HTTP.SetVoiceType(speaker,MantellaVoice)
             Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
             NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
             _lastNpcToSpeak = speaker
+            SKSE_HTTP.SetVoiceType(speaker,orgVoice)
         endIf
         RaiseActionEvent(speaker, actions)
     endIf
