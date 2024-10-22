@@ -14,11 +14,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -30,11 +30,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -46,11 +46,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -62,11 +62,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -78,11 +78,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -94,11 +94,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -110,11 +110,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -126,11 +126,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -142,11 +142,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -158,11 +158,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -174,11 +174,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
   - Property:
       Name: ''
       Object: 0DF435:Mantella.esp
@@ -190,11 +190,11 @@ VirtualMachineAdapter:
         Name: repository
         Object: 000D62:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: conversation
-        Object: 03D41A:Mantella.esp
-      - MutagenObjectType: ScriptObjectProperty
         Name: PlayerRef
         Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
 Flags:
 - 0x1000
 Priority: 100
