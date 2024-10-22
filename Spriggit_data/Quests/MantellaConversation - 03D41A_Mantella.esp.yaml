@@ -2,6 +2,7 @@ FormKey: 03D41A:Mantella.esp
 EditorID: MantellaConversation
 VirtualMachineAdapter:
   Scripts:
+  - Name: mantellainterface
   - Name: mantellaequipmentdescriber
   - Name: mantellaconstants
   - Name: MantellaConversation
@@ -24,6 +25,9 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsQuest
       Object: 0DF435:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: EquipmentDescriber
       Object: 03D41A:Mantella.esp
