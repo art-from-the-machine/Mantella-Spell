@@ -24,6 +24,8 @@ VirtualMachineAdapter:
       Object: 0DF435:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
