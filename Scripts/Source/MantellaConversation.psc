@@ -13,6 +13,7 @@ SPELL Property MantellaIsTalkingSpell Auto
 MantellaEquipmentDescriber Property EquipmentDescriber auto
 Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
+MantellaInterface property EventInterface Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -42,9 +43,10 @@ endEvent
 Function RegisterForConversationEvents()
     RegisterForModEvent("SKSE_HTTP_OnHttpReplyReceived","OnHttpReplyReceived")
     RegisterForModEvent("SKSE_HTTP_OnHttpErrorReceived","OnHttpErrorReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ADD_EVENT,"OnAddEventReceived")
 EndFunction
 
 event OnUpdate()
@@ -78,7 +80,11 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     AddCurrentActorsAndContext(handle, true)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
-    ; Debug.Notification("Sent StartConversation http request to " + address)  
+    ; Debug.Notification("Sent StartConversation http request to " + address)
+    int eventHandle = ModEvent.Create(EventInterface.EVENT_CONVERSATION_STARTED)
+    if (eventHandle)        
+        ModEvent.Send(eventHandle)
+    endIf 
 endFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -241,6 +247,10 @@ Function CleanupConversation()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
     EndIf
+    int handle = ModEvent.Create(EventInterface.EVENT_CONVERSATION_ENDED)
+    if (handle)        
+        ModEvent.Send(handle)
+    endIf 
     Debug.Notification("Conversation ended.")  
     Stop()
 EndFunction
@@ -375,11 +385,11 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
     if(!actions || actions.Length == 0)
         return ;dont send out an action event if there are no actions to act upon
     endIf
-
+    
     int i = 0
     While i < actions.Length
         string extraAction = actions[i]
-        ;Debug.Notification("Recieved action " + extraAction + ". Sending out event!")
+        ;AddIngameEvent("Recieved action " + extraAction + ". Sending out event!")
         ; if the action is to open the inventory menu, wait for the speaker to finish their voiceline first before the menu forces the game to pause
         if extraAction == mConsts.ACTION_NPC_INVENTORY
             Utility.Wait(0.5)
@@ -389,7 +399,7 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
         if extraAction == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
             EndConversation()
         else
-            int handle = ModEvent.Create(mConsts.EVENT_ACTIONS + extraAction)
+            int handle = ModEvent.Create(EventInterface.EVENT_ACTIONS_PREFIX + extraAction)
             if (handle)
                 ModEvent.PushForm(handle, speaker)
                 ModEvent.Send(handle)
@@ -397,7 +407,7 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
         endIf
         i += 1
     EndWhile
-    
+    ;AddIngameEvent("All Events sent out!")
 EndFunction
 
 Function AddExtraRequestAction(string extraAction)
@@ -411,6 +421,34 @@ EndFunction
 
 Function ClearExtraRequestAction()
     _extraRequestActions = Utility.CreateStringArray(0)
+EndFunction
+
+Function SendActorAddedEvents(Form[] actorsAdded)
+    int index = 0
+    While (index < actorsAdded.Length)
+        Actor speaker = actorsAdded[index] as Actor
+        If (speaker)
+            int handle = ModEvent.Create(EventInterface.EVENT_CONVERSATION_NPC_ADDED)
+            if (handle)
+                ModEvent.PushForm(handle, speaker)
+                ModEvent.Send(handle)
+            endIf 
+        EndIf
+        index += 1
+    EndWhile
+EndFunction
+
+Function SendActorRemovedEvents(Form[] actorsRemoved)
+    int index = 0
+    While (index < actorsRemoved.Length)
+        Actor speaker = actorsRemoved[index] as Actor
+        int handle = ModEvent.Create(EventInterface.EVENT_CONVERSATION_NPC_REMOVED)
+        if (handle)
+            ModEvent.PushForm(handle, speaker)
+            ModEvent.Send(handle)
+        endIf 
+        index += 1
+    EndWhile
 EndFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -431,6 +469,10 @@ EndFunction
 Function ClearIngameEvent()
     _ingameEvents = Utility.CreateStringArray(0)
 EndFunction
+
+event OnAddEventReceived(string text)
+    AddIngameEvent(text)
+endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Action: Reload conversation ;
@@ -488,24 +530,26 @@ EndFunction
 
 Function AddActors(Actor[] actorsToAdd)
     int i = 0
-    bool wasNewActorAdded = false
+    Form[] actorsAdded = Utility.CreateFormArray(0)
     While i < actorsToAdd.Length
-        int pos = Participants.Find(actorsToAdd[i])
+        Actor possibleNewActor = actorsToAdd[i]
+        int pos = Participants.Find(possibleNewActor)
         if(pos < 0)
-            Participants.AddForm(actorsToAdd[i])
-            actorsToAdd[i].AddToFaction(MantellaConversationParticipantsFaction)
-            wasNewActorAdded = true
+            Participants.AddForm(possibleNewActor)
+            possibleNewActor.AddToFaction(MantellaConversationParticipantsFaction)
+            actorsAdded = Utility.ResizeFormArray(actorsAdded, actorsAdded.Length + 1)
+            actorsAdded[actorsAdded.Length - 1] = possibleNewActor
 
             ; check if there are multiple actors with the same name
             int nameCount = 0
             int j = 0
             bool break = false
-            if (actorsToAdd[i] != PlayerRef) ; ignore the player having the same name as an actor
+            if (possibleNewActor != PlayerRef) ; ignore the player having the same name as an actor
                 While (j < Participants.GetSize()) && (break==false)
                     Actor currentActor = Participants.GetAt(j) as Actor
-                    if (currentActor.GetDisplayName() == actorsToAdd[i].GetDisplayName())
+                    if (currentActor.GetDisplayName() == possibleNewActor.GetDisplayName())
                         nameCount += 1
-                        if (currentActor == actorsToAdd[i]) ; stop counting when the exact actor is found (not just the same name)
+                        if (currentActor == possibleNewActor) ; stop counting when the exact actor is found (not just the same name)
                             break = true
                         endIf
                     endIf
@@ -515,15 +559,16 @@ Function AddActors(Actor[] actorsToAdd)
                 if (nameCount > 1)
                     ; set an ID to this non-uniquely-named actor in the form of a faction rank
                     ; these uniquely ID'd names can be called via the GetActorName() function
-                    actorsToAdd[i].SetFactionRank(MantellaConversationParticipantsFaction, nameCount)
+                    possibleNewActor.SetFactionRank(MantellaConversationParticipantsFaction, nameCount)
                 endIf
             endIf
         endIf
         i += 1
     EndWhile
-    If (wasNewActorAdded)
+    If (actorsAdded.Length > 0)
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
+        SendActorAddedEvents(actorsAdded)
     EndIf
     
     ;PrintActorsInConversation()
@@ -531,22 +576,25 @@ EndFunction
 
 Function RemoveActors(Actor[] actorsToRemove)
     PrintActorsArray("Actors to remove: ",actorsToRemove)
-    bool wasActorRemoved = false
+    Form[] actorsRemoved = Utility.CreateFormArray(0)
     int i = 0
     While (i < actorsToRemove.Length)
-        If (Participants.HasForm(actorsToRemove[i]))
-            Participants.RemoveAddedForm(actorsToRemove[i])
-            actorsToRemove[i].RemoveFromFaction(MantellaConversationParticipantsFaction)
-            Debug.Notification(actorsToRemove[i].GetDisplayName()+" left the conversation.")
-            wasActorRemoved = true
+        Actor actorInQuestion = actorsToRemove[i]
+        If (Participants.HasForm(actorInQuestion))
+            actorsRemoved = Utility.ResizeFormArray(actorsRemoved, actorsRemoved.Length + 1)
+            actorsRemoved[actorsRemoved.Length - 1] = actorInQuestion
+            Participants.RemoveAddedForm(actorInQuestion)
+            actorInQuestion.RemoveFromFaction(MantellaConversationParticipantsFaction)
+            Debug.Notification(actorInQuestion.GetDisplayName()+" left the conversation.")
         EndIf
         i += 1
     EndWhile
     if (Participants.GetSize() < 2)
         EndConversation()
-    ElseIf (wasActorRemoved)
+    ElseIf (actorsRemoved.Length > 0)
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
+        SendActorRemovedEvents(actorsRemoved)
     endIf
     ;PrintActorsInConversation()
 EndFunction
