@@ -12,6 +12,7 @@ Quest Property MantellaConversationParticipantsQuest auto
 SPELL Property MantellaIsTalkingSpell Auto
 MantellaEquipmentDescriber Property EquipmentDescriber auto
 Actor Property PlayerRef Auto
+VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -29,6 +30,7 @@ Actor _lastNpcToSpeak = None
 string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
+
 
 event OnInit()
     RegisterForConversationEvents()
@@ -174,9 +176,12 @@ function ProcessNpcSpeak(int handle)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
 
         if lineToSpeak != lineToSpeakError
+            VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
+            SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
             Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
             NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
             _lastNpcToSpeak = speaker
+            SKSE_HTTP.SetVoiceType(speaker,orgVoice)
         endIf
         RaiseActionEvent(speaker, actions)
     endIf
