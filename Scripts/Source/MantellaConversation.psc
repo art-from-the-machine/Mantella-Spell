@@ -65,6 +65,12 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         Debug.Notification("Cannot start conversation. Conversation is already running.")
         return
     endIf
+
+    int handle = SKSE_HTTP.createDictionary()
+    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_INIT)
+    ; send request to initialize Mantella settings (set LLM connection, start up TTS service, load character_df etc) 
+    ; while waiting for actor info and context to be prepared below
+    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     
     AddActors(actorsToStartConversationWith)
 
@@ -73,7 +79,6 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         return
     endIf
     
-    int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     BuildContext(true)
@@ -109,7 +114,9 @@ EndFunction
 
 event OnHttpReplyReceived(int typedDictionaryHandle)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
-    If (replyType != "error")
+    IF replyType == mConsts.KEY_REPLYTTYPE_INITCOMPLETED
+        None
+    ElseIf (replyType != "error")
         ContinueConversation(typedDictionaryHandle)        
     Else
         string errorMessage = SKSE_HTTP.getString(typedDictionaryHandle, "mantella_message","Error: Received an error reply from MantellaSoftware but there was no error message attached.")

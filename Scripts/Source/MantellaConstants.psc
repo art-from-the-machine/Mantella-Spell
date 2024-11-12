@@ -26,11 +26,13 @@ string property KEY_REPLYTYPE = "mantella_reply_type" auto
 string property KEY_REQUEST_EXTRA_ACTIONS = "mantella_extra_actions" auto
 
 ;Conversation
+string property KEY_REQUESTTYPE_INIT = "mantella_initialize" auto
 string property KEY_REQUESTTYPE_STARTCONVERSATION = "mantella_start_conversation" auto
 string property KEY_REQUESTTYPE_CONTINUECONVERSATION = "mantella_continue_conversation" auto
 string property KEY_REQUESTTYPE_PLAYERINPUT = "mantella_player_input" auto
 string property KEY_REQUESTTYPE_ENDCONVERSATION = "mantella_end_conversation" auto
 
+string property KEY_REPLYTTYPE_INITCOMPLETED = "mantella_init_completed" auto
 string property KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED = "mantella_start_conversation_completed" auto
 
 string property KEY_REPLYTYPE_NPCTALK = "mantella_npc_talk" auto
