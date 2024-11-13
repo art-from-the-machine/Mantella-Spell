@@ -146,7 +146,7 @@ function ContinueConversation(int handle)
     elseIf (nextAction == mConsts.KEY_REQUESTTYPE_TTS)
         ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
-        sendRequestForPlayerInput(transcribe)
+        sendRequestForPlayerInput(transcribe, updateContext=True)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
         ProcessNpcSpeak(npcActionHandle)
@@ -276,14 +276,20 @@ endEvent
 ;   Handle player speaking    ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-function sendRequestForPlayerInput(string playerInput)
+function sendRequestForPlayerInput(string playerInput, bool updateContext)
     if(!_hasBeenStopped)
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
-        UpdateNpcsInConversationArray()
-        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)    
-        BuildContext()
+
+        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
+            UpdateNpcsInConversationArray()
+            SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
+        endIf
+
+        if updateContext ; if context has not been refreshed recently
+            BuildContext()
+        endIf
         SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
 
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
@@ -315,12 +321,17 @@ function GetPlayerTextInput()
         return
     endif
 
+    ; Sneak in context refresh before textbox opens
+    ; As of writing, BuildContext() takes ~0.3 seconds to run,
+    ; but if this runtime increases in the future the delay may become noticeable
+    BuildContext()
+
     UIExtensions.InitMenu("UITextEntryMenu")
     UIExtensions.OpenMenu("UITextEntryMenu")
 
     string result = UIExtensions.GetMenuResultString("UITextEntryMenu")
     if (result && result != "")
-        sendRequestForPlayerInput(result)
+        sendRequestForPlayerInput(result, updateContext=False)
         _does_accept_player_input = False
         ClearRepeatingMessage()
     endIf

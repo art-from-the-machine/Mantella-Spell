@@ -21,6 +21,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_targetTrackingOnObjectUnequippedToggle = mcm.AddToggleOption("Item Unequipped", Repository.targetTrackingOnObjectUnequipped)
     mcm.oid_targetTrackingOnSitToggle = mcm.AddToggleOption("Target Rests on Furniture", Repository.targetTrackingOnSit)
     mcm.oid_targetTrackingOnGetUpToggle = mcm.AddToggleOption("Target Gets Up from Furniture", Repository.targetTrackingOnGetUp)
+    mcm.oid_targetTrackingAngerStateToggle = mcm.AddToggleOption("Target Anger State", Repository.targetTrackingAngerState)
     mcm.oid_targetTrackingAll = mcm.AddToggleOption("All", mcm.targetAllToggle)
 endfunction
 
@@ -113,6 +114,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     ElseIf optionID==mcm.oid_targetTrackingOnGetUpToggle
         Repository.targetTrackingOnGetUp=!Repository.targetTrackingOnGetUp
         mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnGetUpToggle, Repository.targetTrackingOnGetUp)
+    ElseIf optionID==mcm.oid_targetTrackingAngerStateToggle
+        Repository.targetTrackingAngerState=!Repository.targetTrackingAngerState
+        mcm.SetToggleOptionValue( mcm.oid_targetTrackingAngerStateToggle, Repository.targetTrackingAngerState)
     ElseIf optionID==mcm.oid_targetTrackingAll
         ;This part of the function OptionUpdate flips a bunch of variables in the repository at once :
         mcm.targetAllToggle=!mcm.targetAllToggle
@@ -126,6 +130,7 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnObjectUnequippedToggle, mcm.targetAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnSitToggle, mcm.targetAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_targetTrackingOnGetUpToggle, mcm.targetAllToggle)
+        mcm.SetToggleOptionValue( mcm.oid_targetTrackingAngerStateToggle, mcm.targetAllToggle)
         
         Repository.targetTrackingItemAdded=mcm.targetAllToggle
         Repository.targetTrackingItemRemoved=mcm.targetAllToggle
@@ -136,6 +141,7 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         Repository.targetTrackingOnObjectUnequipped=mcm.targetAllToggle
         Repository.targetTrackingOnSit=mcm.targetAllToggle
         Repository.targetTrackingOnGetUp=mcm.targetAllToggle
+        Repository.targetTrackingAngerState=mcm.targetAllToggle
         ;not using dying toggle cause this one is to end conversations on NPC death
         ;Repository.targetTrackingOnDying=mcm.targetAllToggle
         
