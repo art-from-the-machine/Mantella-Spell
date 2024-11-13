@@ -70,6 +70,7 @@ int property oid_targetTrackingOnObjectUnequippedToggle auto
 int property oid_targetTrackingOnSitToggle auto
 int property oid_targetTrackingOnGetUpToggle auto
 int property oid_targetTrackingOnDyingToggle auto
+int property oid_targetTrackingAngerStateToggle auto
 int property oid_targetTrackingAll auto
 bool property targetAllToggle auto
 
@@ -330,6 +331,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Tracks furniture stood up from while a Mantella conversation is active.")
 	elseIf optionID == oid_targetTrackingOnGetUpToggle	
 		SetInfoText("Enable / disable all tracking options for the target.")
+	elseIf optionID == oid_targetTrackingAngerStateToggle	
+		SetInfoText("Tracks anger state of target (used to apply anger emotions to xVASynth output). Causes minor response delays.")
 
     elseIf optionID == oid_targetEquipmentBody	
 		SetInfoText("Describe item in the body slot (32) of the target to the LLM.")

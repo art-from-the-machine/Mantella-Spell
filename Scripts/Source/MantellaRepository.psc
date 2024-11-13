@@ -79,6 +79,7 @@ bool property targetTrackingOnObjectEquipped auto
 bool property targetTrackingOnObjectUnequipped auto
 bool property targetTrackingOnSit auto
 bool property targetTrackingOnGetUp auto
+bool property targetTrackingAngerState auto
 
 bool property targetEquipmentBody auto
 bool property targetEquipmentHead auto
@@ -192,6 +193,7 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
         targetTrackingOnObjectUnequipped = true
         targetTrackingOnSit = true
         targetTrackingOnGetUp = true
+        targetTrackingAngerState = true
 
         targetEquipmentBody = true
         targetEquipmentHead = true
