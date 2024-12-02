@@ -22,6 +22,7 @@ MantellaInterface property EventInterface Auto
 String[] _ingameEvents
 String[] _extraRequestActions
 int[] _actorHandles = None
+bool _actorsUpdated = false
 int _contextHandle = 0
 bool _does_accept_player_input = false
 bool _isTalking = false
@@ -83,6 +84,17 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     BuildContext(true)
     AddCurrentActorsAndContext(handle, true)
+
+    if repository.microphoneEnabled
+        if repository.useHotkeyToStartMic
+            SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_PTT)
+        else
+            SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_MIC)
+        endIf
+    Else
+        SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_TEXT)
+    endIf
+
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
     ; Debug.Notification("Sent StartConversation http request to " + address)
@@ -166,6 +178,10 @@ function RequestContinueConversation()
             ClearExtraRequestAction()
             ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
         endif
+        if _actorsUpdated
+            SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
+            _actorsUpdated = false
+        endIf
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
 endFunction
@@ -203,7 +219,7 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay, Actor actorToSpeakTo, f
     if(durationAdjusted < 0)
         durationAdjusted = 0
     endIf
-    Utility.Wait(durationAdjusted)
+    ;Utility.Wait(durationAdjusted)
 endfunction
 
 string function GetActorName(actor actorToGetName)
@@ -284,8 +300,8 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
 
         if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
             UpdateNpcsInConversationArray()
-            SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
         endIf
+        SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
         if updateContext ; if context has not been refreshed recently
             BuildContext()
@@ -303,16 +319,7 @@ function sendRequestForVoiceTranscribe()
         _does_accept_player_input = False
     endif
 
-    int handle = SKSE_HTTP.createDictionary()
-    SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_TTS)
-    string[] namesInConversation = Utility.CreateStringArray(Participants.GetSize())
-    int i = 0
-    While i < Participants.GetSize()
-        namesInConversation[i] = (Participants.GetAt(i) as Actor).GetDisplayName()
-        i += 1
-    EndWhile
-    SKSE_HTTP.setStringArray(handle, mConsts.KEY_INPUT_NAMESINCONVERSATION, namesInConversation)
-    SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_STT)
+    sendRequestForPlayerInput("", updateContext=True)
     ShowRepeatingMessage("Listening...")
 endFunction
 
@@ -682,6 +689,7 @@ int[] function BuildNpcsInConversationArray()
         _actorHandles[i] = buildActorSetting(Participants.GetAt(i) as Actor)
         i += 1
     EndWhile
+    _actorsUpdated = true
 endFunction
 
 int[] function UpdateNpcsInConversationArray()
