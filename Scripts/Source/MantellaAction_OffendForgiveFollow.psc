@@ -3,6 +3,7 @@ Scriptname MantellaAction_OffendForgiveFollow extends Quest hidden
 Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
+MantellaInterface property EventInterface Auto
 
 event OnInit()
     RegisterForOffendAndForgiveEvents()
@@ -13,10 +14,10 @@ event OnPlayerLoadGame()
 endEvent
 
 Function RegisterForOffendAndForgiveEvents()
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_OFFENDED,"OnNpcOffendedActionReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_FORGIVEN,"OnNpcForgivenActionReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_FOLLOW,"OnNpcFollowActionReceived")
-    RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_NPC_INVENTORY,"OnNpcInventoryActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_OFFENDED,"OnNpcOffendedActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_FORGIVEN,"OnNpcForgivenActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_FOLLOW,"OnNpcFollowActionReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_INVENTORY,"OnNpcInventoryActionReceived")
 EndFunction
 
 event OnNpcOffendedActionReceived(Form speaker)

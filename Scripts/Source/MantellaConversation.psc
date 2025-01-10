@@ -199,12 +199,21 @@ function ProcessNpcSpeak(int handle)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
 
         if lineToSpeak != lineToSpeakError
-            VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
-            SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
-            Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
-            NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
-            _lastNpcToSpeak = speaker
-            SKSE_HTTP.SetVoiceType(speaker,orgVoice)
+            if speaker == PlayerRef
+                VoiceType orgRaceDefaultVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
+                SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
+                Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
+                NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+                _lastNpcToSpeak = speaker
+                SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
+            else
+                VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
+                SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
+                Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
+                NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+                _lastNpcToSpeak = speaker
+                SKSE_HTTP.SetVoiceType(speaker,orgVoice)
+            endif
         endIf
         RaiseActionEvent(speaker, actions)
     endIf
