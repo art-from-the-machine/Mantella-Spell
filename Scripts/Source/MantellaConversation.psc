@@ -14,6 +14,7 @@ MantellaEquipmentDescriber Property EquipmentDescriber auto
 Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
+ReferenceAlias Property Narrator Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -31,6 +32,7 @@ Actor _lastNpcToSpeak = None
 string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
+bool _useNarrator = False
 
 
 event OnInit()
@@ -142,6 +144,9 @@ function ContinueConversation(int handle)
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         _hasBeenStopped = false
+        if(SKSE_HTTP.hasKey(handle,mConsts.KEY_STARTCONVERSATION_USENARRATOR))
+            _useNarrator = SKSE_HTTP.getBool(handle, mConsts.KEY_STARTCONVERSATION_USENARRATOR, false)
+        endif
         ;Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
@@ -197,6 +202,10 @@ function ProcessNpcSpeak(int handle)
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, lineToSpeakError)
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+        bool isNarration = false
+        if(SKSE_HTTP.hasKey(handle,mConsts.KEY_ACTOR_ISNARRATION))
+            isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+        endif
 
         if lineToSpeak != lineToSpeakError
             if speaker == PlayerRef
@@ -206,6 +215,9 @@ function ProcessNpcSpeak(int handle)
                 NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
                 _lastNpcToSpeak = speaker
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
+            ElseIf (_useNarrator && isNarration)
+                ; Debug.Notification("Narrator speaks!")
+                NarratorSpeak(lineToSpeak, duration)
             else
                 VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
                 SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
@@ -224,6 +236,17 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay, Actor actorToSpeakTo, f
     actorSpeaking.Say(MantellaDialogueLine, abSpeakInPlayersHead=false)
     actorSpeaking.SetLookAt(actorToSpeakTo)
     actorToSpeakTo.SetLookAt(actorSpeaking)
+    float durationAdjusted = duration - 1.0
+    if(durationAdjusted < 0)
+        durationAdjusted = 0
+    endIf
+    ;Utility.Wait(durationAdjusted)
+endfunction
+
+function NarratorSpeak(string lineToSay, float duration)
+    Actor narratorActor = Narrator.GetReference() as Actor
+    MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(narratorActor, MantellaDialogueLine, lineToSay)
+    narratorActor.Say(MantellaDialogueLine, abSpeakInPlayersHead=true)
     float durationAdjusted = duration - 1.0
     if(durationAdjusted < 0)
         durationAdjusted = 0
