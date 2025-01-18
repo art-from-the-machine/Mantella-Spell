@@ -216,7 +216,6 @@ function ProcessNpcSpeak(int handle)
                 _lastNpcToSpeak = speaker
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             ElseIf (_useNarrator && isNarration)
-                ; Debug.Notification("Narrator speaks!")
                 NarratorSpeak(lineToSpeak, duration)
             else
                 VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
@@ -247,6 +246,7 @@ function NarratorSpeak(string lineToSay, float duration)
     Actor narratorActor = Narrator.GetReference() as Actor
     MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(narratorActor, MantellaDialogueLine, lineToSay)
     narratorActor.Say(MantellaDialogueLine, abSpeakInPlayersHead=true)
+    _lastNpcToSpeak = narratorActor
     float durationAdjusted = duration - 1.0
     if(durationAdjusted < 0)
         durationAdjusted = 0
