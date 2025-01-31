@@ -26,14 +26,13 @@ int[] _actorHandles = None
 bool _actorsUpdated = false
 int _contextHandle = 0
 bool _does_accept_player_input = false
+bool _isTalking = false
 bool _hasBeenStopped = true
 Actor _lastNpcToSpeak = None
 string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
 bool _useNarrator = False
-float _timeStampOfLastTalkingStart = 0.0
-float _durationOfLastSentence = 0.0
 
 
 event OnInit()
@@ -119,6 +118,14 @@ Function RemoveActorsFromConversation(Actor[] actorsToRemove)
     RemoveActors(actorsToRemove)  
 EndFunction
 
+Function SetIsTalking(bool isTalking)
+    _isTalking = isTalking
+EndFunction
+
+bool Function GetIsTalking()
+    return _isTalking
+EndFunction
+
 event OnHttpReplyReceived(int typedDictionaryHandle)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
     IF replyType == mConsts.KEY_REPLYTTYPE_INITCOMPLETED
@@ -188,18 +195,17 @@ function ProcessNpcSpeak(int handle)
     string speakerName = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_SPEAKER, "Error: No speaker transmitted for action 'NPC talk'")
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = GetActorInConversation(speakerName)
-    bool isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
-    If (_useNarrator && isNarration)
-        speaker = Narrator.GetReference() as Actor
-    EndIf
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     if speaker != none
-        WaitForLastNpcToStopSpeaking()
-        ; WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+        WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
         string lineToSpeakError = "Error: No line transmitted for actor to speak"
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, lineToSpeakError)
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+        bool isNarration = false
+        if(SKSE_HTTP.hasKey(handle,mConsts.KEY_ACTOR_ISNARRATION))
+            isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+        endif
 
         if lineToSpeak != lineToSpeakError
             if speaker == PlayerRef
@@ -207,6 +213,7 @@ function ProcessNpcSpeak(int handle)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
                 Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
                 NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+                _lastNpcToSpeak = speaker
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             ElseIf (_useNarrator && isNarration)
                 NarratorSpeak(lineToSpeak, duration)
@@ -215,10 +222,9 @@ function ProcessNpcSpeak(int handle)
                 SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
                 Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
                 NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration)
+                _lastNpcToSpeak = speaker
                 SKSE_HTTP.SetVoiceType(speaker,orgVoice)
             endif
-            _lastNpcToSpeak = speaker
-            SetLastSpokenSentence(_lastNpcToSpeak, duration)
         endIf
         RaiseActionEvent(speaker, actions)
     endIf
@@ -240,6 +246,12 @@ function NarratorSpeak(string lineToSay, float duration)
     Actor narratorActor = Narrator.GetReference() as Actor
     MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(narratorActor, MantellaDialogueLine, lineToSay)
     narratorActor.Say(MantellaDialogueLine, abSpeakInPlayersHead=true)
+    _lastNpcToSpeak = narratorActor
+    float durationAdjusted = duration - 1.0
+    if(durationAdjusted < 0)
+        durationAdjusted = 0
+    endIf
+    ;Utility.Wait(durationAdjusted)
 endfunction
 
 string function GetActorName(actor actorToGetName)
@@ -284,9 +296,8 @@ Function CleanupConversation()
     ClearRepeatingMessage()
     _ingameEvents = None
     _does_accept_player_input = false
+    _isTalking = false
     _lastNpcToSpeak = None
-    _timeStampOfLastTalkingStart = 0.0
-    _durationOfLastSentence = 0.0
     ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
@@ -394,21 +405,33 @@ Actor function GetNpcToLookAt(Actor speaker, Actor lastNpcToSpeak)
     return NpcToLookAt
 endFunction
 
-function SetLastSpokenSentence(Actor speaker, float duration)
-    _lastNpcToSpeak = speaker
-    _timeStampOfLastTalkingStart = Utility.GetCurrentRealTime()
-    _durationOfLastSentence = duration
+function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
+    ; if this is the start of the conversation there is no need to wait, so skip this function entirely
+    if lastNpcToSpeak != None
+        ; if the current NPC did not speak last in a multi-NPC conversation, 
+        ; wait for the last NPC to finish speaking to avoid interrupting
+        if speaker != lastNpcToSpeak 
+            WaitForSpecificNpcToFinishSpeaking(lastNpcToSpeak)
+        endIf
+        ; wait for the current NPC to finish speaking before starting the next voiceline
+        WaitForSpecificNpcToFinishSpeaking(speaker)
+    endIf
 endFunction
 
-function WaitForLastNpcToStopSpeaking()
-    If (_lastNpcToSpeak != None)
-        float currentTime = Utility.GetCurrentRealTime()
-        float timeElapsed = currentTime - _timeStampOfLastTalkingStart
-        float remainingWaitTime = _durationOfLastSentence - timeElapsed
-        If (remainingWaitTime > 0)
-            Utility.Wait(remainingWaitTime)
-        EndIf
-    EndIf
+function WaitForSpecificNpcToFinishSpeaking(Actor selectedNpc)
+    selectedNpc.AddSpell(MantellaIsTalkingSpell, False)
+    float waitTime = 0.01
+    float totalWaitTime = 0
+    Utility.Wait(waitTime) ; allow time for _isTalking to be set
+    while _isTalking == true ; wait until the NPC has finished speaking
+        Utility.Wait(waitTime)
+        totalWaitTime += waitTime
+        if totalWaitTime > 10 ; note that this isn't really in seconds due to the overhead of the loop running
+            Debug.Notification("NPC speaking too long, ending wait...")
+            _isTalking = false
+        endIf
+    endWhile
+    selectedNpc.RemoveSpell(MantellaIsTalkingSpell)
 endFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -427,8 +450,7 @@ Function RaiseActionEvent(Actor speaker, string[] actions)
         ; if the action is to open the inventory menu, wait for the speaker to finish their voiceline first before the menu forces the game to pause
         if extraAction == mConsts.ACTION_NPC_INVENTORY
             Utility.Wait(0.5)
-            ; WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
-            WaitForLastNpcToStopSpeaking()
+            WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
         endIf
 
         if extraAction == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
