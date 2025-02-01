@@ -3,12 +3,12 @@ VirtualMachineAdapter:
   Scripts:
   - Name: MantellaDialogueItems
     Properties:
-    - MutagenObjectType: ScriptStringProperty
-      Name: TriggeredDialogueItem
-      Data: mantella_start_add
     - MutagenObjectType: ScriptObjectProperty
       Name: conversation
       Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptStringProperty
+      Name: TriggeredDialogueItem
+      Data: mantella_start_add
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: MantellaDialogueItems
@@ -32,7 +32,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: 123874272
+    SecondUnusedIntParameter: 123550144
     VariableName: ::showDialogueItems_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat

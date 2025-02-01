@@ -39,7 +39,6 @@ Persistent:
 - MutagenObjectType: PlacedNpc
   FormKey: 1A4B45:Mantella.esp
   MajorRecordFlagsRaw: 1024
-  VersionControl: 12848
   SkyrimMajorRecordFlags:
   - 0x400
   Base: 186540:Mantella.esp

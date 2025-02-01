@@ -1,5 +1,8 @@
 FormKey: 001D8A:Mantella.esp
 EditorID: MantellaDialogueLine
+Name:
+  TargetLanguage: English
+  Value: MantellaDialogueLine
 Quest: 001827:Mantella.esp
 Category: Misc
 Subtype: StandOnFurniture
