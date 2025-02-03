@@ -216,9 +216,12 @@ function ProcessNpcSpeak(int handle)
     string speakerName = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_SPEAKER, "Error: No speaker transmitted for action 'NPC talk'")
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = GetActorInConversation(speakerName)
-    bool isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
-    If (_useNarrator && isNarration)
-        speaker = Narrator.GetReference() as Actor
+    bool isNarration = False
+    If _useNarrator
+        isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+        If isNarration
+            speaker = Narrator.GetReference() as Actor
+        EndIf
     EndIf
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
     if speaker != none
@@ -227,10 +230,10 @@ function ProcessNpcSpeak(int handle)
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, lineToSpeakError)
         float duration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
-        int topidID = SKSE_HTTP.getInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE,1)
+        int topicID = SKSE_HTTP.getInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE,1)
         
         if lineToSpeak != lineToSpeakError
-            Topic topicToUse = GetTopicToUse(topidID)
+            Topic topicToUse = GetTopicToUse(topicID)
             if speaker == PlayerRef
                 VoiceType orgRaceDefaultVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
@@ -241,7 +244,7 @@ function ProcessNpcSpeak(int handle)
                 VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker);
                 SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
                 Actor NpcToLookAt = GetNpcToLookAt(speaker, _lastNpcToSpeak)
-                NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration, topicToUse, _useNarrator && isNarration)
+                NpcSpeak(speaker, lineToSpeak, NpcToLookAt, duration, topicToUse, isNarration)
                 SKSE_HTTP.SetVoiceType(speaker,orgVoice)
             endif
             _lastNpcToSpeak = speaker
