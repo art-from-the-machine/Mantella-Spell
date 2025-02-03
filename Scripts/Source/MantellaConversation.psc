@@ -3,7 +3,8 @@ Scriptname MantellaConversation extends Quest hidden
 Import SKSE_HTTP
 Import Utility
 
-Topic property MantellaDialogueLine auto
+Topic property MantellaDialogueLine1 auto
+Topic property MantellaDialogueLine2 auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
 Faction Property MantellaConversationParticipantsFaction Auto
@@ -14,6 +15,7 @@ MantellaEquipmentDescriber Property EquipmentDescriber auto
 Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
+ReferenceAlias Property Narrator Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -32,6 +34,8 @@ string _lastSpeakerName = ""
 string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
+bool _useNarrator = False
+int _lastTopicInfo = 0
 float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
 
@@ -126,6 +130,22 @@ bool Function GetIsTalking()
     return _isTalking
 EndFunction
 
+int Function GetNextTopicID()
+    If (_lastTopicInfo == 0 || _lastTopicInfo == 2)
+        return 1
+    Else
+        return 2
+    EndIf
+EndFunction
+
+Topic Function GetTopicToUse(int transmittedID)
+    If (transmittedID == 2)
+        return MantellaDialogueLine2
+    Else
+        return MantellaDialogueLine1
+    EndIf
+EndFunction
+
 event OnHttpReplyReceived(int typedDictionaryHandle)
     ; httpReceivedTime = Utility.GetCurrentRealTime()
     ; NOTE: When testing run times, remember to factor in the time it takes to trace a message (noted below) and subtract this number to get the "true" operation run time
@@ -147,6 +167,9 @@ function ContinueConversation(string nextAction, int handle)
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         _hasBeenStopped = false
+        if(SKSE_HTTP.hasKey(handle,mConsts.KEY_STARTCONVERSATION_USENARRATOR))
+            _useNarrator = SKSE_HTTP.getBool(handle, mConsts.KEY_STARTCONVERSATION_USENARRATOR, false)
+        endif
         ;Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
@@ -179,6 +202,9 @@ function RequestContinueConversation()
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+        int nextTopicInfo = GetNextTopicID()
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, nextTopicInfo)
+        _lastTopicInfo = nextTopicInfo
         if(_extraRequestActions && _extraRequestActions.Length > 0)
             ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
             SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
@@ -204,6 +230,13 @@ function ProcessNpcSpeak(int handle)
     else
         speaker = GetActorInConversation(speakerName)
     endIf
+    bool isNarration = False
+    If _useNarrator
+        isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+        If isNarration
+            speaker = Narrator.GetReference() as Actor
+        EndIf
+    EndIf
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " to get actor based on speaker name", 2)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
 
@@ -211,9 +244,12 @@ function ProcessNpcSpeak(int handle)
         WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
         ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to wait for last NPC to finish speaking", 2)
         string lineToSpeak = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_LINETOSPEAK, lineToSpeakError)
+        int topicID = SKSE_HTTP.getInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE,1)
+        
         ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to prepare response data", 2)
 
         if lineToSpeak != lineToSpeakError
+            Topic topicToUse = GetTopicToUse(topicID)
             if speaker == PlayerRef
                 VoiceType orgRaceDefaultVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
@@ -226,9 +262,7 @@ function ProcessNpcSpeak(int handle)
                     endIf
                     Utility.Wait(0.01)
                 endWhile
-                NpcSpeak(speaker, lineToSpeak)
-                _lastNpcToSpeak = speaker
-                _lastSpeakerName = speakerName
+                NpcSpeak(speaker, lineToSpeak, topicToUse, false)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             else
                 ActorBase speakerActorBase = speaker.GetActorBase()
@@ -245,11 +279,11 @@ function ProcessNpcSpeak(int handle)
                     endIf
                     Utility.Wait(0.01)
                 endWhile
-                NpcSpeak(speaker, lineToSpeak)
-                _lastNpcToSpeak = speaker
-                _lastSpeakerName = speakerName
+                NpcSpeak(speaker, lineToSpeak, topicToUse, isNarration)
                 speakerActorBase.SetVoiceType(orgVoice)
             endif
+            _lastNpcToSpeak = speaker
+            _lastSpeakerName = speakerName
         endIf
         ; Get actions only after the NPC starts speaking to improve response times
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
@@ -257,13 +291,16 @@ function ProcessNpcSpeak(int handle)
     endIf
 endFunction
 
-function NpcSpeak(Actor actorSpeaking, string lineToSay)
-    MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(actorSpeaking, MantellaDialogueLine, lineToSay)
-    actorSpeaking.Say(MantellaDialogueLine)
+function NpcSpeak(Actor actorSpeaking, string lineToSay, Topic topicToUse, bool isSpokenByNarrator)
+    MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(actorSpeaking, topicToUse, lineToSay)
+    actorSpeaking.Say(topicToUse, abSpeakInPlayersHead=isSpokenByNarrator)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to start speaking", 2)
-    Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
-    actorSpeaking.SetLookAt(NpcToLookAt)
-    NpcToLookAt.SetLookAt(actorSpeaking)
+
+    if !isSpokenByNarrator
+        Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
+        actorSpeaking.SetLookAt(NpcToLookAt)
+        NpcToLookAt.SetLookAt(actorSpeaking)
+    endIf
 endfunction
 
 string function GetActorName(actor actorToGetName)
@@ -310,6 +347,7 @@ Function CleanupConversation()
     _does_accept_player_input = false
     _isTalking = false
     _lastNpcToSpeak = None
+    _lastTopicInfo = 0
     ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
