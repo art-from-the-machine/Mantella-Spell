@@ -217,44 +217,48 @@ function ProcessNpcSpeak(int handle)
             if speaker == PlayerRef
                 VoiceType orgRaceDefaultVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
-                bool hasVoiceChanged = false
+
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                while hasVoiceChanged == false
-                    VoiceType currentVoice = PlayerRef.GetVoiceType()
-                    if currentVoice == MantellaVoice00
-                        hasVoiceChanged = true
-                    endIf
-                    Utility.Wait(0.01)
-                endWhile
+                WaitForVoiceAssignment(speaker)
+
                 NpcSpeak(speaker, lineToSpeak)
-                _lastNpcToSpeak = speaker
-                _lastSpeakerName = speakerName
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             else
-                ActorBase speakerActorBase = speaker.GetActorBase()
-                VoiceType orgVoice = speakerActorBase.GetVoiceType()
+                VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker)
                 ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get orinal voice type", 2)
-                speakerActorBase.SetVoiceType(MantellaVoice00) ; SKSE_HTTP.SetVoiceType(speaker,MantellaVoice00)
+                SKSE_HTTP.SetVoiceType(speaker, MantellaVoice00)
                 ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to set voice type", 2)
-                bool hasVoiceChanged = false
+                
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                while hasVoiceChanged == false
-                    VoiceType currentVoice = speakerActorBase.GetVoiceType()
-                    if currentVoice == MantellaVoice00
-                        hasVoiceChanged = true
-                    endIf
-                    Utility.Wait(0.01)
-                endWhile
+                WaitForVoiceAssignment(speaker)
+
                 NpcSpeak(speaker, lineToSpeak)
-                _lastNpcToSpeak = speaker
-                _lastSpeakerName = speakerName
-                speakerActorBase.SetVoiceType(orgVoice)
+                SKSE_HTTP.SetVoiceType(speaker, orgVoice)
             endif
+            _lastNpcToSpeak = speaker
+            _lastSpeakerName = speakerName
         endIf
         ; Get actions only after the NPC starts speaking to improve response times
         string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
         RaiseActionEvent(speaker, actions)
     endIf
+endFunction
+
+function WaitForVoiceAssignment(Actor speaker)
+    bool hasVoiceChanged = false
+    float totalWaitTime = 0
+    while hasVoiceChanged == false
+        VoiceType currentVoice = SKSE_HTTP.GetVoiceType(speaker)
+        if currentVoice == MantellaVoice00
+            hasVoiceChanged = true
+        elseIf totalWaitTime > 5
+            Debug.Notification("Could not assign voiceline to NPC")
+            hasVoiceChanged = true
+        else
+            Utility.Wait(0.01)
+            totalWaitTime += 0.01
+        endIf
+    endWhile
 endFunction
 
 function NpcSpeak(Actor actorSpeaking, string lineToSay)
