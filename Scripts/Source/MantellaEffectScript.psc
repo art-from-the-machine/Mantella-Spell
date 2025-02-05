@@ -12,7 +12,12 @@ event OnEffectStart(Actor target, Actor caster)
         conversation.Start()
         conversation.StartConversation(actors)
     Else
-        Debug.Notification("Adding "+actors[1].GetDisplayName()+" to conversation...")
+        if conversation.IsPlayerInConversation()
+            Debug.Notification("Adding "+actors[1].GetDisplayName()+" to conversation...")
+        Else
+            ; If player is joining what was previously a radiant conversation
+            Debug.Notification("Adding player to conversation...")
+        endIf
         conversation.AddActorsToConversation(actors)
     endIf
 endEvent
