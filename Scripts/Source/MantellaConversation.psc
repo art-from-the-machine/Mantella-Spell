@@ -264,6 +264,7 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay)
     Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
     actorSpeaking.SetLookAt(NpcToLookAt)
     NpcToLookAt.SetLookAt(actorSpeaking)
+    actorSpeaking.AddSpell(MantellaIsTalkingSpell, False)
 endfunction
 
 string function GetActorName(actor actorToGetName)
@@ -422,8 +423,11 @@ function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
     if lastNpcToSpeak != None
         ; if the current NPC did not speak last in a multi-NPC conversation, 
         ; wait for the last NPC to finish speaking to avoid interrupting
+        ; and then cast the IsTalking spell on the current NPC (mainly to check that they are not speaking non-Mantella voicelines)
         if speaker != lastNpcToSpeak 
             WaitForSpecificNpcToFinishSpeaking(lastNpcToSpeak)
+            speaker.AddSpell(MantellaIsTalkingSpell, False)
+            Utility.Wait(0.01) ; allow time for _isTalking to be set
         endIf
         ; wait for the current NPC to finish speaking before starting the next voiceline
         WaitForSpecificNpcToFinishSpeaking(speaker)
@@ -431,10 +435,8 @@ function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
 endFunction
 
 function WaitForSpecificNpcToFinishSpeaking(Actor selectedNpc)
-    selectedNpc.AddSpell(MantellaIsTalkingSpell, False)
     float waitTime = 0.01
     float totalWaitTime = 0
-    Utility.Wait(waitTime) ; allow time for _isTalking to be set
     while _isTalking == true ; wait until the NPC has finished speaking
         Utility.Wait(waitTime)
         totalWaitTime += waitTime
