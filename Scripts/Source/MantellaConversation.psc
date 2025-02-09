@@ -207,7 +207,7 @@ function ProcessNpcSpeak(int handle)
     if (isNarration && _useNarrator)
         speaker = Narrator.GetReference() as Actor
         speakerName = "MantellaNarrator"
-        Debug.Notification("Using Narrator.")
+        ;Debug.Notification("Using Narrator.")
     ; If actor is already loaded, do not load again from actors list
     elseif speakerName == _lastSpeakerName
         speaker = _lastNpcToSpeak
