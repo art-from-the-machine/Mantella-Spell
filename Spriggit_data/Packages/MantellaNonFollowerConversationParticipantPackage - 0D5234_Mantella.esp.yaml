@@ -26,7 +26,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -630455808
+    SecondUnusedIntParameter: 123595552
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat

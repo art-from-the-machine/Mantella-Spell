@@ -14,6 +14,7 @@ MantellaEquipmentDescriber Property EquipmentDescriber auto
 Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
+ReferenceAlias Property Narrator Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -32,6 +33,7 @@ string _lastSpeakerName = ""
 string _repeatingMessage = ""
 string _location = ""
 int _initialTime = 0
+bool _useNarrator = False
 float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
 
@@ -147,6 +149,9 @@ function ContinueConversation(string nextAction, int handle)
     ; Debug.Notification(nextAction)
     if(nextAction == mConsts.KEY_REPLYTTYPE_STARTCONVERSATIONCOMPLETED)
         _hasBeenStopped = false
+        if(SKSE_HTTP.hasKey(handle,mConsts.KEY_STARTCONVERSATION_USENARRATOR))
+            _useNarrator = SKSE_HTTP.getBool(handle, mConsts.KEY_STARTCONVERSATION_USENARRATOR, false)
+        endif
         ;Debug.Notification("Conversation started.")
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
@@ -198,12 +203,18 @@ function ProcessNpcSpeak(int handle)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get speaker name", 2)
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = None
+    bool isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+    if (isNarration && _useNarrator)
+        speaker = Narrator.GetReference() as Actor
+        speakerName = "MantellaNarrator"
+        Debug.Notification("Using Narrator.")
     ; If actor is already loaded, do not load again from actors list
-    if speakerName == _lastSpeakerName
+    elseif speakerName == _lastSpeakerName
         speaker = _lastNpcToSpeak
     else
         speaker = GetActorInConversation(speakerName)
     endIf
+    
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " to get actor based on speaker name", 2)
     ;Debug.Notification("Chosen Actor: "+ speaker.GetDisplayName())
 
@@ -214,14 +225,15 @@ function ProcessNpcSpeak(int handle)
         ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to prepare response data", 2)
 
         if lineToSpeak != lineToSpeakError
-            if speaker == PlayerRef
+            bool isPlayer = speaker == PlayerRef
+            if isPlayer
                 VoiceType orgRaceDefaultVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
 
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                WaitForVoiceAssignment(speaker)
+                WaitForVoiceAssignment(speaker, isPlayer)
 
-                NpcSpeak(speaker, lineToSpeak)
+                NpcSpeak(speaker, lineToSpeak, false)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             else
                 VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker)
@@ -230,9 +242,9 @@ function ProcessNpcSpeak(int handle)
                 ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to set voice type", 2)
                 
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                WaitForVoiceAssignment(speaker)
+                WaitForVoiceAssignment(speaker, isPlayer)
 
-                NpcSpeak(speaker, lineToSpeak)
+                NpcSpeak(speaker, lineToSpeak, (isNarration && _useNarrator))
                 SKSE_HTTP.SetVoiceType(speaker, orgVoice)
             endif
             _lastNpcToSpeak = speaker
@@ -244,11 +256,17 @@ function ProcessNpcSpeak(int handle)
     endIf
 endFunction
 
-function WaitForVoiceAssignment(Actor speaker)
+function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
     float totalWaitTime = 0
     while hasVoiceChanged == false
-        VoiceType currentVoice = SKSE_HTTP.GetVoiceType(speaker)
+        VoiceType currentVoice
+        If (isPlayer)
+            currentVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
+        Else
+            currentVoice = SKSE_HTTP.GetVoiceType(speaker)
+        EndIf
+        
         if currentVoice == MantellaVoice00
             hasVoiceChanged = true
         elseIf totalWaitTime > 5
@@ -261,13 +279,15 @@ function WaitForVoiceAssignment(Actor speaker)
     endWhile
 endFunction
 
-function NpcSpeak(Actor actorSpeaking, string lineToSay)
+function NpcSpeak(Actor actorSpeaking, string lineToSay, bool isSpokenByNarrator)
     MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(actorSpeaking, MantellaDialogueLine, lineToSay)
-    actorSpeaking.Say(MantellaDialogueLine)
+    actorSpeaking.Say(MantellaDialogueLine, abSpeakInPlayersHead=isSpokenByNarrator)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to start speaking", 2)
-    Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
-    actorSpeaking.SetLookAt(NpcToLookAt)
-    NpcToLookAt.SetLookAt(actorSpeaking)
+    If (!isSpokenByNarrator)
+        Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
+        actorSpeaking.SetLookAt(NpcToLookAt)
+        NpcToLookAt.SetLookAt(actorSpeaking)
+    EndIf
     actorSpeaking.AddSpell(MantellaIsTalkingSpell, False)
 endfunction
 
