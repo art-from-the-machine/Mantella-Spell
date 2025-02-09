@@ -1,7 +1,6 @@
 FormKey: 186540:Mantella.esp
 IsCompressed: True
 MajorRecordFlagsRaw: 262144
-VersionControl: 12872
 EditorID: MantellaNarrator
 SkyrimMajorRecordFlags:
 - Compressed
@@ -108,9 +107,9 @@ PlayerSkills:
   Health: 8293
   Magicka: 25970
   Stamina: 28265
-  Unused: 16746
+  Unused: 65535
   GearedUpWeapons: 1
-  Unused2: 0xEDB820
+  Unused2: 0x000000
 HeadParts:
 - 0D0564:Skyrim.esm
 - 05E79F:Skyrim.esm

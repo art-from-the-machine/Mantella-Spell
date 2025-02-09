@@ -5,8 +5,8 @@ VirtualMachineAdapter:
   - Name: MantellaAction_OffendForgiveFollow
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: repository
-      Object: 000D62:Mantella.esp
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
@@ -14,8 +14,8 @@ VirtualMachineAdapter:
       Name: PlayerRef
       Object: 000014:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: EventInterface
-      Object: 03D41A:Mantella.esp
+      Name: repository
+      Object: 000D62:Mantella.esp
   Versioning:
   - Break0
   ExtraBindDataVersion: 0

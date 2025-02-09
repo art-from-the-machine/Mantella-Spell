@@ -1,7 +1,6 @@
 FormKey: 186541:Mantella.esp
 IsCompressed: True
 MajorRecordFlagsRaw: 262144
-VersionControl: 12872
 EditorID: MantellaRoom
 SkyrimMajorRecordFlags:
 - Compressed
@@ -40,7 +39,6 @@ Persistent:
 - MutagenObjectType: PlacedNpc
   FormKey: 186542:Mantella.esp
   MajorRecordFlagsRaw: 1024
-  VersionControl: 12872
   SkyrimMajorRecordFlags:
   - 0x400
   Base: 186540:Mantella.esp
