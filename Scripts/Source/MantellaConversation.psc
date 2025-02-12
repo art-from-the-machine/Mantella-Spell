@@ -282,14 +282,14 @@ endFunction
 function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
     float totalWaitTime = 0
+    VoiceType currentVoice = None
     while hasVoiceChanged == false
-        VoiceType currentVoice
-        If (isPlayer)
+        if isPlayer
             currentVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
-        Else
+        else
             currentVoice = SKSE_HTTP.GetVoiceType(speaker)
-        EndIf
-        
+        endIf
+
         if currentVoice == MantellaVoice00
             hasVoiceChanged = true
         elseIf totalWaitTime > 5
