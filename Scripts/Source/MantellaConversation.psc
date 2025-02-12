@@ -219,7 +219,7 @@ function ProcessNpcSpeak(int handle)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,MantellaVoice00)
 
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                WaitForVoiceAssignment(speaker)
+                WaitForVoiceAssignment(speaker, true)
 
                 NpcSpeak(speaker, lineToSpeak)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
@@ -230,7 +230,7 @@ function ProcessNpcSpeak(int handle)
                 ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to set voice type", 2)
                 
                 ; Do not play the voiceline until the speaker's voice folder has been changed
-                WaitForVoiceAssignment(speaker)
+                WaitForVoiceAssignment(speaker, false)
 
                 NpcSpeak(speaker, lineToSpeak)
                 SKSE_HTTP.SetVoiceType(speaker, orgVoice)
@@ -244,11 +244,17 @@ function ProcessNpcSpeak(int handle)
     endIf
 endFunction
 
-function WaitForVoiceAssignment(Actor speaker)
+function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
     float totalWaitTime = 0
+    VoiceType currentVoice = None
     while hasVoiceChanged == false
-        VoiceType currentVoice = SKSE_HTTP.GetVoiceType(speaker)
+        if isPlayer
+            currentVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
+        else
+            currentVoice = SKSE_HTTP.GetVoiceType(speaker)
+        endIf
+
         if currentVoice == MantellaVoice00
             hasVoiceChanged = true
         elseIf totalWaitTime > 5
