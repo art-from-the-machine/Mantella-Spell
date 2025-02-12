@@ -2,9 +2,8 @@ FormKey: 03D41A:Mantella.esp
 EditorID: MantellaConversation
 VirtualMachineAdapter:
   Scripts:
-  - Name: mantellainterface
   - Name: mantellaequipmentdescriber
-  - Name: mantellaconstants
+  - Name: mantellainterface
   - Name: MantellaConversation
     Properties:
     - MutagenObjectType: ScriptObjectProperty
@@ -14,14 +13,11 @@ VirtualMachineAdapter:
       Name: mConsts
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: PlayerRef
-      Object: 000014:Skyrim.esm
+      Name: MantellaIsTalkingSpell
+      Object: 10CD3A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaConversationParticipantsQuest
-      Object: 0DF435:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: Participants
-      Object: 0E4537:Mantella.esp
+      Name: MantellaVoice00
+      Object: 17C33F:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
@@ -29,21 +25,39 @@ VirtualMachineAdapter:
       Name: EquipmentDescriber
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaIsTalkingSpell
-      Object: 10CD3A:Mantella.esp
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaDialogueLine
-      Object: 001D8A:Mantella.esp
+      Name: Participants
+      Object: 0E4537:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaVoice00
-      Object: 17C33F:Mantella.esp
+      Name: Narrator
+      Object: 03D41A:Mantella.esp
+      Alias: 3
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsFaction
       Object: 06FE24:Mantella.esp
-  - Name: mantellaequipmentdescriber
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaConversationParticipantsQuest
+      Object: 0DF435:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDialogueLine1
+      Object: 001D8A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDialogueLine2
+      Object: 18B643:Mantella.esp
+  - Name: mantellaconstants
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
   FileName: ''
 Priority: 11
-NextAliasID: 3
+NextAliasID: 4
+Aliases:
+- ID: 3
+  Name: Narrator
+  Flags:
+  - Optional
+  - AllowReserved
+  ForcedReference: 186542:Mantella.esp
+  VoiceTypes: Null
