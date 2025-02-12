@@ -224,8 +224,11 @@ function ProcessNpcSpeak(int handle)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get speaker name", 2)
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = None
-    bool isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
-    if (isNarration && _useNarrator)
+    bool isNarration = False
+    if _useNarrator
+        isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
+    endIf
+    if isNarration
         speaker = Narrator.GetReference() as Actor
         speakerName = "MantellaNarrator"
         ;Debug.Notification("Using Narrator.")
@@ -267,7 +270,7 @@ function ProcessNpcSpeak(int handle)
                 ; Do not play the voiceline until the speaker's voice folder has been changed
                 WaitForVoiceAssignment(speaker, isPlayer)
 
-                NpcSpeak(speaker, lineToSpeak, topicToUse, (isNarration && _useNarrator))
+                NpcSpeak(speaker, lineToSpeak, topicToUse, isNarration)
                 SKSE_HTTP.SetVoiceType(speaker, orgVoice)
             endif
             _lastNpcToSpeak = speaker
@@ -282,7 +285,7 @@ endFunction
 function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
     float totalWaitTime = 0
-    VoiceType currentVoice = None
+    VoiceType currentVoice
     while hasVoiceChanged == false
         if isPlayer
             currentVoice = SKSE_HTTP.GetRaceDefaultVoiceType(speaker)
