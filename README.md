@@ -10,7 +10,9 @@ This repository is for the Mantella spell mod, which handles the Skyrim-side log
 
 - The .bsa file of the mod [UIExtensions](https://www.nexusmods.com/skyrimspecialedition/mods/17561) needs to be extracted by [BAE](https://www.nexusmods.com/fallout4/mods/78?tab=description) in order to access its scripts.
 
-- Leidtier's SKSE HTTP plugin can be found [here](https://github.com/Leidtier/SKSE_HTTP).
+- The latest version of Leidtier's SKSE HTTP plugin can be found [here](https://github.com/Leidtier/SKSE_HTTP) (the version in this repo is out of date).
+
+- The latest version of the Mantella SKSE Launcher (used to start Mantella.exe when Skyrim is launched) can be found [here](https://github.com/art-from-the-machine/Mantella-SKSE-Launcher/releases) (the version in this repo is out of date).
 
 # Relevant Links
 
