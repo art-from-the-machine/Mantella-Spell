@@ -225,12 +225,14 @@ function ProcessNpcSpeak(int handle)
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = None
     bool isNarration = False
+    float lineDuration = 0
     if _useNarrator
         isNarration = SKSE_HTTP.getBool(handle, mConsts.KEY_ACTOR_ISNARRATION, false)
     endIf
     if isNarration
         speaker = Narrator.GetReference() as Actor
         speakerName = "MantellaNarrator"
+        lineDuration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         ;Debug.Notification("Using Narrator.")
     ; If actor is already loaded, do not load again from actors list
     elseif speakerName == _lastSpeakerName
@@ -259,7 +261,7 @@ function ProcessNpcSpeak(int handle)
                 ; Do not play the voiceline until the speaker's voice folder has been changed
                 WaitForVoiceAssignment(speaker, isPlayer)
 
-                NpcSpeak(speaker, lineToSpeak, topicToUse, false)
+                NpcSpeak(speaker, lineToSpeak, topicToUse, false, lineDuration)
                 SKSE_HTTP.SetRaceDefaultVoiceType(speaker,orgRaceDefaultVoice)
             else
                 VoiceType orgVoice = SKSE_HTTP.GetVoiceType(speaker)
@@ -270,7 +272,7 @@ function ProcessNpcSpeak(int handle)
                 ; Do not play the voiceline until the speaker's voice folder has been changed
                 WaitForVoiceAssignment(speaker, isPlayer)
 
-                NpcSpeak(speaker, lineToSpeak, topicToUse, isNarration)
+                NpcSpeak(speaker, lineToSpeak, topicToUse, isNarration, lineDuration)
                 SKSE_HTTP.SetVoiceType(speaker, orgVoice)
             endif
             _lastNpcToSpeak = speaker
@@ -305,7 +307,7 @@ function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     endWhile
 endFunction
 
-function NpcSpeak(Actor actorSpeaking, string lineToSay, Topic topicToUse, bool isSpokenByNarrator)
+function NpcSpeak(Actor actorSpeaking, string lineToSay, Topic topicToUse, bool isSpokenByNarrator, float lineDuration)
     MantellaSubtitles.SetInjectTopicAndSubtitleForSpeaker(actorSpeaking, topicToUse, lineToSay)
     actorSpeaking.Say(topicToUse, abSpeakInPlayersHead=isSpokenByNarrator)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to start speaking", 2)
@@ -313,6 +315,9 @@ function NpcSpeak(Actor actorSpeaking, string lineToSay, Topic topicToUse, bool 
         Actor NpcToLookAt = GetNpcToLookAt(actorSpeaking, _lastNpcToSpeak)
         actorSpeaking.SetLookAt(NpcToLookAt)
         NpcToLookAt.SetLookAt(actorSpeaking)
+    Else
+        ; Narrations do not have an actor to apply the IsTalking spell to, so a wait time needs to be forced here
+        Utility.Wait(lineDuration)
     EndIf
     actorSpeaking.AddSpell(MantellaIsTalkingSpell, False)
 endfunction
