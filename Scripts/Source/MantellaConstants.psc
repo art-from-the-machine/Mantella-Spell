@@ -56,6 +56,7 @@ string property KEY_ACTOR_ISPLAYER = "mantella_actor_is_player" auto
 string property KEY_ACTOR_RELATIONSHIPRANK = "mantella_actor_relationshiprank" auto
 string property KEY_ACTOR_VOICETYPE = "mantella_actor_voicetype" auto
 string property KEY_ACTOR_ISINCOMBAT = "mantella_actor_is_in_combat" auto
+string property KEY_ACTOR_ISOUTSIDETALKINGRANGE = "mantella_actor_is_outside_talking_range" auto
 string property KEY_ACTOR_ISENEMY = "mantella_actor_is_enemy" auto
 string property KEY_ACTOR_CUSTOMVALUES = "mantella_actor_custom_values" auto
 

@@ -395,9 +395,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
 
-        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
-            UpdateNpcsInConversationArray()
-        endIf
+        UpdateNpcsInConversationArray()
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
         if updateContext ; if context has not been refreshed recently
@@ -797,7 +795,10 @@ int[] function UpdateNpcsInConversationArray()
     int i = 0
     While i < Participants.GetSize()
         Actor actorToBuild = Participants.GetAt(i) as Actor
-        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
+            SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        endIf
+        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > 4096) ; TODO: make a setting or get voice distance dynamically
         i += 1
     EndWhile
 endFunction
