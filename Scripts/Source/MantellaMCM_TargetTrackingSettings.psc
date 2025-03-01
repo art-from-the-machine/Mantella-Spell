@@ -6,7 +6,7 @@ function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
     LeftColumn(mcm, Repository)
     mcm.SetCursorPosition(1)
-    RightColumn(mcm)
+    RightColumn(mcm, Repository)
 endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
@@ -25,7 +25,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_targetTrackingAll = mcm.AddToggleOption("All", mcm.targetAllToggle)
 endfunction
 
-function RightColumn(MantellaMCM mcm) global
+function RightColumn(MantellaMCM mcm, MantellaRepository repository) global
      ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
     ;generates left column
     mcm.AddHeaderOption ("Target Info")
@@ -82,6 +82,10 @@ function RightColumn(MantellaMCM mcm) global
     mcm.AddTextOption("Relationship",currentActorRelationshipString )
     mcm.AddTextOption("Voice Type",currentActorVoiceSubstring )
     mcm.AddTextOption("Enemy",currentActorIsEnemy )
+
+    mcm.AddHeaderOption("Conversation")
+    mcm.oid_targetMaxDistance = mcm.AddSliderOption("Maximum npc distance", repository.targetMaxDistance)    
+
     ;_keymapOID_K = mcm.AddKeyMapOption("Mantella Initiate/Text Hotkey", _myKey, 0)
 endfunction
 
@@ -147,3 +151,12 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         
     endif
 endfunction 
+
+function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
+    if optionID==mcm.oid_targetMaxDistance
+        mcm.SetSliderDialogStartValue(Repository.targetMaxDistance)
+        mcm.SetSliderDialogDefaultValue(2500)
+        mcm.SetSliderDialogRange(0, 10000)
+        mcm.SetSliderDialogInterval(100)
+    endif
+endfunction

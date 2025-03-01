@@ -798,7 +798,9 @@ int[] function UpdateNpcsInConversationArray()
         if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
             SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
         endIf
-        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > 4096) ; TODO: make a setting or get voice distance dynamically
+        Debug.Notification(actorToBuild.GetDistance(PlayerRef))
+        Debug.Notification(repository.targetMaxDistance)    
+        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
         i += 1
     EndWhile
 endFunction
@@ -815,9 +817,11 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(PlayerRef))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
+    Debug.Notification(repository.targetMaxDistance)  
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild, isPlayerCharacter, repository)
-    int customActorValuesHandle = SKSE_HTTP.createDictionary()
+    int customActorValuesHandle = SKSE_HTTP.createDictionary() 
     If (isPlayerCharacter)
         AddCustomPCValues(customActorValuesHandle, actorToBuild)
     EndIf

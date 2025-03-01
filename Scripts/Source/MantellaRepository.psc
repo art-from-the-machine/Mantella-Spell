@@ -88,6 +88,7 @@ bool property targetEquipmentFeet auto
 bool property targetEquipmentAmulet auto
 bool property targetEquipmentRightHand auto
 bool property targetEquipmentLeftHand auto
+int  property targetMaxDistance auto
 
 bool property enableVanillaDialogueAwareness auto
 bool property AllowForNPCtoFollow auto ;gia
@@ -121,6 +122,9 @@ endEvent
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
 ; Doing it like this will only assign the defaul values to settings that haven't been initialised prior.
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 8 || isFirstInit)
+        targetMaxDistance = 2500
+    EndIf   
     If (lastVersion < 7 || isFirstInit)
         enableVanillaDialogueAwareness = true
     EndIf
