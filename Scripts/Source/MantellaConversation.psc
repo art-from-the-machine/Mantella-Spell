@@ -798,9 +798,14 @@ int[] function UpdateNpcsInConversationArray()
         if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
             SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
         endIf
-        Debug.Notification(actorToBuild.GetDistance(PlayerRef))
-        Debug.Notification(repository.targetMaxDistance)    
         SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
+
+        Float distanceToPlayer = actorToBuild.GetDistance(PlayerRef)
+        if repository.autoRemoveNpcsFromConversation == true && distanceToPlayer > repository.autoRemoveMaxDistance && distanceToPlayer < 620000 ; When both actors are in different cells, distance is huge and we dont want to remove when in different cells
+            Actor[] actors = new Actor[1]
+            actors[0] = actorToBuild
+            RemoveActorsFromConversation(actors)
+        endif
         i += 1
     EndWhile
 endFunction
@@ -818,7 +823,6 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
-    Debug.Notification(repository.targetMaxDistance)  
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild, isPlayerCharacter, repository)
     int customActorValuesHandle = SKSE_HTTP.createDictionary() 

@@ -83,7 +83,11 @@ int property oid_targetEquipmentRightHand auto
 int property oid_targetEquipmentLeftHand auto
 int property oid_targetEquipmentAll auto
 bool property targetEquipmentAllToggle auto
+
+int property oid_autoRemoveNpcsFromConversation auto
 int property oid_targetMaxDistance	auto
+int property oid_autoRemoveMaxDistance auto
+
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
@@ -112,7 +116,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 8
+    Return 9
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -202,7 +206,9 @@ Event OnOptionSliderAccept(Int optionId, Float value)
         MantellaMCM_PlayerSettings.SliderOptionAccept(self,optionID, value, repository)
     elseif MantellaMCMcurrentPage == PAGE_ADVANCED
         MantellaMCM_AdvancedSettings.SliderOptionAccept(self,optionID, value, repository)
-    endIf
+	elseif MantellaMCMcurrentPage == PAGE_TARGETTRACKING
+		MantellaMCM_TargetTrackingSettings.SliderOptionAccept(self,optionID, value, repository)
+	endIf
 EndEvent
 
 Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl, String a_conflictName)
