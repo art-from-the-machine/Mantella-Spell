@@ -127,6 +127,7 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
     If(lastVersion < 9 || isFirstInit)
         autoRemoveNpcsFromConversation = true
         autoRemoveMaxDistance = 9000
+        targetMaxDistance = 2500
     elseIf (lastVersion < 8 || isFirstInit)
         targetMaxDistance = 2500
     EndIf   
