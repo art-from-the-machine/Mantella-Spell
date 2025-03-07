@@ -801,7 +801,7 @@ int[] function UpdateNpcsInConversationArray()
         SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
 
         Float distanceToPlayer = actorToBuild.GetDistance(PlayerRef)
-        if repository.autoRemoveNpcsFromConversation == true && distanceToPlayer > repository.autoRemoveMaxDistance && distanceToPlayer < 620000 ; When both actors are in different cells, distance is huge and we dont want to remove when in different cells
+        if repository.autoRemoveNpcsFromConversation == true && Participants.GetSize() > 2 && distanceToPlayer > repository.autoRemoveMaxDistance && distanceToPlayer < 620000 ; When both actors are in different cells, distance is huge and we dont want to remove when in different cells
             Actor[] actors = new Actor[1]
             actors[0] = actorToBuild
             RemoveActorsFromConversation(actors)
