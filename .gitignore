@@ -2,6 +2,7 @@
 *.lip
 *.zip
 *.ini
+!MantellaDialogue.ini
 *.bsa
 *.pex
 SKSE/Plugins/MantellaSoftware/

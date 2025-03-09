@@ -6,7 +6,7 @@ function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
     LeftColumn(mcm, Repository)
     mcm.SetCursorPosition(1)
-    RightColumn(mcm)
+    RightColumn(mcm, Repository)
 endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
@@ -25,7 +25,7 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_targetTrackingAll = mcm.AddToggleOption("All", mcm.targetAllToggle)
 endfunction
 
-function RightColumn(MantellaMCM mcm) global
+function RightColumn(MantellaMCM mcm, MantellaRepository repository) global
      ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
     ;generates left column
     mcm.AddHeaderOption ("Target Info")
@@ -82,6 +82,11 @@ function RightColumn(MantellaMCM mcm) global
     mcm.AddTextOption("Relationship",currentActorRelationshipString )
     mcm.AddTextOption("Voice Type",currentActorVoiceSubstring )
     mcm.AddTextOption("Enemy",currentActorIsEnemy )
+
+    mcm.AddHeaderOption("Conversation")
+    mcm.oid_autoRemoveNpcsFromConversation = mcm.AddToggleOption("Auto remove NPCs from conversation", repository.autoRemoveNpcsFromConversation)  
+    mcm.oid_targetMaxDistance = mcm.AddSliderOption("Npc hearing range", repository.targetMaxDistance)  
+    mcm.oid_autoRemoveMaxDistance = mcm.AddSliderOption("Auto remove distance", repository.autoRemoveMaxDistance)
     ;_keymapOID_K = mcm.AddKeyMapOption("Mantella Initiate/Text Hotkey", _myKey, 0)
 endfunction
 
@@ -144,6 +149,33 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         Repository.targetTrackingAngerState=mcm.targetAllToggle
         ;not using dying toggle cause this one is to end conversations on NPC death
         ;Repository.targetTrackingOnDying=mcm.targetAllToggle
-        
+    elseif optionID==mcm.oid_autoRemoveNpcsFromConversation
+        Repository.autoRemoveNpcsFromConversation=!Repository.autoRemoveNpcsFromConversation
+        mcm.SetToggleOptionValue( mcm.oid_autoRemoveNpcsFromConversation, Repository.autoRemoveNpcsFromConversation)
     endif
 endfunction 
+
+function SliderOptionAccept(MantellaMCM mcm, int optionID, float value, MantellaRepository Repository) global
+    ;SliderOptionAccept is used to update the Repository with the user input (that input will then be used by the Mantella effect script
+    If  optionId == mcm.oid_targetMaxDistance
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.targetMaxDistance = value as int
+    ElseIf optionId == mcm.oid_autoRemoveMaxDistance
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.autoRemoveMaxDistance = value as int
+    EndIf
+endfunction
+
+function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
+    if optionID==mcm.oid_targetMaxDistance
+        mcm.SetSliderDialogStartValue(Repository.targetMaxDistance)
+        mcm.SetSliderDialogDefaultValue(2500)
+        mcm.SetSliderDialogRange(0, 10000)
+        mcm.SetSliderDialogInterval(100)
+    elseif optionID==mcm.oid_autoRemoveMaxDistance
+        mcm.SetSliderDialogStartValue(Repository.autoRemoveMaxDistance)
+        mcm.SetSliderDialogDefaultValue(9000)
+        mcm.SetSliderDialogRange(0, 20000)
+        mcm.SetSliderDialogInterval(200)
+    endif
+endfunction
