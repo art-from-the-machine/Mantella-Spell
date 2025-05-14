@@ -89,6 +89,7 @@ int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
 int property oid_NPCInventoryToggle auto
 int property oid_NPCPackageToggle auto
+int property oid_enableVanillaDialogueAwareness auto
 
 int property oid_debugNPCSelectMode auto
 int property oid_restartMantellaExe Auto
@@ -111,7 +112,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 6
+    Return 7
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -360,6 +361,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("NPCs can open their inventory to share items.")
 	elseIf optionID == oid_NPCPackageToggle
 		SetInfoText("NPCs will stop to talk to you and will not engage in non-Mantella conversations.")
+	elseIf optionID == oid_enableVanillaDialogueAwareness
+		SetInfoText("NPCs will know about any dialogue spoken in the vanilla dialogue system.")
 
 	elseIf optionID == oid_debugNPCSelectMode
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
