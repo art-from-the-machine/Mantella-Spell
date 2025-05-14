@@ -38,6 +38,7 @@ bool _useNarrator = False
 int _lastTopicInfo = 0
 float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
+bool microphoneEnabledLastKnownStatus = false
 
 event OnInit()
     RegisterForConversationEvents()
@@ -100,6 +101,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     Else
         SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_TEXT)
     endIf
+    microphoneEnabledLastKnownStatus = repository.microphoneEnabled
 
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     ; string address = "http://localhost:" + mConsts.HTTP_PORT + "/" + mConsts.HTTP_ROUTE_MAIN
@@ -202,19 +204,36 @@ function RequestContinueConversation()
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+
         int nextTopicInfo = GetNextTopicID()
         SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, nextTopicInfo)
         _lastTopicInfo = nextTopicInfo
+
         if(_extraRequestActions && _extraRequestActions.Length > 0)
             ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
             SKSE_HTTP.setStringArray(handle, mConsts.KEY_REQUEST_EXTRA_ACTIONS, _extraRequestActions)
             ClearExtraRequestAction()
             ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
         endif
+
         if _actorsUpdated
             SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
             _actorsUpdated = false
         endIf
+
+        if repository.microphoneEnabled != microphoneEnabledLastKnownStatus
+            if repository.microphoneEnabled
+                if repository.useHotkeyToStartMic
+                    SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_PTT)
+                else
+                    SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_MIC)
+                endIf
+            Else
+                SKSE_HTTP.setString(handle, mConsts.KEY_INPUTTYPE, mConsts.KEY_INPUTTYPE_TEXT)
+            endIf
+            microphoneEnabledLastKnownStatus = repository.microphoneEnabled
+        endIf
+
         SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
     EndIf
 endFunction
