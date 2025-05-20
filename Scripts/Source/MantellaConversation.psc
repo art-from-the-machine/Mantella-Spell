@@ -110,6 +110,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     if (eventHandle)        
         ModEvent.Send(eventHandle)
     endIf 
+    MantellaVanillaDialogue.notifyConversationStart()
 endFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -388,6 +389,7 @@ Function CleanupConversation()
     if (handle)        
         ModEvent.Send(handle)
     endIf 
+    MantellaVanillaDialogue.notifyConversationEnd()
     Debug.Notification("Conversation ended.")  
     Stop()
 EndFunction
@@ -412,9 +414,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
 
-        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
-            UpdateNpcsInConversationArray()
-        endIf
+        UpdateNpcsInConversationArray()
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
         if updateContext ; if context has not been refreshed recently
@@ -576,6 +576,7 @@ Function SendActorAddedEvents(Form[] actorsAdded)
         EndIf
         index += 1
     EndWhile
+    MantellaVanillaDialogue.notifyNpcAdded(actorsAdded)
 EndFunction
 
 Function SendActorRemovedEvents(Form[] actorsRemoved)
@@ -589,6 +590,7 @@ Function SendActorRemovedEvents(Form[] actorsRemoved)
         endIf 
         index += 1
     EndWhile
+    MantellaVanillaDialogue.notifyNpcRemoved(actorsRemoved)
 EndFunction
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -812,7 +814,17 @@ int[] function UpdateNpcsInConversationArray()
     int i = 0
     While i < Participants.GetSize()
         Actor actorToBuild = Participants.GetAt(i) as Actor
-        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
+            SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        endIf
+        SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
+
+        Float distanceToPlayer = actorToBuild.GetDistance(PlayerRef)
+        if repository.autoRemoveNpcsFromConversation == true && Participants.GetSize() > 2 && distanceToPlayer > repository.autoRemoveMaxDistance && distanceToPlayer < 620000 ; When both actors are in different cells, distance is huge and we dont want to remove when in different cells
+            Actor[] actors = new Actor[1]
+            actors[0] = actorToBuild
+            RemoveActorsFromConversation(actors)
+        endif
         i += 1
     EndWhile
 endFunction
@@ -829,9 +841,10 @@ int function buildActorSetting(Actor actorToBuild)
     SKSE_HTTP.setInt(handle, mConsts.KEY_ACTOR_RELATIONSHIPRANK, actorToBuild.getrelationshiprank(PlayerRef))
     SKSE_HTTP.setString(handle, mConsts.KEY_ACTOR_VOICETYPE, actorToBuild.GetVoiceType())
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+    SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISOUTSIDETALKINGRANGE, actorToBuild.GetDistance(PlayerRef) > repository.targetMaxDistance) 
     SKSE_HTTP.setBool(handle, mConsts.KEY_ACTOR_ISENEMY, actorToBuild.getcombattarget() == PlayerRef)
     EquipmentDescriber.AddEquipmentDescription(handle, actorToBuild, isPlayerCharacter, repository)
-    int customActorValuesHandle = SKSE_HTTP.createDictionary()
+    int customActorValuesHandle = SKSE_HTTP.createDictionary() 
     If (isPlayerCharacter)
         AddCustomPCValues(customActorValuesHandle, actorToBuild)
     EndIf
