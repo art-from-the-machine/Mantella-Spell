@@ -105,7 +105,10 @@ bool property NPCdebugSelectModeEnabled auto
 int property HttpPort auto
 
 
+MantellaConversation conversation
+
 event OnInit()
+    conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
     assignDefaultSettings(0, true)
 endEvent
 
@@ -267,6 +270,7 @@ bool function restartMantellaExe()
     ;      Check the corresponding commented out OnUpdate at the beginning of the script.
 EndFunction
 
+Actor startConversationKeyDownTargetedActor
 Event OnKeyDown(int KeyCode)
     ;this function was previously in MantellaListener Script back in Mantella 0.9.2
 	;this ensures the right key is pressed and only activated while not in menu mode
@@ -274,17 +278,14 @@ Event OnKeyDown(int KeyCode)
         if KeyCode == MantellaStartHotkey
             Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
-                MantellaSpell.cast(PlayerRef, targetRef)
-                ;Utility.Wait(0.5)
-            endIf        
+                startConversationKeyDownTargetedActor = targetRef
+            endIf    
         elseIf KeyCode == MantellaListenerTextHotkey
             If(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off
-                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
                 if(conversation.IsRunning())
                     conversation.GetPlayerTextInput()
                 endIf
             elseIf (useHotkeyToStartMic)
-                MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
                 if(conversation.IsRunning())
                     conversation.sendRequestForVoiceTranscribe()
                 endIf
@@ -297,7 +298,6 @@ Event OnKeyDown(int KeyCode)
                 MantellaEndSpell.cast(PlayerRef)
             endIf
         elseIf KeyCode == MantellaCustomGameEventHotkey
-            MantellaConversation conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
             if(conversation.IsRunning())
                 UIExtensions.InitMenu("UITextEntryMenu")
                 UIExtensions.OpenMenu("UITextEntryMenu")
@@ -314,6 +314,43 @@ Event OnKeyDown(int KeyCode)
             else
                 Debug.Notification("Radiant Dialogue disabled.")
             endIf
+        endIf
+    endIf
+endEvent
+
+
+
+Event OnKeyUp(int KeyCode, Float HoldTime)
+    Float longPressTime = 0.6
+    ;this function was previously in MantellaListener Script back in Mantella 0.9.2
+    if !utility.IsInMenuMode()
+        if KeyCode == MantellaStartHotkey
+            Actor targetRef = (Game.GetCurrentCrosshairRef() as actor)            
+            
+            ; Add the actor to the conversation that was targeted when the key was pressed
+            if targetRef == none || targetRef == startConversationKeyDownTargetedActor && startConversationKeyDownTargetedActor != none
+                if (HoldTime < longPressTime)
+                    MantellaSpell.cast(PlayerRef, startConversationKeyDownTargetedActor)
+                Else
+                    MantellaRemoveNpcSpell.cast(PlayerRef, startConversationKeyDownTargetedActor)
+                endif
+            endif
+
+            ; Add the actor to the conversation that was targeted when the key was let go
+            if targetRef != none && startConversationKeyDownTargetedActor == none
+                if (HoldTime < longPressTime)
+                    MantellaSpell.cast(PlayerRef, targetRef)
+                Else
+                    MantellaRemoveNpcSpell.cast(PlayerRef, targetRef)
+                endif
+            endif
+
+            ; Start a radiant conversation, if the target of the keyDown is different from keyUp
+            if targetRef != none && startConversationKeyDownTargetedActor != none && startConversationKeyDownTargetedActor != targetRef && !conversation.IsRunning()
+                MantellaSpell.cast(startConversationKeyDownTargetedActor, targetRef)
+            endif
+
+            startConversationKeyDownTargetedActor = none
         endIf
     endIf
 endEvent

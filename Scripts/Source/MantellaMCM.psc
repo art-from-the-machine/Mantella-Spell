@@ -228,7 +228,7 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Periodically reminds the player it is their turn to speak / input text.")
     
     elseIf optionID == oid_keymapStartAddHotkey
-		SetInfoText("Either starts a conversation or adds an NPC to a conversation.")
+		SetInfoText("Either starts a conversation or adds an NPC to a conversation. Press & hold on an NPC to remove them. Press while targeting one npc and release while targeting another to start a radiant conversation. ")
 	elseIf optionID == oid_keymapPromptHotkey
 		SetInfoText("Opens the text prompt or starts the mic recording depending on the context and the microphone options above. \nDefault: H")
 	elseIf optionID == oid_keymapEndHotkey
