@@ -12,6 +12,8 @@ This repository is for the Mantella spell mod, which handles the Skyrim-side log
 
 - The latest version of Leidtier's SKSE HTTP plugin can be found [here](https://github.com/Leidtier/SKSE_HTTP) (the version in this repo is out of date).
 
+- The latest version of mikastamm's Mantella Dialogue plugin can be found [here](https://github.com/mikastamm/mantella-vanilla-dialogue/releases).
+
 - The latest version of the Mantella SKSE Launcher (used to start Mantella.exe when Skyrim is launched) can be found [here](https://github.com/art-from-the-machine/Mantella-SKSE-Launcher/releases) (the version in this repo is out of date).
 
 # Relevant Links
