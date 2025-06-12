@@ -89,7 +89,7 @@ bool property targetEquipmentAmulet auto
 bool property targetEquipmentRightHand auto
 bool property targetEquipmentLeftHand auto
 
-
+bool property enableVanillaDialogueAwareness auto
 bool property AllowForNPCtoFollow auto ;gia
 ;bool property followingNPCsit auto ;gia
 ;bool property followingNPCsleep auto ;gia
@@ -121,6 +121,9 @@ endEvent
 ; and add the corresponding default value here in a block corresponding to the version number like the examples below
 ; Doing it like this will only assign the defaul values to settings that haven't been initialised prior.
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
+    If (lastVersion < 7 || isFirstInit)
+        enableVanillaDialogueAwareness = true
+    EndIf
     If (lastVersion < 6 || isFirstInit)
         NPCInventory = false
     EndIf
