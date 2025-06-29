@@ -1,5 +1,5 @@
-FormKey: 0DF436:Mantella.esp
-EditorID: MantellaFollowerConversationParticipantPackage
+FormKey: 1B8F45:Mantella.esp
+EditorID: MantellaNonFollowerSittingConversationParticipantPackage
 Flags:
 - AllowSwimming
 Type: Package
@@ -8,7 +8,6 @@ InteruptFlags:
 - ObserveCombatBehavior
 - GreetCorpseBehavior
 - ReactionToPlayerActions
-- FriendlyFireComments
 - AggroRadiusBehavior
 - WorldInteractions
 - 0x400
@@ -24,105 +23,64 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Sit
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Lean
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -142434144
+    SecondUnusedIntParameter: -142434112
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Data:
-    MutagenObjectType: IsRidingMountConditionData
-    RunOnType: Reference
-    Reference: 000014:Skyrim.esm
-- MutagenObjectType: ConditionFloat
-  Flags:
-  - OR
+  CompareOperator: NotEqualTo
   Data:
     MutagenObjectType: GetInFactionConditionData
-    Faction: 003806:Mantella.esp
+    Faction: 03D416:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Flags:
-  - OR
+  CompareOperator: NotEqualTo
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 05C84E:Skyrim.esm
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Flags:
-  - OR
+  CompareOperator: NotEqualTo
   Data:
     MutagenObjectType: HasKeywordConditionData
     Keyword: 153B3B:Mantella.esp
   ComparisonValue: 1
 OwnerQuest: 0DF435:Mantella.esp
-PackageTemplate: 0750BE:Skyrim.esm
-DataInputVersion: 8
+PackageTemplate: 082571:Skyrim.esm
+DataInputVersion: 2
 Data:
-- Key: 0
-  Value:
-    MutagenObjectType: PackageDataTarget
-    Type: SingleRef
-    Target:
-      MutagenObjectType: PackageTargetSpecificReference
-      Reference: 000014:Skyrim.esm
-- Key: 1
-  Value:
-    MutagenObjectType: PackageDataFloat
-    Data: 128
-- Key: 2
-  Value:
-    MutagenObjectType: PackageDataFloat
-    Data: 256
-- Key: 6
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 9
+- Key: 3
   Value:
     MutagenObjectType: PackageDataLocation
     Location:
       Target:
         MutagenObjectType: LocationFallback
-        Type: NearSelf
-      Radius: 256
+        Type: NearPackageStart
 - Key: 10
   Value:
     MutagenObjectType: PackageDataBool
-- Key: 11
+- Key: 15
   Value:
-    MutagenObjectType: PackageDataBool
+    MutagenObjectType: PackageDataFloat
 - Key: 16
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-- Key: 17
-  Value:
-    MutagenObjectType: PackageDataBool
-- Key: 18
-  Value:
-    MutagenObjectType: PackageDataBool
-- Key: 19
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 20
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 21
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-- Key: 23
-  Value:
-    MutagenObjectType: PackageDataFloat
-- Key: 25
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
-XnamMarker: 0x1A
+XnamMarker: 0x11
 OnBegin:
   Topics:
   - MutagenObjectType: TopicReference

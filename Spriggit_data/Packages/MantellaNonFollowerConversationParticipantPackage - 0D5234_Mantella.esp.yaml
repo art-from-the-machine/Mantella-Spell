@@ -1,9 +1,9 @@
 FormKey: 0D5234:Mantella.esp
 EditorID: MantellaNonFollowerConversationParticipantPackage
 Flags:
+- PreferredSpeed
 - AllowSwimming
 Type: Package
-PreferredSpeed: Run
 InteruptFlags:
 - ObserveCombatBehavior
 - GreetCorpseBehavior
@@ -23,10 +23,22 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Sit
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Lean
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: 122293024
+    SecondUnusedIntParameter: -142434208
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
@@ -48,27 +60,34 @@ Conditions:
     Keyword: 153B3B:Mantella.esp
   ComparisonValue: 1
 OwnerQuest: 0DF435:Mantella.esp
-PackageTemplate: 082571:Skyrim.esm
-DataInputVersion: 2
+PackageTemplate: 019B2C:Skyrim.esm
+DataInputVersion: 4
 Data:
-- Key: 3
+- Key: 0
   Value:
-    MutagenObjectType: PackageDataLocation
-    Location:
-      Target:
-        MutagenObjectType: LocationFallback
-        Type: NearPackageStart
-- Key: 10
-  Value:
-    MutagenObjectType: PackageDataBool
-- Key: 15
+    MutagenObjectType: PackageDataTarget
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+- Key: 1
   Value:
     MutagenObjectType: PackageDataFloat
-- Key: 16
+    Data: 64
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 128
+- Key: 4
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-XnamMarker: 0x11
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 8
+  Value:
+    MutagenObjectType: PackageDataBool
+XnamMarker: 0x09
 OnBegin:
   Topics:
   - MutagenObjectType: TopicReference

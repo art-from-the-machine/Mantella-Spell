@@ -33,8 +33,6 @@ Lighting:
   - FogMax
   - LightFadeDistances
 WaterHeight: 0
-UnknownGroupData: 1
-PersistentUnknownGroupData: 1
 Persistent:
 - MutagenObjectType: PlacedNpc
   FormKey: 186542:Mantella.esp
