@@ -10,6 +10,9 @@ MantellaRepository property repository auto
 Quest Property MantellaActorPicker auto  
 ReferenceAlias Property PotentialActor1 auto  
 ReferenceAlias Property PotentialActor2 auto  
+ReferenceAlias Property PotentialActor3 auto  
+ReferenceAlias Property PotentialActor4 auto  
+ReferenceAlias Property PotentialActor5 auto  
 MantellaConversation Property conversation auto
 MantellaMCM Property MantellaMCMQuest auto
 Actor Property PlayerRef Auto
@@ -36,8 +39,8 @@ Float Function ConvertMeterToGameUnits(Float meter)
     Return Meter * meterUnits
 EndFunction
 
-Float Function ConvertGameUnitsToMeter(Float gameUnits)
-    Return gameUnits / meterUnits
+Int Function ConvertGameUnitsToMeter(Float gameUnits)
+    Return Math.Floor(gameUnits / meterUnits)
 EndFunction
 
 string Function getPlayerName(bool isStartOfSentence = True)
@@ -72,27 +75,55 @@ event OnUpdate()
             ;http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
             MantellaActorPicker.start()
 
-            ; if both actors found
+            ; if at least two actors found
             if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
                 Actor Actor1 = PotentialActor1.GetReference() as Actor
                 Actor Actor2 = PotentialActor2.GetReference() as Actor
 
-                float distanceToClosestActor = PlayerRef.GetDistance(Actor1)
+                ; first check if the player is close enough to the actors
+                float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
                 float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
-                if distanceToClosestActor <= maxDistance
-                    String Actor1Name = Actor1.getdisplayname()
-                    String Actor2Name = Actor2.getdisplayname()
+                if distanceFromPlayerToClosestActor <= maxDistance
+                    ; then check the distance between actors
                     float distanceBetweenActors = Actor1.GetDistance(Actor2)
-
                     ;TODO: make distanceBetweenActors customisable
                     if (distanceBetweenActors <= 1000)
-                        ;have spell casted on Actor 1 by Actor 2
-                        MantellaSpell.Cast(Actor2 as ObjectReference, Actor1 as ObjectReference)
+                        Actor[] actors = new Actor[5]
+                        actors[0] = Actor1
+                        actors[1] = Actor2
+
+                        ; Search for other potential actors to add
+                        if (PotentialActor3.GetReference() as Actor)
+                            Actor Actor3 = PotentialActor3.GetReference() as Actor
+                            distanceBetweenActors = Actor1.GetDistance(Actor3)
+                            if (distanceBetweenActors <= 1000)
+                                actors[2] = Actor3
+                                if (PotentialActor4.GetReference() as Actor)
+                                    Actor Actor4 = PotentialActor4.GetReference() as Actor
+                                    distanceBetweenActors = Actor1.GetDistance(Actor4)
+                                    if (distanceBetweenActors <= 1000)
+                                        actors[3] = Actor4
+                                        if (PotentialActor5.GetReference() as Actor)
+                                            Actor Actor5 = PotentialActor5.GetReference() as Actor
+                                            distanceBetweenActors = Actor1.GetDistance(Actor5)
+                                            if (distanceBetweenActors <= 1000)
+                                                actors[4] = Actor5
+                                            endIf
+                                        endIf
+                                    endIf
+                                endIf
+                            endIf
+                        endIf
+
+                        Debug.Notification("Starting conversation...")
+                        conversation.Start()
+                        conversation.StartConversation(actors)
+
                     elseif(repository.showRadiantDialogueMessages)
                         Debug.Notification("Radiant dialogue attempted. No NPCs available")
                     endIf
                 elseif(repository.showRadiantDialogueMessages)
-                    Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceToClosestActor) + " meters")
+                    Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
                     Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
                 endIf
             elseif(repository.showRadiantDialogueMessages)
