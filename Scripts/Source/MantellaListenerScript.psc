@@ -53,6 +53,18 @@ string Function getPlayerName(bool isStartOfSentence = True)
     endif
 EndFunction
 
+bool Function TryAddActorToParticipantsList(ReferenceAlias potentialActor, Actor anchorActor, int index, Actor[] actorArray, float maxDistance)
+    if (potentialActor.GetReference() as Actor)
+        Actor newActor = potentialActor.GetReference() as Actor
+        float distance = anchorActor.GetDistance(newActor)
+        if distance <= maxDistance
+            actorArray[index] = newActor
+            return true
+        endIf
+    endIf
+    return false
+endFunction
+
 Event OnPlayerLoadGame()
     If(conversation.IsRunning())
         conversation.EndConversation()
@@ -69,48 +81,34 @@ EndEvent
 
 event OnUpdate()
     if repository.radiantEnabled
-        ; if no Mantella conversation active
+        ; If no Mantella conversation active
         if !conversation.IsRunning()
-            ;MantellaActorList taken from this tutorial:
-            ;http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
+            ; MantellaActorList taken from this tutorial:
+            ; http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
             MantellaActorPicker.start()
 
-            ; if at least two actors found
+            ; If at least two actors found
             if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
                 Actor Actor1 = PotentialActor1.GetReference() as Actor
                 Actor Actor2 = PotentialActor2.GetReference() as Actor
 
-                ; first check if the player is close enough to the actors
+                ; First check if the player is close enough to the actors
                 float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
                 float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
                 if distanceFromPlayerToClosestActor <= maxDistance
-                    ; then check the distance between actors
+                    ; Then check the distance between actors
                     float distanceBetweenActors = Actor1.GetDistance(Actor2)
-                    ;TODO: make distanceBetweenActors customisable
+                    ; TODO: make distanceBetweenActors customisable
                     if (distanceBetweenActors <= 1000)
                         Actor[] actors = new Actor[5]
                         actors[0] = Actor1
                         actors[1] = Actor2
 
                         ; Search for other potential actors to add
-                        if (PotentialActor3.GetReference() as Actor)
-                            Actor Actor3 = PotentialActor3.GetReference() as Actor
-                            distanceBetweenActors = Actor1.GetDistance(Actor3)
-                            if (distanceBetweenActors <= 1000)
-                                actors[2] = Actor3
-                                if (PotentialActor4.GetReference() as Actor)
-                                    Actor Actor4 = PotentialActor4.GetReference() as Actor
-                                    distanceBetweenActors = Actor1.GetDistance(Actor4)
-                                    if (distanceBetweenActors <= 1000)
-                                        actors[3] = Actor4
-                                        if (PotentialActor5.GetReference() as Actor)
-                                            Actor Actor5 = PotentialActor5.GetReference() as Actor
-                                            distanceBetweenActors = Actor1.GetDistance(Actor5)
-                                            if (distanceBetweenActors <= 1000)
-                                                actors[4] = Actor5
-                                            endIf
-                                        endIf
-                                    endIf
+                        if TryAddActorToParticipantsList(PotentialActor3, Actor1, 2, actors, 1000)
+                            if TryAddActorToParticipantsList(PotentialActor4, Actor1, 3, actors, 1000)
+                                if TryAddActorToParticipantsList(PotentialActor5, Actor1, 4, actors, 1000)
+                                    ; All actors added successfully
                                 endIf
                             endIf
                         endIf
