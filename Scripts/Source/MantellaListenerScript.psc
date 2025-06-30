@@ -79,6 +79,52 @@ Event OnPlayerLoadGame()
     RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
+function StartGroupConversation()
+    ; TODO: Remove redundancy with OnUpdate code
+    ; If no Mantella conversation active
+    if !conversation.IsRunning()
+        ; MantellaActorList taken from this tutorial:
+        ; http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
+        MantellaActorPicker.start()
+
+        ; If at least one actor found
+        if (PotentialActor1.GetReference() as Actor)
+            Actor Actor1 = PotentialActor1.GetReference() as Actor
+
+            ; First check if the player is close enough to the actors
+            float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
+            float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
+            if distanceFromPlayerToClosestActor <= maxDistance
+                Actor[] actors = new Actor[6]
+                actors[0] = PlayerRef
+                actors[1] = Actor1
+
+                ; Search for other potential actors to add
+                if TryAddActorToParticipantsList(PotentialActor2, PlayerRef, 1, actors, maxDistance)
+                    if TryAddActorToParticipantsList(PotentialActor3, PlayerRef, 2, actors, maxDistance)
+                        if TryAddActorToParticipantsList(PotentialActor4, PlayerRef, 3, actors, maxDistance)
+                            if TryAddActorToParticipantsList(PotentialActor5, PlayerRef, 4, actors, maxDistance)
+                                ; All actors added successfully
+                            endIf
+                        endIf
+                    endIf
+                endIf
+
+                Debug.Notification("Starting conversation...")
+                conversation.Start()
+                conversation.StartConversation(actors)
+            elseif(repository.showRadiantDialogueMessages)
+                Debug.Notification("Group ocnversation attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
+                Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+            endIf
+        elseif(repository.showRadiantDialogueMessages)
+            Debug.Notification("Group conversation attempted. No NPCs available")
+        endIf
+
+        MantellaActorPicker.stop()
+    endIf
+endFunction
+
 event OnUpdate()
     if repository.radiantEnabled
         ; If no Mantella conversation active
@@ -181,8 +227,17 @@ endEvent
 
 
 Event OnSpellCast(Form akSpell)
-    if (repository.playerTrackingOnSpellCast) 
-        string spellCast = (akSpell as form).getname()
+    string spellCast = (akSpell as form).getname()
+    if (spellCast == "Mantella")
+        ; Wait a second to see if the spell hits a target NPC
+        Utility.Wait(1.0)
+        ; If the spell did not hit a target NPC, start a conversation with all available NPCs in the area
+        if !conversation.IsRunning()
+            StartGroupConversation()
+        endIf
+    endIf
+
+    if (repository.playerTrackingOnSpellCast)
         if spellCast 
             if (spellCast != "Mantella") && (spellCast != "Mantella Remove NPC") && (spellCast != "Mantella End Conversation")
                 ;Debug.Notification("The player casted the spell "+ spellCast)

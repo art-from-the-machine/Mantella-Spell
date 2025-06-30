@@ -32,7 +32,7 @@ Conditions:
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -142434592
+    SecondUnusedIntParameter: -1165439136
     VariableName: ::showDialogueItems_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
