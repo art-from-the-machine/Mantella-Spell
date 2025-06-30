@@ -16,6 +16,7 @@ Faction Property giafac_AllowDialogue  Auto ;gia
 Faction Property giafac_Following  Auto ;gia
 Faction Property giafac_Mantella  Auto ;gia
 quest property gia_FollowerQst auto ;gia
+MantellaListenerScript Property ListenerScript Auto
 
 
 bool property microphoneEnabled auto
@@ -279,6 +280,8 @@ Event OnKeyDown(int KeyCode)
             if (targetRef) ;If we have a target under the crosshair, cast sepll on it
                 MantellaSpell.cast(PlayerRef, targetRef)
                 ;Utility.Wait(0.5)
+            Else
+                ListenerScript.StartGroupConversation()
             endIf        
         elseIf KeyCode == MantellaListenerTextHotkey
             If(!microphoneEnabled) ;Otherwise, try to open player text input if microphone is off

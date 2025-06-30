@@ -37,6 +37,10 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: gia_FollowerQst
       Object: 021211:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: listenerScript
+      Object: 000D62:Mantella.esp
+      Alias: 0
   FileName: ''
   Aliases:
   - Property:
@@ -74,10 +78,6 @@ VirtualMachineAdapter:
         Name: MantellaEndPower
         Object: 02E113:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
-        Name: PotentialActor2
-        Object: 03A314:Mantella.esp
-        Alias: 2
-      - MutagenObjectType: ScriptObjectProperty
         Name: MantellaActorPicker
         Object: 03A314:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
@@ -87,6 +87,22 @@ VirtualMachineAdapter:
         Name: PotentialActor1
         Object: 03A314:Mantella.esp
         Alias: 0
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor2
+        Object: 03A314:Mantella.esp
+        Alias: 2
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor3
+        Object: 03A314:Mantella.esp
+        Alias: 3
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor4
+        Object: 03A314:Mantella.esp
+        Alias: 4
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PotentialActor5
+        Object: 03A314:Mantella.esp
+        Alias: 5
 Flags:
 - StartGameEnabled
 - 0x10
