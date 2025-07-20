@@ -1,0 +1,92 @@
+FormKey: 1B8F45:Mantella.esp
+EditorID: MantellaNonFollowerSittingConversationParticipantPackage
+Flags:
+- AllowSwimming
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- AggroRadiusBehavior
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: 255
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Sit
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: IsInFurnitureStateConditionData
+    FurnitureAnimType: Lean
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetVMQuestVariableConditionData
+    Quest: 000D62:Mantella.esp
+    SecondUnusedIntParameter: -1165438656
+    VariableName: ::NPCPackage_var
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 03D416:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 05C84E:Skyrim.esm
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: HasKeywordConditionData
+    Keyword: 153B3B:Mantella.esp
+  ComparisonValue: 1
+OwnerQuest: 0DF435:Mantella.esp
+PackageTemplate: 082571:Skyrim.esm
+DataInputVersion: 2
+Data:
+- Key: 3
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearPackageStart
+- Key: 10
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataFloat
+- Key: 16
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+XnamMarker: 0x11
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

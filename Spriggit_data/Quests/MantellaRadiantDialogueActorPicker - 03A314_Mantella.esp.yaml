@@ -3,7 +3,8 @@ EditorID: MantellaRadiantDialogueActorPicker
 Flags:
 - StartGameEnabled
 - 0x10
-NextAliasID: 3
+- 0x1000
+NextAliasID: 6
 Aliases:
 - Name: PotentialActor1
   Flags:
@@ -12,155 +13,59 @@ Aliases:
   - MatchingRefClosest
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013740:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013741:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013742:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 067CD8:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013743:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013744:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013745:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013746:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013747:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Flags:
-    - OR
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013748:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsRaceConditionData
-      Race: 013749:Skyrim.esm
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsActorConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: LessThan
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetDistanceConditionData
       Target: 000014:Skyrim.esm
     ComparisonValue: 10000
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInSceneConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetIsAlertedConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetIsInjuredConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsFleeingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInCombatConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInDialogueWithPlayerConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsTalkingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsSneakingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
-      MutagenObjectType: IsMovingConditionData
+      MutagenObjectType: GetIsPlayableRaceConditionData
+    ComparisonValue: 1
   VoiceTypes: Null
 - ID: 2
   Name: PotentialActor2
@@ -171,72 +76,246 @@ Aliases:
   - MatchingRefClosest
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsActorConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: LessThan
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetDistanceConditionData
       Target: 000014:Skyrim.esm
     ComparisonValue: 10000
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInSceneConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetIsAlertedConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetIsInjuredConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
-    Data:
-      MutagenObjectType: GetIsPlayableRaceConditionData
-    ComparisonValue: 1
-  - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsFleeingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInCombatConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsInDialogueWithPlayerConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsTalkingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
     CompareOperator: NotEqualTo
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: IsSneakingConditionData
     ComparisonValue: 1
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
-      MutagenObjectType: IsMovingConditionData
+      MutagenObjectType: GetIsPlayableRaceConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 3
+  Name: PotentialActor3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 10000
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInSceneConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsAlertedConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsInjuredConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsFleeingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInCombatConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInDialogueWithPlayerConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsTalkingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsSneakingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetIsPlayableRaceConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 4
+  Name: PotentialActor4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 10000
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInSceneConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsAlertedConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsInjuredConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsFleeingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInCombatConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInDialogueWithPlayerConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsTalkingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsSneakingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetIsPlayableRaceConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 5
+  Name: PotentialActor5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 10000
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInSceneConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsAlertedConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsInjuredConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsFleeingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInCombatConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsInDialogueWithPlayerConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsTalkingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: IsSneakingConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetIsPlayableRaceConditionData
+    ComparisonValue: 1
   VoiceTypes: Null

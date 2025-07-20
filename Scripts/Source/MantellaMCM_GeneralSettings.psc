@@ -1,4 +1,4 @@
-Scriptname MantellaMCM_GeneralSettings  Hidden 
+Scriptname MantellaMCM_GeneralSettings  Hidden
 
 function Render(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
@@ -10,7 +10,9 @@ endfunction
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.AddHeaderOption("Microphone")
     mcm.oid_microphoneEnabledToggle = mcm.AddToggleOption("Enabled", repository.microphoneEnabled)
+    mcm.oid_useHotkeyToStartMic = mcm.AddToggleOption("Use Hotkey to Start Mic", repository.useHotkeyToStartMic)
     mcm.oid_responsetimeslider = mcm.AddSliderOption("Text Response Wait Time", repository.MantellaEffectResponseTimer)
+    mcm.oid_showReminderMessages = mcm.AddToggleOption("Show Input Reminder Messages", repository.showReminderMessages)
 
     mcm.AddHeaderOption("Controls")
     mcm.oid_keymapStartAddHotkey = mcm.AddKeyMapOption("Start Conversation / Add NPC", repository.MantellaStartHotkey)
@@ -21,18 +23,19 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Dialogue items")
-    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show dialogue items", repository.showDialogueItems)
-
     mcm.AddHeaderOption("Radiant Dialogue")
     mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
     mcm.oid_radiantfrequency = mcm.AddSliderOption("Trigger Frequency",repository.radiantFrequency)
+    mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show Debug Messages", repository.showRadiantDialogueMessages)
 
-    mcm.AddHeaderOption("Actions")
+    mcm.AddHeaderOption("NPC Actions")
 	mcm.oid_AllowForNPCtoFollowToggle = mcm.AddToggleOption("Allow Follow (Experimental)", Repository.AllowForNPCtoFollow)
 	mcm.oid_NPCAngerToggle = mcm.AddToggleOption("Allow Aggro", Repository.NPCAnger)
+    mcm.oid_NPCInventoryToggle = mcm.AddToggleOption("Allow Inventory", Repository.NPCInventory)
     mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
+    mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems) 
+    mcm.oid_enableVanillaDialogueAwareness = mcm.AddToggleOption("Enable Vanilla Dialogue Awareness", repository.enableVanillaDialogueAwareness)
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -110,8 +113,12 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     if optionID == mcm.oid_microphoneEnabledToggle
         Repository.microphoneEnabled =! Repository.microphoneEnabled
         mcm.SetToggleOptionValue(mcm.oid_microphoneEnabledToggle, Repository.microphoneEnabled)
-        ; MiscUtil.WriteToFile("_mantella_microphone_enabled.txt", Repository.microphoneEnabled,  append=false)
-        ;debug.MessageBox("Please restart Mantella and start a new conversation for this option to take effect")
+    elseif optionID == mcm.oid_useHotkeyToStartMic
+        Repository.useHotkeyToStartMic =! Repository.useHotkeyToStartMic
+        mcm.SetToggleOptionValue(mcm.oid_useHotkeyToStartMic, Repository.useHotkeyToStartMic)
+    elseIf optionID == mcm.oid_showReminderMessages
+        repository.showReminderMessages =! repository.showReminderMessages
+        mcm.SetToggleOptionValue(optionID, repository.showReminderMessages)
     elseIf optionID == mcm.oid_debugNPCselectMode
         Repository.NPCdebugSelectModeEnabled =! Repository.NPCdebugSelectModeEnabled
         mcm.SetToggleOptionValue(mcm.oid_debugNPCselectMode, Repository.NPCdebugSelectModeEnabled)
@@ -121,6 +128,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)
+    elseIf optionID == mcm.oid_showRadiantDialogueMessages
+        repository.showRadiantDialogueMessages =! repository.showRadiantDialogueMessages
+        mcm.SetToggleOptionValue(optionID, repository.showRadiantDialogueMessages)
     elseIf optionID == mcm.oid_AllowForNPCtoFollowToggle
         Repository.AllowForNPCtoFollow =! Repository.AllowForNPCtoFollow
         mcm.SetToggleOptionValue(mcm.oid_AllowForNPCtoFollowToggle, Repository.AllowForNPCtoFollow)
@@ -137,8 +147,19 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         elseif (Repository.NPCAnger) == False
             game.getplayer().removefromfaction(Repository.giafac_AllowAnger)
         endif
+    elseIf optionID == mcm.oid_NPCInventoryToggle
+        Repository.NPCInventory =! Repository.NPCInventory
+        mcm.SetToggleOptionValue(mcm.oid_NPCInventoryToggle, Repository.NPCInventory)
+        if (Repository.NPCInventory) == True 
+            game.getplayer().addtofaction(Repository.fac_AllowInventory)
+        elseif (Repository.NPCInventory) == False
+            game.getplayer().removefromfaction(Repository.fac_AllowInventory)
+        endif
     elseIf optionID == mcm.oid_NPCPackageToggle
         Repository.NPCPackage =! Repository.NPCPackage
         mcm.SetToggleOptionValue(mcm.oid_NPCPackageToggle, Repository.NPCPackage)
+    elseIf optionID == mcm.oid_enableVanillaDialogueAwareness
+        Repository.enableVanillaDialogueAwareness =! Repository.enableVanillaDialogueAwareness
+        mcm.SetToggleOptionValue(mcm.oid_enableVanillaDialogueAwareness, Repository.enableVanillaDialogueAwareness)
     endif
 endfunction

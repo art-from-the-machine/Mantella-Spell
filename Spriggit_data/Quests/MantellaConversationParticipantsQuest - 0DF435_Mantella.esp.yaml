@@ -1,10 +1,220 @@
 FormKey: 0DF435:Mantella.esp
 EditorID: MantellaConversationParticipantsQuest
+VirtualMachineAdapter:
+  FileName: ''
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 0
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 5
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 6
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 7
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 8
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 9
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 10
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 11
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 12
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 13
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 14
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
+  - Property:
+      Name: ''
+      Object: 0DF435:Mantella.esp
+      Alias: 15
+    Scripts:
+    - Name: MantellaTargetListenerScript
+      Properties:
+      - MutagenObjectType: ScriptObjectProperty
+        Name: PlayerRef
+        Object: 000014:Skyrim.esm
+      - MutagenObjectType: ScriptObjectProperty
+        Name: conversation
+        Object: 03D41A:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: repository
+        Object: 000D62:Mantella.esp
 Flags:
 - 0x1000
 Priority: 100
-NextAliasID: 7
+NextAliasID: 18
 Aliases:
+- ID: 17
+  Name: Player
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  ForcedReference: 000014:Skyrim.esm
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  VoiceTypes: Null
 - Name: Participant1
   Flags:
   - Optional
@@ -13,7 +223,6 @@ Aliases:
   - MatchingRefClosest
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 06FE24:Mantella.esp
@@ -21,6 +230,7 @@ Aliases:
   PackageData:
   - 0D5234:Mantella.esp
   - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
   VoiceTypes: Null
 - ID: 5
   Name: Participant2
@@ -31,7 +241,6 @@ Aliases:
   - MatchingRefClosest
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 06FE24:Mantella.esp
@@ -39,6 +248,7 @@ Aliases:
   PackageData:
   - 0D5234:Mantella.esp
   - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
   VoiceTypes: Null
 - ID: 6
   Name: Participant3
@@ -49,7 +259,6 @@ Aliases:
   - MatchingRefClosest
   Conditions:
   - MutagenObjectType: ConditionFloat
-    Unknown1: 0x000000
     Data:
       MutagenObjectType: GetInFactionConditionData
       Faction: 06FE24:Mantella.esp
@@ -57,4 +266,167 @@ Aliases:
   PackageData:
   - 0D5234:Mantella.esp
   - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 7
+  Name: Participant4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 8
+  Name: Participant5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 9
+  Name: Participant6
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 10
+  Name: Participant7
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 11
+  Name: Participant8
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 12
+  Name: Participant9
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 13
+  Name: Participant10
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 14
+  Name: Participant11
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
+  VoiceTypes: Null
+- ID: 15
+  Name: Participant12
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  PackageData:
+  - 0D5234:Mantella.esp
+  - 0DF436:Mantella.esp
+  - 1B8F45:Mantella.esp
   VoiceTypes: Null

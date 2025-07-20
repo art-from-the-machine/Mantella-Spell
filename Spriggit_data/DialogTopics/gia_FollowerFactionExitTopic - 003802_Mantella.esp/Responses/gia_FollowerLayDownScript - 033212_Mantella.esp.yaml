@@ -5,17 +5,17 @@ VirtualMachineAdapter:
   - Name: gia_castMantellaSpell
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: giafac_Follower
-      Object: 003806:Mantella.esp
+      Name: gia_MantellaSpell
+      Object: 0022EF:Mantella.esp
     - MutagenObjectType: ScriptStringProperty
       Name: WhatDo
       Data: NPCjoinfac
     - MutagenObjectType: ScriptObjectProperty
+      Name: giafac_Follower
+      Object: 003806:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: giafac_Mantella
       Object: 0F2073:Skyrim.esm
-    - MutagenObjectType: ScriptObjectProperty
-      Name: gia_MantellaSpell
-      Object: 0022EF:Mantella.esp
   ScriptFragments:
     MutagenObjectType: ScriptFragments
     FileName: gia_castMantellaSpell
@@ -33,25 +33,21 @@ FavorLevel: None
 ResponseData: 0DBA22:Skyrim.esm
 Conditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetSleepingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
   ComparisonValue: 3
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 0F2073:Skyrim.esm
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     RunOnType: Reference

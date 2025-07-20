@@ -24,26 +24,37 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp
-    SecondUnusedIntParameter: -574551456
+    SecondUnusedIntParameter: -1165438688
     VariableName: ::NPCPackage_var
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: IsRidingMountConditionData
+    RunOnType: Reference
+    Reference: 000014:Skyrim.esm
+- MutagenObjectType: ConditionFloat
   Flags:
   - OR
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
+  Flags:
+  - OR
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 05C84E:Skyrim.esm
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: HasKeywordConditionData
+    Keyword: 153B3B:Mantella.esp
   ComparisonValue: 1
 OwnerQuest: 0DF435:Mantella.esp
 PackageTemplate: 0750BE:Skyrim.esm
@@ -67,6 +78,7 @@ Data:
 - Key: 6
   Value:
     MutagenObjectType: PackageDataBool
+    Data: True
 - Key: 9
   Value:
     MutagenObjectType: PackageDataLocation
@@ -99,10 +111,6 @@ Data:
   Value:
     MutagenObjectType: PackageDataBool
     Data: True
-- Key: 25
-  Value:
-    MutagenObjectType: PackageDataBool
-    Data: True
 - Key: 21
   Value:
     MutagenObjectType: PackageDataBool
@@ -110,6 +118,10 @@ Data:
 - Key: 23
   Value:
     MutagenObjectType: PackageDataFloat
+- Key: 25
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
 XnamMarker: 0x1A
 OnBegin:
   Topics:

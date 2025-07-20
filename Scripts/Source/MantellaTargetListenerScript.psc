@@ -1,5 +1,7 @@
 Scriptname MantellaTargetListenerScript extends ReferenceAlias
 ;new property added after Mantella 0.9.2
+
+Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
 
@@ -13,19 +15,34 @@ Function AddIngameEventToConversation(string eventText)
     EndIf
 EndFunction
 
+string Function getPlayerName(bool isStartOfSentence = True)
+    if (repository.playerTrackingUsePCName)
+        return PlayerRef.GetDisplayName()
+    Elseif (isStartOfSentence)
+        return "The player"
+    Else
+        return "the player"
+    endif
+EndFunction
+
 ;All the event listeners below have 'if' clauses added after Mantella 0.9.2 (except ondying)
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if repository.targetTrackingItemAdded 
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemPickedUpMessage = selfName+" picked up " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+
+        string itemPickedUpMessage = selfName+" picked up " + itemCount + itemName 
 
         string sourceName = akSourceContainer.getbaseobject().getname()
         if sourceName != ""
-            itemPickedUpMessage = selfName+" picked up " + itemName + " from " + sourceName 
+            itemPickedUpMessage = selfName+" picked up " + itemCount + itemName + " from " + sourceName 
         endIf
         
-        if (itemName != "Iron Arrow") && (itemName != "") ;Papyrus hallucinates iron arrows
+        if (itemName != "Iron Arrow") && (itemName != "") && sourceName != PlayerRef.GetDisplayName() ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
             AddIngameEventToConversation( itemPickedUpMessage)
         endIf
@@ -37,14 +54,19 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
     if repository.targetTrackingItemRemoved  
         String selfName = self.GetActorReference().getdisplayname()
         string itemName = akBaseItem.GetName()
-        string itemDroppedMessage = selfName+" dropped " + itemName 
+        string itemCount = ""
+        if itemName == "gold" ; only count the number of items if it is gold
+            itemCount = aiItemCount+" "
+        endIf
+
+        string itemDroppedMessage = selfName+" dropped " + itemCount + itemName
 
         string destName = akDestContainer.getbaseobject().getname()
-        if destName != ""
-            itemDroppedMessage = selfName+" placed " + itemName + " in/on " + destName 
+        if (destName != "")
+            itemDroppedMessage = selfName+" placed " + itemCount + itemName + " in/on " + destName 
         endIf
         
-        if  (itemName != "Iron Arrow") && (itemName != "") ; Papyrus hallucinates iron arrows
+        if  (itemName != "Iron Arrow") && (itemName != "") && destName != PlayerRef.GetDisplayName() ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
             AddIngameEventToConversation(itemDroppedMessage)
         endIf
@@ -68,10 +90,10 @@ String lastHitSource = ""
 String lastAggressor = ""
 Int timesHitSameAggressorSource = 0
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
-    if repository.targetTrackingOnSpellCast 
+    if repository.targetTrackingOnHit 
         String aggressor
-        if akAggressor == Game.GetPlayer()
-            aggressor = "The player"
+        if akAggressor == PlayerRef
+            aggressor = getPlayerName()
         else
             aggressor = akAggressor.getdisplayname()
         endif
@@ -80,7 +102,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 
         ; avoid writing events too often (continuous spells record very frequently)
         ; if the actor and weapon hasn't changed, only record the event every 5 hits
-        if ((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5)
+        if (((hitSource != lastHitSource) && (aggressor != lastAggressor)) || (timesHitSameAggressorSource > 5)) && ((hitSource != "Mantella") && (hitSource != "Mantella Remove NPC") && (hitSource != "Mantella End Conversation"))
             lastHitSource = hitSource
             lastAggressor = aggressor
             timesHitSameAggressorSource = 0
@@ -105,8 +127,8 @@ Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
     if repository.targetTrackingOnCombatStateChanged
         String selfName = self.GetActorReference().getdisplayname()
         String targetName
-        if akTarget == Game.GetPlayer()
-            targetName = "the player"
+        if akTarget == PlayerRef
+            targetName = getPlayerName(False)
         else
             targetName = akTarget.getdisplayname()
         endif

@@ -1,0 +1,17 @@
+FormKey: 18B644:Mantella.esp
+Flags: {}
+Topic: 001D8A:Mantella.esp
+PreviousDialog: Null
+FavorLevel: None
+Responses:
+- EmotionValue: 50
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: '...'
+  ScriptNotes: ''
+  Edits: ''

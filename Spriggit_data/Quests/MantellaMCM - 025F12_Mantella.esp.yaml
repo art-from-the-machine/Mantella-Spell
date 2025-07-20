@@ -7,14 +7,22 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: repository
       Object: 000D62:Mantella.esp
-  Versioning:
-  - Break0
-  ExtraBindDataVersion: 0
   FileName: ''
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 025F12:Mantella.esp
+      Alias: 0
+    Scripts:
+    - Name: SKI_PlayerLoadGameAlias
 Flags:
 - StartGameEnabled
 - 0x10
-- RunOnce
 Type: Misc
 Filter: MantellaEvents\
-NextAliasID: 0
+NextAliasID: 1
+Aliases:
+- Name: PlayerAlias
+  Flags: []
+  ForcedReference: 000014:Skyrim.esm
+  VoiceTypes: Null

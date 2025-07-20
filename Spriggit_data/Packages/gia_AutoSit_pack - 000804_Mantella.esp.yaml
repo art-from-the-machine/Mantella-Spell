@@ -29,27 +29,23 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetInFactionConditionData
     Faction: 003806:Mantella.esp
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
   CompareOperator: LessThanOrEqualTo
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetDistanceConditionData
     Target: 000014:Skyrim.esm
   ComparisonValue: 1024
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetSittingConditionData
     RunOnType: Reference
     Reference: 000014:Skyrim.esm
   ComparisonValue: 3
 - MutagenObjectType: ConditionFloat
-  Unknown1: 0x000000
   Data:
     MutagenObjectType: GetSleepingConditionData
     RunOnType: Reference

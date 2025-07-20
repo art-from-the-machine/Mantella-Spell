@@ -1,0 +1,47 @@
+FormKey: 186541:Mantella.esp
+IsCompressed: True
+MajorRecordFlagsRaw: 262144
+EditorID: MantellaRoom
+SkyrimMajorRecordFlags:
+- Compressed
+Flags:
+- IsInteriorCell
+Lighting:
+  AmbientColor: '#00000000'
+  DirectionalColor: '#00000000'
+  FogNearColor: '#00000000'
+  FogPower: 1
+  AmbientColors:
+    DirectionalXPlus: '#00FFFFFF'
+    DirectionalXMinus: '#00FFFFFF'
+    DirectionalYPlus: '#00FFFFFF'
+    DirectionalYMinus: '#00FFFFFF'
+    DirectionalZPlus: '#00FFFFFF'
+    DirectionalZMinus: '#00FFFFFF'
+    Specular: '#00000000'
+    Scale: 1
+  FogFarColor: '#00000000'
+  FogMax: 1
+  Inherits:
+  - AmbientColor
+  - DirectionalColor
+  - FogColor
+  - FogNear
+  - FogFar
+  - ClipDistance
+  - FogPower
+  - FogMax
+  - LightFadeDistances
+WaterHeight: 0
+Persistent:
+- MutagenObjectType: PlacedNpc
+  FormKey: 186542:Mantella.esp
+  MajorRecordFlagsRaw: 1024
+  SkyrimMajorRecordFlags:
+  - 0x400
+  Base: 186540:Mantella.esp
+  Placement: {}
+  MajorFlags:
+  - Persistent
+MajorFlags:
+- 0x40000

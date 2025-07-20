@@ -11,12 +11,11 @@ endfunction
 
 function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
      ;This part of the MCM MainSettings script pretty much only serves to tell papyrus what button to display using properties from the repository
-    mcm.AddHeaderOption ("Tracked Events")
+    mcm.AddHeaderOption ("Tracked Player Events")
     mcm.oid_playerTrackingOnItemAdded=mcm.AddToggleOption("Item Added", repository.playerTrackingOnItemAdded)
     mcm.oid_playerTrackingOnItemRemoved=mcm.AddToggleOption("Item Removed", repository.playerTrackingOnItemRemoved)
     mcm.oid_playerTrackingOnSpellCast=mcm.AddToggleOption("Spell Cast", repository.playerTrackingOnSpellCast)
     mcm.oid_playerTrackingOnHit=mcm.AddToggleOption("Player Hit", repository.playerTrackingOnHit)
-    mcm.oid_playerTrackingOnLocationChange=mcm.AddToggleOption("Location Changed", repository.playerTrackingOnLocationChange)
     mcm.oid_playerTrackingOnObjectEquipped=mcm.AddToggleOption("Item Equipped", repository.playerTrackingOnObjectEquipped)
     mcm.oid_playerTrackingOnObjectUnequipped=mcm.AddToggleOption("Item Unequipped", repository.playerTrackingOnObjectUnequipped)
     mcm.oid_playerTrackingOnPlayerBowShot=mcm.AddToggleOption("Player Shoots Arrow", repository.playerTrackingOnPlayerBowShot)
@@ -26,17 +25,17 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption ("Event tracking options")
-    mcm.oid_playerTrackingUsePCName=mcm.AddToggleOption("Use name of player character", repository.playerTrackingUsePCName)
+    mcm.AddHeaderOption ("Tracked World Events")
+    mcm.oid_playerTrackingOnLocationChange=mcm.AddToggleOption("Location Changed", repository.playerTrackingOnLocationChange)
+    mcm.oid_playerTrackingOnTimeChange=mcm.AddToggleOption("Time Changed", repository.playerTrackingOnTimeChange)
+    mcm.oid_playerTrackingOnWeatherChange=mcm.AddToggleOption("Weather Changed", repository.playerTrackingOnWeatherChange)
 endfunction
 
 
 function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
     ;checks option per option what the toggle is and the updates the var repository MantellaRepository so the ListenerScript can access it
-    if optionID==mcm.oid_playerTrackingUsePCName
-        repository.playerTrackingUsePCName=!mcm.repository.playerTrackingUsePCName
-        mcm.SetToggleOptionValue(mcm.oid_playerTrackingUsePCName, repository.playerTrackingUsePCName)
-    ElseIf optionID==mcm.oid_playerTrackingOnItemAdded
+    ;left column
+    If optionID==mcm.oid_playerTrackingOnItemAdded
         repository.playerTrackingOnItemAdded=!mcm.repository.playerTrackingOnItemAdded
         mcm.SetToggleOptionValue(mcm.oid_playerTrackingOnItemAdded, repository.playerTrackingOnItemAdded)
     ElseIf optionID==mcm.oid_playerTrackingOnItemRemoved
@@ -48,9 +47,6 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     ElseIf optionID==mcm.oid_playerTrackingOnHit
         repository.playerTrackingOnHit=!repository.playerTrackingOnHit
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnHit, repository.playerTrackingOnHit)
-    ElseIf optionID==mcm.oid_playerTrackingOnLocationChange
-        repository.playerTrackingOnLocationChange=!repository.playerTrackingOnLocationChange
-        mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnLocationChange, repository.playerTrackingOnLocationChange)
     ElseIf optionID==mcm.oid_playerTrackingOnObjectEquipped
         mcm.repository.playerTrackingOnObjectEquipped=!mcm.repository.playerTrackingOnObjectEquipped
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnObjectEquipped, mcm.repository.playerTrackingOnObjectEquipped)
@@ -73,7 +69,6 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnItemRemoved, mcm.playerAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnSpellCast, mcm.playerAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnHit, mcm.playerAllToggle)
-        mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnLocationChange, mcm.playerAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnObjectEquipped, mcm.playerAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnObjectUnequipped, mcm.playerAllToggle)
         mcm.SetToggleOptionValue( mcm.oid_playerTrackingOnPlayerBowShot, mcm.playerAllToggle)
@@ -84,13 +79,22 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
         Repository.playerTrackingOnItemRemoved=mcm.playerAllToggle
         Repository.playerTrackingOnSpellCast=mcm.playerAllToggle
         Repository.playerTrackingOnHit=mcm.playerAllToggle
-        Repository.playerTrackingOnLocationChange=mcm.playerAllToggle
         Repository.playerTrackingOnObjectEquipped=mcm.playerAllToggle
         Repository.playerTrackingOnObjectUnequipped=mcm.playerAllToggle
         Repository.playerTrackingOnPlayerBowShot=mcm.playerAllToggle
         Repository.playerTrackingOnSit=mcm.playerAllToggle
         Repository.playerTrackingOnGetUp=mcm.playerAllToggle
-    
+
+    ;right column
+    ElseIf optionID==mcm.oid_playerTrackingOnLocationChange
+        repository.playerTrackingOnLocationChange=!repository.playerTrackingOnLocationChange
+        mcm.SetToggleOptionValue(optionID, repository.playerTrackingOnLocationChange)
+    ElseIf optionID==mcm.oid_playerTrackingOnTimeChange
+        repository.playerTrackingOnTimeChange =! repository.playerTrackingOnTimeChange
+        mcm.SetToggleOptionValue(optionID, repository.playerTrackingOnTimeChange)
+    ElseIf optionID==mcm.oid_playerTrackingOnWeatherChange
+        repository.playerTrackingOnWeatherChange =! repository.playerTrackingOnWeatherChange
+        mcm.SetToggleOptionValue(optionID, repository.playerTrackingOnWeatherChange)
     endif
 endfunction 
 
