@@ -10,6 +10,7 @@ Faction Property MantellaConversationParticipantsFaction Auto
 FormList Property Participants auto
 Quest Property MantellaConversationParticipantsQuest auto
 SPELL Property MantellaIsTalkingSpell Auto
+BardSongsScript Property Bardsongs Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -27,6 +28,10 @@ event OnInit()
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_RELOADCONVERSATION,"OnReloadConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(mConsts.EVENT_ACTIONS + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
+    Bardsongs = Quest.GetQuest("BardSongs") as BardSongsScript
+    if Bardsongs == None
+        debug.trace("error: BardSongs script not found")
+    endIf
 endEvent
 
 event OnPlayerLoadGame()
@@ -52,6 +57,11 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     endIf
     
     int handle = SKSE_HTTP.createDictionary()
+
+    if Bardsongs != None
+        Bardsongs.StopAllSongs()
+    endIf
+
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     AddCurrentActorsAndContext(handle)
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
