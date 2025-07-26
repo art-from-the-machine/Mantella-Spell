@@ -84,6 +84,10 @@ int property oid_targetEquipmentLeftHand auto
 int property oid_targetEquipmentAll auto
 bool property targetEquipmentAllToggle auto
 
+int property oid_autoRemoveNpcsFromConversation auto
+int property oid_targetMaxDistance	auto
+int property oid_autoRemoveMaxDistance auto
+
 
 int property oid_AllowForNPCtoFollowToggle auto ;gia
 int property oid_NPCAngerToggle auto ;gia
@@ -112,7 +116,7 @@ string MantellaMCMcurrentPage
 ; Whenever a new repository value OR a new MCM setting is added, up the MCM version number returned by `ManatellaMCM.GetVersion()`
 ; and add the corresponding default value in 'MCMRepository.assignDefaultSettings' in a block corresponding to the version number like the examples
 int Function GetVersion()
-    Return 7
+    Return 9
 EndFunction
 
 event OnVersionUpdate(int a_version)
@@ -190,7 +194,9 @@ Event OnOptionSliderOpen(Int optionId)
         MantellaMCM_PlayerSettings.SliderOptionOpen(self,optionID, repository)
     elseif MantellaMCMcurrentPage == PAGE_ADVANCED
         MantellaMCM_AdvancedSettings.SliderOptionOpen(self,optionID, repository)
-    endIf
+	elseif MantellaMCMcurrentPage == PAGE_TARGETTRACKING
+		MantellaMCM_TargetTrackingSettings.SliderOptionOpen(self,optionID, repository)	
+	endIf
 EndEvent
 
 Event OnOptionSliderAccept(Int optionId, Float value)
@@ -200,7 +206,9 @@ Event OnOptionSliderAccept(Int optionId, Float value)
         MantellaMCM_PlayerSettings.SliderOptionAccept(self,optionID, value, repository)
     elseif MantellaMCMcurrentPage == PAGE_ADVANCED
         MantellaMCM_AdvancedSettings.SliderOptionAccept(self,optionID, value, repository)
-    endIf
+	elseif MantellaMCMcurrentPage == PAGE_TARGETTRACKING
+		MantellaMCM_TargetTrackingSettings.SliderOptionAccept(self,optionID, value, repository)
+	endIf
 EndEvent
 
 Event OnOptionKeyMapChange(Int a_option, Int a_keyCode, String a_conflictControl, String a_conflictName)
@@ -351,8 +359,8 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Describe item in the left hand of the target to the LLM.")
 	elseIf optionID == oid_targetEquipmentAll
 		SetInfoText("Enable / disable all description options for the target.")
-
-
+	elseIf optionID == oid_targetMaxDistance
+		SetInfoText("Maximum distance from the player below which npc's can reply to the player. 2500 Units are 120ft or 36m")
 	elseIf optionID == oid_AllowForNPCtoFollowToggle ;gia
 		SetInfoText("NPCs can be convinced to follow (not tested over long playthroughs).")
 	elseIf optionID == oid_NPCAngerToggle ;gia
@@ -368,6 +376,7 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Allows the player to speak to any NPC by initiating a conversation then entering the actor RefID and actor name that the player wishes to speak to")
 	elseif optionID == oid_httpPort
 		SetInfoText("HTTP port for Mantella to call. If you need to change the default port, change it here and the port for MantellaSoftware's server in its config.ini. Default: 4999")
+
 	EndIf
 endEvent
 
