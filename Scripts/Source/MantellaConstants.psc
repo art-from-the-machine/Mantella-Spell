@@ -93,11 +93,19 @@ string property KEY_INPUTTYPE_PTT = "mantella_push_to_talk" auto
 ;       Possible actions      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;system
 string property ACTION_RELOADCONVERSATION = "mantella_reload_conversation" auto
 string property ACTION_ENDCONVERSATION = "mantella_end_conversation" auto
 string property ACTION_REMOVECHARACTER = "mantella_remove_character" auto
 
+;in-game
 string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
+
+;arguments for actions
+string property ACTION_IDENTIFIER = "identifier" auto
+string property ACTION_ARGUMENTS = "arguments" auto
+string property ACTION_ARG_SOURCE = "source" auto
+string property ACTION_ARG_TARGET = "target" auto

@@ -15,6 +15,8 @@ Faction Property fac_AllowInventory  Auto
 Faction Property giafac_AllowDialogue  Auto ;gia
 Faction Property giafac_Following  Auto ;gia
 Faction Property giafac_Mantella  Auto ;gia
+Faction Property MantellaCombatTeamA  Auto
+Faction Property MantellaCombatTeamB  Auto
 quest property gia_FollowerQst auto ;gia
 MantellaListenerScript Property ListenerScript Auto
 

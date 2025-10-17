@@ -1,0 +1,16 @@
+FormKey: 1FFD49:Mantella.esp
+EditorID: MantellaCombatTeamB
+Relations:
+- Target: 1FFD48:Mantella.esp
+  Reaction: Enemy
+Flags:
+- HiddenFromPC
+- IgnoreMurder
+- IgnoreAssault
+- IgnoreTrespass
+- IgnorePickpocket
+- IgnoreWerewolf
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}
