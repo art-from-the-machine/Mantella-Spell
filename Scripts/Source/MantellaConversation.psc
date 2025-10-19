@@ -288,8 +288,10 @@ function ProcessNpcSpeak(int handle)
             _lastSpeakerName = speakerName
         endIf
         ; Get actions only after the NPC starts speaking to improve response times
-        string[] actions = SKSE_HTTP.getStringArray(handle, mConsts.KEY_ACTOR_ACTIONS)
-        RaiseActionEvent(speaker, actions)
+        int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+        if actionsHandles && actionsHandles.Length > 0
+            RaiseActionEvent(speaker, actionsHandles)
+        endIf
     endIf
 endFunction
 
@@ -518,33 +520,77 @@ endFunction
 ;       Action handler        ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Function RaiseActionEvent(Actor speaker, string[] actions)
-    if(!actions || actions.Length == 0)
-        return ;dont send out an action event if there are no actions to act upon
+Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
+    ; Processes actions array, automatically detecting legacy vs advanced actions.
+    ;
+    ; Args:
+    ;     speaker: The NPC who spoke (for context)
+    ;     actionsHandles: Array of SKSE_HTTP dictionary handles, one per action
+    ;
+    ; Each action handle contains:
+    ;     - "identifier": Action name (e.g., "mantella_npc_follow")
+    ;     - "arguments" (optional): Dictionary with parameters
+    ;       - If present = advanced action (sends to MantellaConversation_Advanced_Action_ prefix)
+    ;       - If absent = legacy action (sends to MantellaConversation_Action_ prefix)
+    ;
+    ; Fallback Behavior:
+    ;     If LLM forgets to include arguments for a built-in action, it will be routed
+    ;     to the legacy handler, which will execute the action on the speaker only.
+    
+    if !actionsHandles || actionsHandles.Length == 0
+        return ; dont send out an action event if there are no actions to act upon
     endIf
     
     int i = 0
-    While i < actions.Length
-        string extraAction = actions[i]
-        ;AddIngameEvent("Recieved action " + extraAction + ". Sending out event!")
-        ; if the action is to open the inventory menu, wait for the speaker to finish their voiceline first before the menu forces the game to pause
-        if extraAction == mConsts.ACTION_NPC_INVENTORY
-            Utility.Wait(0.5)
-            WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
-        endIf
-
-        if extraAction == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
-            EndConversation()
+    While i < actionsHandles.Length
+        int actionHandle = actionsHandles[i]
+        
+        ; Extract action identifier
+        string actionIdentifier = SKSE_HTTP.getString(actionHandle, mConsts.ACTION_IDENTIFIER, "")
+        
+        if actionIdentifier != ""
+            ; Check for special handling (eg inventory action timing)
+            if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
+                Utility.Wait(0.5)
+                WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+            endIf
+            
+            if actionIdentifier == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
+                EndConversation()
+            else
+                int argumentsHandle = SKSE_HTTP.getNestedDictionary(actionHandle, mConsts.ACTION_ARGUMENTS, 0)
+                ; Detect if this is an advanced action (has arguments) or legacy action (no arguments)
+                if argumentsHandle != 0
+                    string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + actionIdentifier
+                    int eventHandle = ModEvent.Create(eventName)
+                    if eventHandle
+                        ModEvent.PushForm(eventHandle, speaker)
+                        ModEvent.PushForm(eventHandle, Self as Quest)  ; For name resolution
+                        ModEvent.PushInt(eventHandle, argumentsHandle)
+                        ModEvent.Send(eventHandle)
+                    else
+                        Debug.Notification("Mantella: ERROR - Failed to create advanced action event handle")
+                    endIf
+                else
+                    ; LEGACY ACTION PATH
+                    string eventName = EventInterface.EVENT_ACTIONS_PREFIX + actionIdentifier
+                    ; Legacy action: no arguments, send with simple signature
+                    ; This handles both:
+                    ;   1. Player-created custom actions built when the old system was in place
+                    ;   2. Built-in actions when LLM forgets arguments (fallback to speaker-only)
+                    int eventHandle = ModEvent.Create(eventName)
+                    if eventHandle
+                        ModEvent.PushForm(eventHandle, speaker)
+                        ModEvent.Send(eventHandle)
+                    endIf
+                endIf
+            endIf
         else
-            int handle = ModEvent.Create(EventInterface.EVENT_ACTIONS_PREFIX + extraAction)
-            if (handle)
-                ModEvent.PushForm(handle, speaker)
-                ModEvent.Send(handle)
-            endIf 
+            Debug.Trace("Mantella: Warning - Action missing identifier", 1)
         endIf
+        
         i += 1
     EndWhile
-    ;AddIngameEvent("All Events sent out!")
 EndFunction
 
 Function AddExtraRequestAction(string extraAction)

@@ -6,6 +6,7 @@ Scriptname MantellaInterface extends Quest
 
 ; Prefix for any events raised by Mantella when it receives an action. See example below for usage
 string property EVENT_ACTIONS_PREFIX = "MantellaConversation_Action_" auto
+string property EVENT_ADVANCED_ACTIONS_PREFIX = "MantellaConversation_Advanced_Action_" auto
 
 ; Called when a conversation is started
 string property EVENT_CONVERSATION_STARTED = "MantellaConversation_Started" auto
