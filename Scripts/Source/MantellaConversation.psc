@@ -16,6 +16,7 @@ Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
 ReferenceAlias Property Narrator Auto
+BardSongsScript Property Bardsongs Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -42,6 +43,10 @@ bool microphoneEnabledLastKnownStatus = false
 
 event OnInit()
     RegisterForConversationEvents()
+    Bardsongs = Quest.GetQuest("BardSongs") as BardSongsScript
+    if Bardsongs == None
+        debug.trace("error: BardSongs script not found")
+    endIf
 EndEvent
 
 event OnPlayerLoadGame()
@@ -81,7 +86,11 @@ function StartConversation(Actor[] actorsToStartConversationWith)
         Debug.Notification("Not enough characters to start a conversation.")
         return
     endIf
-    
+
+    if Bardsongs != None
+        Bardsongs.StopAllSongs()
+    endIf
+
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     BuildContext(true)
