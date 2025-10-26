@@ -16,7 +16,7 @@ event OnNpcInventoryAdvancedActionReceived(Form speaker, Form conversationQuest,
     ; Extract NPC names from parameters
     string[] sourceNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
     ; Only one NPC can open their inventory per response
-    Actor sourceActor = conversation.GetActorInConversation(sourceNames[0])
+    Actor sourceActor = conversation.GetActorByName(sourceNames[0])
 
     NpcInventory(sourceActor)
 endEvent

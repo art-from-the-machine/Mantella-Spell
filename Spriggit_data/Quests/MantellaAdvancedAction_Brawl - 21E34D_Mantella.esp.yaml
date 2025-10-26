@@ -1,0 +1,30 @@
+FormKey: 21E34D:Mantella.esp
+VersionControl: 13145
+EditorID: MantellaAdvancedAction_Brawl
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_Brawl
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: DialogueFavorGeneric
+      Object: 05A6DC:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- RunOnce
+NextAliasID: 0

@@ -16,6 +16,7 @@ Actor Property PlayerRef Auto
 VoiceType Property MantellaVoice00  Auto  
 MantellaInterface property EventInterface Auto
 ReferenceAlias Property Narrator Auto
+MantellaListenerScript Property Listener Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -39,6 +40,7 @@ int _lastTopicInfo = 0
 float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
 bool microphoneEnabledLastKnownStatus = false
+Actor[] _cachedNearbyActors = None
 
 event OnInit()
     RegisterForConversationEvents()
@@ -354,6 +356,32 @@ Actor function GetActorInConversation(string actorName)
     return none
 endFunction
 
+Actor function GetActorByName(string actorName)
+    ; First, search conversation participants
+    Actor currentActor = GetActorInConversation(actorName)
+    if currentActor != None
+        return currentActor
+    endIf
+    
+    ; If not in conversation, search the most recent nearby actors cache
+    if _cachedNearbyActors
+        int i = 0
+        While i < _cachedNearbyActors.Length
+            Actor nearbyActor = _cachedNearbyActors[i]
+            if nearbyActor != None
+                ; Match by display name (nearby actors don't have numbered suffixes)
+                if nearbyActor.GetDisplayName() == actorName
+                    return nearbyActor
+                endIf
+            endIf
+            i += 1
+        EndWhile
+    endIf
+    
+    ; Not found in conversation or nearby - return None
+    return None
+endFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;       End conversation      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -378,6 +406,7 @@ Function CleanupConversation()
     _isTalking = false
     _lastNpcToSpeak = None
     _lastTopicInfo = 0
+    _cachedNearbyActors = None
     ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
@@ -920,6 +949,50 @@ int function BuildContext(bool isConversationStart = false)
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
     ClearIngameEvent()
+
+    ; Add nearby actors context for action targeting
+    int[] nearbyActorHandles = BuildNearbyActorsContext()
+    if nearbyActorHandles && nearbyActorHandles.Length > 0
+        SKSE_HTTP.setNestedDictionariesArray(_contextHandle, mConsts.KEY_CONTEXT_NEARBYACTORS, nearbyActorHandles)
+    endIf
+endFunction
+
+int[] function BuildNearbyActorsContext()
+    ; Scan for nearby actors (excludes Mantella conversation participants)
+    Actor[] nearbyActors = Listener.ScanNearbyActors()
+    _cachedNearbyActors = nearbyActors
+
+    if !nearbyActors || nearbyActors.Length == 0
+        return Utility.CreateIntArray(0)
+    endIf
+
+    int totalEntries = nearbyActors.Length
+    int[] nearbyActorHandles = Utility.CreateIntArray(totalEntries)
+    int handleIndex = 0
+    float toMeters = 1.0 / 71.0210
+    int i = 0
+    While i < totalEntries
+        Actor nearbyActor = nearbyActors[i]
+        if nearbyActor != None
+            int actorHandle = SKSE_HTTP.createDictionary()
+            SKSE_HTTP.setString(actorHandle, "name", nearbyActor.GetDisplayName())
+            float distanceInMeters = PlayerRef.GetDistance(nearbyActor) * toMeters
+            SKSE_HTTP.setFloat(actorHandle, "distance", distanceInMeters)
+            nearbyActorHandles[handleIndex] = actorHandle
+            handleIndex += 1
+        endIf
+        i += 1
+    EndWhile
+
+    if handleIndex == 0
+        return Utility.CreateIntArray(0)
+    endIf
+
+    if handleIndex != totalEntries
+        nearbyActorHandles = Utility.ResizeIntArray(nearbyActorHandles, handleIndex)
+    endIf
+
+    return nearbyActorHandles
 endFunction
 
 int function AddCurrentWeather(int contextHandle)

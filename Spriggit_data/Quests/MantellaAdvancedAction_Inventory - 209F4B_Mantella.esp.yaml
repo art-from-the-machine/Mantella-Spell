@@ -1,5 +1,4 @@
 FormKey: 209F4B:Mantella.esp
-VersionControl: 13130
 EditorID: MantellaAdvancedAction_Inventory
 VirtualMachineAdapter:
   Scripts:
@@ -23,5 +22,6 @@ VirtualMachineAdapter:
   FileName: ''
 Flags:
 - StartGameEnabled
+- 0x10
 - RunOnce
 NextAliasID: 0

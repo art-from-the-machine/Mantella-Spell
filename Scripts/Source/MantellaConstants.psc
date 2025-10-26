@@ -80,6 +80,7 @@ string property KEY_CONTEXT_WEATHER_ID = "mantella_weather_id" auto
 string property KEY_CONTEXT_WEATHER_CLASSIFICATION = "mantella_weather_classification" auto
 string property KEY_CONTEXT_TIME = "mantella_time" auto
 string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
+string property KEY_CONTEXT_NEARBYACTORS = "mantella_nearby_actors" auto
 
 ;player input
 string property KEY_REQUESTTYPE_TTS = "mantella_tts" auto
@@ -103,6 +104,7 @@ string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
+string property ACTION_NPC_BRAWL = "mantella_npc_brawl" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto

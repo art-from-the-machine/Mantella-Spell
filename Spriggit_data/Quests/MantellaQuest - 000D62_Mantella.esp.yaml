@@ -83,6 +83,29 @@ VirtualMachineAdapter:
         Name: MantellaEndSpell
         Object: 01EE0C:Mantella.esp
       - MutagenObjectType: ScriptObjectProperty
+        Name: MantellaNearbyActors
+        Object: 21414C:Mantella.esp
+      - MutagenObjectType: ScriptObjectProperty
+        Name: NearbyActor1
+        Object: 21414C:Mantella.esp
+        Alias: 0
+      - MutagenObjectType: ScriptObjectProperty
+        Name: NearbyActor2
+        Object: 21414C:Mantella.esp
+        Alias: 6
+      - MutagenObjectType: ScriptObjectProperty
+        Name: NearbyActor3
+        Object: 21414C:Mantella.esp
+        Alias: 7
+      - MutagenObjectType: ScriptObjectProperty
+        Name: NearbyActor4
+        Object: 21414C:Mantella.esp
+        Alias: 8
+      - MutagenObjectType: ScriptObjectProperty
+        Name: NearbyActor5
+        Object: 21414C:Mantella.esp
+        Alias: 9
+      - MutagenObjectType: ScriptObjectProperty
         Name: PotentialActor1
         Object: 03A314:Mantella.esp
         Alias: 0
