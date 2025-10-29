@@ -15,18 +15,16 @@ event OnNpcAttackAdvancedActionReceived(Form speaker, Form conversationQuest, in
     
     ; Extract NPC names from parameters
     string[] sourceNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
-    string[] targetNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_TARGET)
+    string targetName = SKSE_HTTP.getString(argumentsHandle, mConsts.ACTION_ARG_TARGET)
 
     ; Only one target supported for attack action
-    Actor targetActor = conversation.GetActorInConversation(targetNames[0])
+    Actor targetActor = conversation.GetActorByName(targetName)
 
     ; Resolve each name to an Actor reference
     int i = 0
     While i < sourceNames.Length
-        Actor sourceActor = conversation.GetActorInConversation(sourceNames[i])
-        if sourceActor != none
-            NpcAttack(sourceActor, targetActor)
-        endIf
+        Actor sourceActor = conversation.GetActorByName(sourceNames[i])
+        NpcAttack(sourceActor, targetActor)
         i += 1
     EndWhile
 endEvent

@@ -107,9 +107,7 @@ PlayerSkills:
   Health: 8293
   Magicka: 25970
   Stamina: 28265
-  Unused: 65535
   GearedUpWeapons: 1
-  Unused2: 0x000000
 HeadParts:
 - 0D0564:Skyrim.esm
 - 05E79F:Skyrim.esm

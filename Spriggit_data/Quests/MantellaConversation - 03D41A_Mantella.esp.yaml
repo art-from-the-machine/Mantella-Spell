@@ -35,6 +35,10 @@ VirtualMachineAdapter:
       Object: 03D41A:Mantella.esp
       Alias: 3
     - MutagenObjectType: ScriptObjectProperty
+      Name: Listener
+      Object: 000D62:Mantella.esp
+      Alias: 0
+    - MutagenObjectType: ScriptObjectProperty
       Name: MantellaConversationParticipantsFaction
       Object: 06FE24:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty

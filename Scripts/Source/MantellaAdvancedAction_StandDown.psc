@@ -17,7 +17,7 @@ event OnNpcStandDownAdvancedActionReceived(Form speaker, Form conversationQuest,
     ; Resolve each name to an Actor reference
     int i = 0
     While i < sourceNames.Length
-        Actor sourceActor = conversation.GetActorInConversation(sourceNames[i])
+        Actor sourceActor = conversation.GetActorByName(sourceNames[i])
         if sourceActor != none
             NpcStandDown(sourceActor)
         endIf

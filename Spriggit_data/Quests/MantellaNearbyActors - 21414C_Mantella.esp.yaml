@@ -1,0 +1,154 @@
+FormKey: 21414C:Mantella.esp
+EditorID: MantellaNearbyActors
+Flags:
+- 0x1000
+NextAliasID: 10
+Aliases:
+- Name: NearbyActor1
+  Flags:
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsReferenceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetDeadConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 6
+  Name: NearbyActor2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsReferenceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetDeadConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 7
+  Name: NearbyActor3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsReferenceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetDeadConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 8
+  Name: NearbyActor4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsReferenceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetDeadConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 9
+  Name: NearbyActor5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 06FE24:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: IsActorConditionData
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetIsReferenceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: NotEqualTo
+    Data:
+      MutagenObjectType: GetDeadConditionData
+    ComparisonValue: 1
+  VoiceTypes: Null

@@ -7,15 +7,25 @@ Spell Property MantellaEndPower auto
 Spell Property MantellaRemoveNpcSpell auto
 Spell Property MantellaRemoveNpcPower auto
 MantellaRepository property repository auto
+MantellaConversation Property conversation auto
+MantellaMCM Property MantellaMCMQuest auto
+Actor Property PlayerRef Auto
+
 Quest Property MantellaActorPicker auto  
 ReferenceAlias Property PotentialActor1 auto  
 ReferenceAlias Property PotentialActor2 auto  
 ReferenceAlias Property PotentialActor3 auto  
 ReferenceAlias Property PotentialActor4 auto  
 ReferenceAlias Property PotentialActor5 auto  
-MantellaConversation Property conversation auto
-MantellaMCM Property MantellaMCMQuest auto
-Actor Property PlayerRef Auto
+
+Quest Property MantellaNearbyActors Auto
+ReferenceAlias Property NearbyActor1 Auto
+ReferenceAlias Property NearbyActor2 Auto
+ReferenceAlias Property NearbyActor3 Auto
+ReferenceAlias Property NearbyActor4 Auto
+ReferenceAlias Property NearbyActor5 Auto
+
+
 
 event OnInit()
     PlayerRef.AddSpell(MantellaSpell)
@@ -100,10 +110,10 @@ function StartGroupConversation()
                 actors[1] = Actor1
 
                 ; Search for other potential actors to add
-                if TryAddActorToParticipantsList(PotentialActor2, PlayerRef, 1, actors, maxDistance)
-                    if TryAddActorToParticipantsList(PotentialActor3, PlayerRef, 2, actors, maxDistance)
-                        if TryAddActorToParticipantsList(PotentialActor4, PlayerRef, 3, actors, maxDistance)
-                            if TryAddActorToParticipantsList(PotentialActor5, PlayerRef, 4, actors, maxDistance)
+                if TryAddActorToParticipantsList(PotentialActor2, PlayerRef, 2, actors, maxDistance)
+                    if TryAddActorToParticipantsList(PotentialActor3, PlayerRef, 3, actors, maxDistance)
+                        if TryAddActorToParticipantsList(PotentialActor4, PlayerRef, 4, actors, maxDistance)
+                            if TryAddActorToParticipantsList(PotentialActor5, PlayerRef, 5, actors, maxDistance)
                                 ; All actors added successfully
                             endIf
                         endIf
@@ -124,6 +134,32 @@ function StartGroupConversation()
         MantellaActorPicker.stop()
     endIf
 endFunction
+
+Actor[] Function ScanNearbyActors()
+    MantellaNearbyActors.start()
+
+    Actor[] nearbyActors = new Actor[5]
+    
+    if (NearbyActor1.GetReference() as Actor)
+        nearbyActors[0] = NearbyActor1.GetReference() as Actor
+        if (NearbyActor2.GetReference() as Actor)
+            nearbyActors[1] = NearbyActor2.GetReference() as Actor
+            if (NearbyActor3.GetReference() as Actor)
+                nearbyActors[2] = NearbyActor3.GetReference() as Actor
+                if (NearbyActor4.GetReference() as Actor)
+                    nearbyActors[3] = NearbyActor4.GetReference() as Actor
+                    if (NearbyActor5.GetReference() as Actor)
+                        nearbyActors[4] = NearbyActor5.GetReference() as Actor
+                    endIf
+                endIf
+            endIf
+        endIf
+    endIf
+    
+    MantellaNearbyActors.stop()
+    
+    return nearbyActors
+EndFunction
 
 event OnUpdate()
     if repository.radiantEnabled
