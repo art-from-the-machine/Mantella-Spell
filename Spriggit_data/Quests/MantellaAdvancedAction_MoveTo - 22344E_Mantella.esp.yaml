@@ -1,0 +1,154 @@
+FormKey: 22344E:Mantella.esp
+EditorID: MantellaAdvancedAction_MoveTo
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_MoveTo
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaMoveToPackage
+      Object: 223450:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MoveToTargetAlias
+      Object: 22344E:Mantella.esp
+      Alias: 1
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: repository
+      Object: 000D62:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 14
+Aliases:
+- ID: 2
+  Name: MoveToSourceAlias1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 3
+  Name: MoveToSourceAlias2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 4
+  Name: MoveToSourceAlias3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 5
+  Name: MoveToSourceAlias4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 6
+  Name: MoveToSourceAlias5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 7
+  Name: MoveToSourceAlias6
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 8
+  Name: MoveToSourceAlias7
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 9
+  Name: MoveToSourceAlias8
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 10
+  Name: MoveToSourceAlias9
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 11
+  Name: MoveToSourceAlias10
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 12
+  Name: MoveToSourceAlias11
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 13
+  Name: MoveToSourceAlias12
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 223450:Mantella.esp
+  VoiceTypes: Null
+- ID: 1
+  Name: MoveToTargetAlias
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  VoiceTypes: Null

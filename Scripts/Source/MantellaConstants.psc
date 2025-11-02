@@ -105,6 +105,8 @@ string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
 string property ACTION_NPC_BRAWL = "mantella_npc_brawl" auto
+string property ACTION_NPC_MOVETO = "mantella_npc_moveto" auto
+string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto

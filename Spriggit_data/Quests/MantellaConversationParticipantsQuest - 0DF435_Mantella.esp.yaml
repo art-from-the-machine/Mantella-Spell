@@ -197,8 +197,8 @@ VirtualMachineAdapter:
         Object: 000D62:Mantella.esp
 Flags:
 - 0x1000
-Priority: 100
-NextAliasID: 18
+Priority: 90
+NextAliasID: 19
 Aliases:
 - ID: 17
   Name: Player

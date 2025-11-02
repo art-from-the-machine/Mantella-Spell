@@ -25,6 +25,12 @@ Conditions:
 - MutagenObjectType: ConditionFloat
   CompareOperator: NotEqualTo
   Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
     MutagenObjectType: IsInFurnitureStateConditionData
     FurnitureAnimType: Sit
   ComparisonValue: 1

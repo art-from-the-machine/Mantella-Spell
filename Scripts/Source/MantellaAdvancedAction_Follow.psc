@@ -36,6 +36,7 @@ Function NpcFollow(Actor speaker)
                 repository.gia_FollowerQst.stop()
                 Utility.Wait(0.5)
                 repository.gia_FollowerQst.start()
+                speaker.SetActorValue("WaitingForPlayer", 0)
                 speaker.EvaluatePackage()
             else
                 Debug.Notification("Follow action not enabled in the Mantella MCM.")
