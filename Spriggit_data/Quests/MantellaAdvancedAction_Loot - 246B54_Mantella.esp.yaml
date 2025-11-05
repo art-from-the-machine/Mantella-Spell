@@ -1,0 +1,35 @@
+FormKey: 246B54:Mantella.esp
+EditorID: MantellaAdvancedAction_Loot
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_Loot
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootAnyQuest
+      Object: 25AF55:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLooter1
+      Object: 25AF55:Mantella.esp
+      Alias: 5
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLootPackage
+      Object: 246B53:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 6

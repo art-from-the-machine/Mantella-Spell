@@ -1,0 +1,536 @@
+FormKey: 25AF55:Mantella.esp
+EditorID: MantellaLootAnyQuest
+Flags:
+- 0x1000
+Priority: 100
+NextAliasID: 10
+Aliases:
+- ID: 5
+  Name: MantellaLooter1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 3
+  PackageData:
+  - 246B53:Mantella.esp
+  VoiceTypes: Null
+- ID: 6
+  Name: MantellaLooter2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 3
+  PackageData:
+  - 246B53:Mantella.esp
+  VoiceTypes: Null
+- ID: 7
+  Name: MantellaLooter3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 3
+  PackageData:
+  - 246B53:Mantella.esp
+  VoiceTypes: Null
+- ID: 8
+  Name: MantellaLooter4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 3
+  PackageData:
+  - 246B53:Mantella.esp
+  VoiceTypes: Null
+- ID: 9
+  Name: MantellaLooter5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetInFactionConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Data:
+      MutagenObjectType: GetFactionRankConditionData
+      Faction: 223451:Mantella.esp
+    ComparisonValue: 3
+  PackageData:
+  - 246B53:Mantella.esp
+  VoiceTypes: Null
+- Name: MantellaLootableItem1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThanOrEqualTo
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 2000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ammo
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Armor
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Book
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ingredient
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Key
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: MiscItem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Potion
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Scroll
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: SoulGem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Weapon
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 1
+  Name: MantellaLootableItem2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThanOrEqualTo
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 2000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ammo
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Armor
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Book
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ingredient
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Key
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: MiscItem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Potion
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Scroll
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: SoulGem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Weapon
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 2
+  Name: MantellaLootableItem3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThanOrEqualTo
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 2000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ammo
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Armor
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Book
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ingredient
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Key
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: MiscItem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Potion
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Scroll
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: SoulGem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Weapon
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 3
+  Name: MantellaLootableItem4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThanOrEqualTo
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 2000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ammo
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Armor
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Book
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ingredient
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Key
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: MiscItem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Potion
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Scroll
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: SoulGem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Weapon
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 4
+  Name: MantellaLootableItem5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThanOrEqualTo
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 2000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ammo
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Armor
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Book
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Ingredient
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Key
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: MiscItem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Potion
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Scroll
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: SoulGem
+    ComparisonValue: 1
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Weapon
+    ComparisonValue: 1
+  VoiceTypes: Null

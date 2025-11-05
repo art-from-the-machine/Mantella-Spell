@@ -1,5 +1,7 @@
 FormKey: 223450:Mantella.esp
 EditorID: MantellaMoveToPackage
+Flags:
+- AllowSwimming
 Type: Package
 PreferredSpeed: Run
 InteruptFlags:
