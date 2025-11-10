@@ -13,6 +13,7 @@ string property LeftHand = "lefthand" auto
 
 int[] _armorSlots
 string[] _constants
+string[] _spells
 
 event OnInit()
     _armorSlots = new int[5]
@@ -62,6 +63,14 @@ int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentO
             SKSE_HTTP.setString(equipmentHandle, LeftHand, equippedWeapon.GetName())
         EndIf
     EndIf
+
+    ; Spells
+    if !(isPlayer)
+        _spells = GetSpellListFromActor(actorToDescribeEquipmentOf)
+        SKSE_HTTP.setStringArray(equipmentHandle, "Spells", _spells)
+    endIf
+    
+
     SKSE_HTTP.setNestedDictionary(handle, Equipment, equipmentHandle)
 EndFunction
 
@@ -90,3 +99,38 @@ bool[] Function GetTargetSlotTrackingOptions(MantellaRepository repository)
     return result
 EndFunction
 
+
+string[] Function GetSpellListFromActor(actor currentActor)
+    int i = 0
+    int spellIndex = 0
+    int actorSpellCount = currentActor.GetSpellCount()
+    string[] spellNames = new string[5] ; Limit to first 5 spells
+
+    ; First, get spells from Actor reference
+    while (i < actorSpellCount) && (spellIndex < 5)
+        string spellName = currentActor.GetNthSpell(i).getName()
+        if spellName != "MantellaIsTalkingSpell"
+            spellNames[spellIndex] = spellName
+            spellIndex += 1
+        endIf
+        i += 1
+    endwhile
+
+    ; If we haven't reached 5 spells yet, check ActorBase spells
+    if spellIndex < 5
+        ActorBase currentActorBase = currentActor.GetActorBase()
+        int actorBaseSpellCount = currentActorBase.GetSpellCount()
+        int j = 0
+        
+        while (j < actorBaseSpellCount) && (spellIndex < 5)
+            string spellName = currentActorBase.GetNthSpell(j).getName()
+            if spellName != "MantellaIsTalkingSpell"
+                spellNames[spellIndex] = spellName
+                spellIndex += 1
+            endIf
+            j += 1
+        endwhile
+    endIf
+
+    return spellNames
+Endfunction

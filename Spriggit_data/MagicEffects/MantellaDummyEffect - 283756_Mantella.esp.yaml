@@ -1,0 +1,33 @@
+FormKey: 283756:Mantella.esp
+EditorID: MantellaDummyEffect
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaDummyEffectScript
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CastSpellScript
+      Object: 283758:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDummySpell
+      Object: 283757:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+Name:
+  TargetLanguage: English
+  Value: MantellaDummyEffect
+Flags:
+- NoHitEvent
+- Painless
+MagicSkill: Illusion
+Archetype:
+  MutagenObjectType: MagicEffectArchetype
+  ActorValue: Health
+CastType: FireAndForget
+TargetType: TargetActor
+DualCastScale: 1
+CastingSoundLevel: Normal
+Sounds: []
+Description:
+  TargetLanguage: English
+  Value: This is a placeholder effect for function-called spell casting

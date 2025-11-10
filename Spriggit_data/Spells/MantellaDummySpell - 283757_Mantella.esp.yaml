@@ -1,0 +1,17 @@
+FormKey: 283757:Mantella.esp
+EditorID: MantellaDummySpell
+Name:
+  TargetLanguage: English
+  Value: Mantella Placeholder Spell
+MenuDisplayObject: 10A046:Skyrim.esm
+EquipmentType: 013F44:Skyrim.esm
+Description:
+  TargetLanguage: English
+  Value: ''
+CastType: FireAndForget
+TargetType: TargetActor
+Effects:
+- BaseEffect: 283756:Mantella.esp
+  Data:
+    Magnitude: 1
+    Duration: 1

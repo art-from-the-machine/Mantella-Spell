@@ -1,0 +1,48 @@
+FormKey: 283758:Mantella.esp
+EditorID: MantellaAdvancedAction_CastSpell
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_CastSpell
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CastSpellSourceAlias
+      Object: 283758:Mantella.esp
+      Alias: 1
+    - MutagenObjectType: ScriptObjectProperty
+      Name: CastSpellTargetAlias
+      Object: 283758:Mantella.esp
+      Alias: 0
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaDummySpell
+      Object: 283757:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 2
+Aliases:
+- Name: CastSpellTargetAlias
+  Flags:
+  - Optional
+  VoiceTypes: Null
+- ID: 1
+  Name: CastSpellSourceAlias
+  Flags:
+  - Optional
+  PackageData:
+  - 28885A:Mantella.esp
+  VoiceTypes: Null
