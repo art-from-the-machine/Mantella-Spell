@@ -191,7 +191,7 @@ function ContinueConversation(string nextAction, int handle)
         sendRequestForPlayerInput(transcribe, updateContext=True)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
-        ProcessNpcSpeak(npcActionHandle)
+        ProcessNpcAction(npcActionHandle)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
         CleanupConversation()
@@ -289,13 +289,22 @@ function ProcessNpcSpeak(int handle)
             _lastNpcToSpeak = speaker
             _lastSpeakerName = speakerName
         endIf
-        ; Get actions only after the NPC starts speaking to improve response times
-        int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
-        if actionsHandles && actionsHandles.Length > 0
-            RaiseActionEvent(speaker, actionsHandles)
-        endIf
+    endIf
+    ; Get actions only after the NPC starts speaking to improve response times
+    int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+    if actionsHandles && actionsHandles.Length > 0
+        RaiseActionEvent(speaker, actionsHandles)
     endIf
 endFunction
+
+
+function ProcessNpcAction(int handle)
+    int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+    if actionsHandles && actionsHandles.Length > 0
+        RaiseActionEvent(None, actionsHandles)
+    endIf
+endFunction
+
 
 function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
@@ -579,10 +588,10 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
         
         if actionIdentifier != ""
             ; Check for special handling (eg inventory action timing)
-            if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
-                Utility.Wait(0.5)
-                WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
-            endIf
+            ; if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
+            ;     Utility.Wait(0.5)
+            ;     WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+            ; endIf
             
             if actionIdentifier == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
                 EndConversation()
@@ -602,6 +611,9 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     endIf
                 else
                     ; LEGACY ACTION PATH
+                    if !(speaker)
+                        speaker = _lastNpcToSpeak
+                    endIf
                     string eventName = EventInterface.EVENT_ACTIONS_PREFIX + actionIdentifier
                     ; Legacy action: no arguments, send with simple signature
                     ; This handles both:
