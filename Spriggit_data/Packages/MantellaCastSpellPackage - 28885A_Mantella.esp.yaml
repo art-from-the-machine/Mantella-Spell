@@ -1,0 +1,149 @@
+FormKey: 28885A:Mantella.esp
+EditorID: MantellaCastSpellPackage
+Flags:
+- PreferredSpeed
+- AllowSwimming
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- AggroRadiusBehavior
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: Any
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetFactionRankConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 6
+OwnerQuest: 283758:Mantella.esp
+DataInputVersion: 3
+Data:
+- Key: 0
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Name: LocationNearSelf
+    Flags:
+    - Public
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearSelf
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Ride Horse if possible?
+    Flags:
+    - Public
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Prefer Preferred Path?
+    Flags:
+    - Public
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: SpellToUse
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetObjectID
+      Reference: 283757:Mantella.esp
+- Key: 7
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: CastTimeMin
+    Flags:
+    - Public
+    Data: 0.5
+- Key: 8
+  Value:
+    MutagenObjectType: PackageDataInt
+    Name: NumToCastMin
+    Flags:
+    - Public
+    Data: 1
+- Key: 9
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CastSpellTarget
+    Flags:
+    - Public
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: TRUE
+    Flags:
+    - Public
+    Data: True
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: CastTimeMax
+    Flags:
+    - Public
+    Data: 1
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: False
+    Flags:
+    - Public
+- Key: 5
+  Value:
+    MutagenObjectType: APackageData
+    Name: Marker
+    Flags:
+    - Public
+XnamMarker: 0x10
+ProcedureTree:
+- BranchType: Sequence
+  Root:
+    BranchCount: 1
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: UseMagic
+  Flags: []
+  DataInputIndices:
+  - 9
+  - 6
+  - 9
+  - 15
+  - 7
+  - 13
+  - 7
+  - 13
+  - 8
+  - 8
+  - 255
+  Unknown: []
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

@@ -1,14 +1,14 @@
-FormKey: 204E4A:Mantella.esp
-EditorID: MantellaAdvancedAction_StandDown
+FormKey: 292A5B:Mantella.esp
+EditorID: MantellaAdvancedAction_Teleport
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaAdvancedAction_StandDown
+  - Name: MantellaAdvancedAction_Teleport
     Properties:
     - MutagenObjectType: ScriptObjectProperty
-      Name: mConsts
+      Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: EventInterface
+      Name: mConsts
       Object: 03D41A:Mantella.esp
   Versioning:
   - Break0

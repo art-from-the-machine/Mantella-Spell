@@ -1,0 +1,6 @@
+FormKey: 223451:Mantella.esp
+EditorID: MantellaFunctionSourceFaction
+CrimeValues:
+  Arrest: True
+  AttackOnSight: True
+VendorValues: {}

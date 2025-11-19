@@ -24,6 +24,12 @@ ScheduleMinute: -1
 Unknown3: 0x000000
 Conditions:
 - MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp

@@ -35,6 +35,12 @@ Conditions:
     FurnitureAnimType: Lean
   ComparisonValue: 1
 - MutagenObjectType: ConditionFloat
+  CompareOperator: NotEqualTo
+  Data:
+    MutagenObjectType: GetInFactionConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
   Data:
     MutagenObjectType: GetVMQuestVariableConditionData
     Quest: 000D62:Mantella.esp

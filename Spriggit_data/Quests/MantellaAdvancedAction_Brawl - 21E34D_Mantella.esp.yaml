@@ -1,5 +1,4 @@
 FormKey: 21E34D:Mantella.esp
-VersionControl: 13145
 EditorID: MantellaAdvancedAction_Brawl
 VirtualMachineAdapter:
   Scripts:
@@ -26,5 +25,7 @@ VirtualMachineAdapter:
   FileName: ''
 Flags:
 - StartGameEnabled
+- 0x10
 - RunOnce
+Priority: 100
 NextAliasID: 0

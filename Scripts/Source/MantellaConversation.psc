@@ -41,6 +41,8 @@ float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
 bool microphoneEnabledLastKnownStatus = false
 Actor[] _cachedNearbyActors = None
+bool _waitingForActionResponse = true
+int _actionResponseTimeout = 0
 
 event OnInit()
     RegisterForConversationEvents()
@@ -57,6 +59,7 @@ Function RegisterForConversationEvents()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADD_EVENT,"OnAddEventReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTION_RESPONSE_COMPLETED,"OnActionResponseCompleted")
 EndFunction
 
 event OnUpdate()
@@ -191,14 +194,15 @@ function ContinueConversation(string nextAction, int handle)
         sendRequestForPlayerInput(transcribe, updateContext=True)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
-        ProcessNpcSpeak(npcActionHandle)
-        RequestContinueConversation()
+        ProcessNpcAction(npcActionHandle)
+        bool updateInGameEvents = SKSE_HTTP.getBool(npcActionHandle, mConsts.ACTION_REQUIRES_RESPONSE, false)
+        RequestContinueConversation(updateInGameEvents=updateInGameEvents)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
         CleanupConversation()
     endIf
 endFunction
 
-function RequestContinueConversation()
+function RequestContinueConversation(bool updateInGameEvents = false)
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
@@ -213,6 +217,24 @@ function RequestContinueConversation()
             ClearExtraRequestAction()
             ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
         endif
+
+        if updateInGameEvents
+            _contextHandle = SKSE_HTTP.createDictionary()
+            
+            ; Wait for action to complete with timeout
+            _actionResponseTimeout = 0
+            while _waitingForActionResponse && _actionResponseTimeout < 50
+                Utility.Wait(0.1)
+                _actionResponseTimeout += 1
+            endWhile
+
+            _waitingForActionResponse = true ; Reset for next action
+            
+            string[] past_events = deepcopy(_ingameEvents)
+            SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
+            ClearIngameEvent()
+            SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
+        endIf
 
         if _actorsUpdated
             SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
@@ -289,13 +311,22 @@ function ProcessNpcSpeak(int handle)
             _lastNpcToSpeak = speaker
             _lastSpeakerName = speakerName
         endIf
-        ; Get actions only after the NPC starts speaking to improve response times
-        int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
-        if actionsHandles && actionsHandles.Length > 0
-            RaiseActionEvent(speaker, actionsHandles)
-        endIf
+    endIf
+    ; Get actions only after the NPC starts speaking to improve response times
+    int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+    if actionsHandles && actionsHandles.Length > 0
+        RaiseActionEvent(speaker, actionsHandles)
     endIf
 endFunction
+
+
+function ProcessNpcAction(int handle)
+    int[] actionsHandles = SKSE_HTTP.getNestedDictionariesArray(handle, mConsts.KEY_ACTOR_ACTIONS)
+    if actionsHandles && actionsHandles.Length > 0
+        RaiseActionEvent(None, actionsHandles)
+    endIf
+endFunction
+
 
 function WaitForVoiceAssignment(Actor speaker, bool isPlayer)
     bool hasVoiceChanged = false
@@ -602,6 +633,9 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     endIf
                 else
                     ; LEGACY ACTION PATH
+                    if !(speaker)
+                        speaker = _lastNpcToSpeak
+                    endIf
                     string eventName = EventInterface.EVENT_ACTIONS_PREFIX + actionIdentifier
                     ; Legacy action: no arguments, send with simple signature
                     ; This handles both:
@@ -686,6 +720,10 @@ EndFunction
 
 event OnAddEventReceived(string text)
     AddIngameEvent(text)
+endEvent
+
+event OnActionResponseCompleted(string actionIdentifier)
+    _waitingForActionResponse = false
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

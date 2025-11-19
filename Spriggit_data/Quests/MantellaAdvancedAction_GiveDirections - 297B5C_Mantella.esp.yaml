@@ -1,15 +1,18 @@
-FormKey: 204E4A:Mantella.esp
-EditorID: MantellaAdvancedAction_StandDown
+FormKey: 297B5C:Mantella.esp
+EditorID: MantellaAdvancedAction_GiveDirections
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaAdvancedAction_StandDown
+  - Name: MantellaAdvancedAction_GiveDirections
     Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: EventInterface
-      Object: 03D41A:Mantella.esp
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
@@ -18,5 +21,4 @@ Flags:
 - StartGameEnabled
 - 0x10
 - RunOnce
-Priority: 100
 NextAliasID: 0

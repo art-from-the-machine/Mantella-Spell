@@ -13,6 +13,7 @@ string property LeftHand = "lefthand" auto
 
 int[] _armorSlots
 string[] _constants
+string[] _spells
 
 event OnInit()
     _armorSlots = new int[5]
@@ -62,6 +63,14 @@ int Function AddEquipmentDescription(int handle, Actor actorToDescribeEquipmentO
             SKSE_HTTP.setString(equipmentHandle, LeftHand, equippedWeapon.GetName())
         EndIf
     EndIf
+
+    ; Spells
+    if !(isPlayer)
+        _spells = GetSpellListFromActor(actorToDescribeEquipmentOf)
+        SKSE_HTTP.setStringArray(equipmentHandle, "Spells", _spells)
+    endIf
+    
+
     SKSE_HTTP.setNestedDictionary(handle, Equipment, equipmentHandle)
 EndFunction
 
@@ -90,3 +99,49 @@ bool[] Function GetTargetSlotTrackingOptions(MantellaRepository repository)
     return result
 EndFunction
 
+
+string[] Function GetSpellListFromActor(actor currentActor)
+    int i = 0
+    int spellIndex = 0
+    int spellCap = 20
+
+    int actorSpellCount = currentActor.GetSpellCount()
+
+    ActorBase currentActorBase = currentActor.GetActorBase()
+    int actorBaseSpellCount = currentActorBase.GetSpellCount()
+
+    int totalSpellCount = actorSpellCount + actorBaseSpellCount
+
+    if totalSpellCount == 0
+        return Utility.CreateStringArray(0)
+    elseif totalSpellCount > spellCap
+        totalSpellCount = spellCap
+    endif
+
+    string[] spellNames = Utility.CreateStringArray(totalSpellCount)
+
+    ; First, get spells from Actor reference
+    while (i < actorSpellCount) && (spellIndex < spellCap)
+        string spellName = currentActor.GetNthSpell(i).getName()
+        if spellName != "MantellaIsTalkingSpell"
+            spellNames[spellIndex] = spellName
+            spellIndex += 1
+        endIf
+        i += 1
+    endwhile
+
+    ; If we haven't already reached the spell cap limit, check ActorBase spells
+    if spellIndex < spellCap
+        int j = 0
+        while (j < actorBaseSpellCount) && (spellIndex < spellCap)
+            string spellName = currentActorBase.GetNthSpell(j).getName()
+            if spellName != "MantellaIsTalkingSpell"
+                spellNames[spellIndex] = spellName
+                spellIndex += 1
+            endIf
+            j += 1
+        endwhile
+    endIf
+
+    return spellNames
+Endfunction
