@@ -103,11 +103,25 @@ EndFunction
 string[] Function GetSpellListFromActor(actor currentActor)
     int i = 0
     int spellIndex = 0
+    int spellCap = 20
+
     int actorSpellCount = currentActor.GetSpellCount()
-    string[] spellNames = new string[5] ; Limit to first 5 spells
+
+    ActorBase currentActorBase = currentActor.GetActorBase()
+    int actorBaseSpellCount = currentActorBase.GetSpellCount()
+
+    int totalSpellCount = actorSpellCount + actorBaseSpellCount
+
+    if totalSpellCount == 0
+        return Utility.CreateStringArray(0)
+    elseif totalSpellCount > spellCap
+        totalSpellCount = spellCap
+    endif
+
+    string[] spellNames = Utility.CreateStringArray(totalSpellCount)
 
     ; First, get spells from Actor reference
-    while (i < actorSpellCount) && (spellIndex < 5)
+    while (i < actorSpellCount) && (spellIndex < spellCap)
         string spellName = currentActor.GetNthSpell(i).getName()
         if spellName != "MantellaIsTalkingSpell"
             spellNames[spellIndex] = spellName
@@ -116,13 +130,10 @@ string[] Function GetSpellListFromActor(actor currentActor)
         i += 1
     endwhile
 
-    ; If we haven't reached 5 spells yet, check ActorBase spells
-    if spellIndex < 5
-        ActorBase currentActorBase = currentActor.GetActorBase()
-        int actorBaseSpellCount = currentActorBase.GetSpellCount()
+    ; If we haven't already reached the spell cap limit, check ActorBase spells
+    if spellIndex < spellCap
         int j = 0
-        
-        while (j < actorBaseSpellCount) && (spellIndex < 5)
+        while (j < actorBaseSpellCount) && (spellIndex < spellCap)
             string spellName = currentActorBase.GetNthSpell(j).getName()
             if spellName != "MantellaIsTalkingSpell"
                 spellNames[spellIndex] = spellName
