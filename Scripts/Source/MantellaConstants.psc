@@ -110,9 +110,11 @@ string property ACTION_NPC_TELEPORT = "mantella_npc_teleport" auto
 string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 string property ACTION_NPC_LOOT = "mantella_npc_loot" auto
 string property ACTION_NPC_CASTSPELL = "mantella_npc_castspell" auto
+string property ACTION_NPC_GIVEDIRECTIONS = "mantella_npc_givedirections" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto
 string property ACTION_ARGUMENTS = "arguments" auto
 string property ACTION_ARG_SOURCE = "source" auto
 string property ACTION_ARG_TARGET = "target" auto
+string property ACTION_REQUIRES_RESPONSE = "mantella_actions_require_response" auto

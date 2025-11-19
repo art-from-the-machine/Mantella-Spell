@@ -41,6 +41,8 @@ float httpReceivedTime = 0.0
 string lineToSpeakError = "Error: No line transmitted for actor to speak"
 bool microphoneEnabledLastKnownStatus = false
 Actor[] _cachedNearbyActors = None
+bool _waitingForActionResponse = true
+int _actionResponseTimeout = 0
 
 event OnInit()
     RegisterForConversationEvents()
@@ -57,6 +59,7 @@ Function RegisterForConversationEvents()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_ENDCONVERSATION,"OnEndConversationActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_REMOVECHARACTER,"OnRemoveCharacterActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADD_EVENT,"OnAddEventReceived")
+    RegisterForModEvent(EventInterface.EVENT_ACTION_RESPONSE_COMPLETED,"OnActionResponseCompleted")
 EndFunction
 
 event OnUpdate()
@@ -192,13 +195,14 @@ function ContinueConversation(string nextAction, int handle)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
         ProcessNpcAction(npcActionHandle)
-        RequestContinueConversation()
+        bool updateInGameEvents = SKSE_HTTP.getBool(npcActionHandle, mConsts.ACTION_REQUIRES_RESPONSE, false)
+        RequestContinueConversation(updateInGameEvents=updateInGameEvents)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_ENDCONVERSATION)
         CleanupConversation()
     endIf
 endFunction
 
-function RequestContinueConversation()
+function RequestContinueConversation(bool updateInGameEvents = false)
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
@@ -213,6 +217,24 @@ function RequestContinueConversation()
             ClearExtraRequestAction()
             ;Debug.Notification("_extraRequestActions got cleared. Remaining items: " + _extraRequestActions.Length)
         endif
+
+        if updateInGameEvents
+            _contextHandle = SKSE_HTTP.createDictionary()
+            
+            ; Wait for action to complete with timeout
+            _actionResponseTimeout = 0
+            while _waitingForActionResponse && _actionResponseTimeout < 50
+                Utility.Wait(0.1)
+                _actionResponseTimeout += 1
+            endWhile
+
+            _waitingForActionResponse = true ; Reset for next action
+            
+            string[] past_events = deepcopy(_ingameEvents)
+            SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
+            ClearIngameEvent()
+            SKSE_HTTP.setNestedDictionary(handle, mConsts.KEY_CONTEXT, _contextHandle)
+        endIf
 
         if _actorsUpdated
             SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
@@ -588,10 +610,10 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
         
         if actionIdentifier != ""
             ; Check for special handling (eg inventory action timing)
-            ; if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
-            ;     Utility.Wait(0.5)
-            ;     WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
-            ; endIf
+            if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
+                Utility.Wait(0.5)
+                WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
+            endIf
             
             if actionIdentifier == mConsts.KEY_REQUESTTYPE_ENDCONVERSATION
                 EndConversation()
@@ -698,6 +720,10 @@ EndFunction
 
 event OnAddEventReceived(string text)
     AddIngameEvent(text)
+endEvent
+
+event OnActionResponseCompleted(string actionIdentifier)
+    _waitingForActionResponse = false
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

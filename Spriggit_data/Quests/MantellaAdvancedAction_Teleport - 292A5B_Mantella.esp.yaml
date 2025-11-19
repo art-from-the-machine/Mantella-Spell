@@ -1,0 +1,22 @@
+FormKey: 292A5B:Mantella.esp
+EditorID: MantellaAdvancedAction_Teleport
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_Teleport
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 0

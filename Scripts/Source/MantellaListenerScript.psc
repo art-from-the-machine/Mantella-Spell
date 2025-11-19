@@ -79,13 +79,7 @@ Event OnPlayerLoadGame()
     If(conversation.IsRunning())
         conversation.EndConversation()
     endif
-    ; If (MantellaMCMQuest.IsRunning() || MantellaMCMQuest.IsNotProperlyInitialised())
-    ;     Debug.MessageBox("Detecting old version of Mantella in this save. MCM settings will be reset once.")
-    ;     MantellaMCMQuest.Stop()
-    ;     MantellaMCMQuest.Start()
-    ;     MantellaMCMQuest.OnConfigInit()
-    ;     repository.assignDefaultSettings(0,true)
-    ; EndIf
+    conversation.RegisterForConversationEvents()
     RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
