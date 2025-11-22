@@ -23,8 +23,10 @@ function LeftColumn(MantellaMCM mcm, MantellaRepository Repository) global
 endfunction
 
 function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
-    mcm.AddHeaderOption("Radiant Dialogue")
-    mcm.oid_radiantenabled = mcm.AddToggleOption("Enabled", repository.radiantEnabled)
+    mcm.AddHeaderOption("Dynamic Conversations")
+    mcm.oid_radiantenabled = mcm.AddToggleOption("Radiant Dialogue", repository.radiantEnabled)
+    mcm.oid_approachenabled = mcm.AddToggleOption("NPCs can Approach Player", repository.approachEnabled)
+    mcm.oid_triggerRatio = mcm.AddSliderOption("Trigger Ratio %",repository.triggerRatio)
     mcm.oid_radiantdistance = mcm.AddSliderOption("Trigger Distance",repository.radiantDistance)
     mcm.oid_radiantfrequency = mcm.AddSliderOption("Trigger Frequency",repository.radiantFrequency)
     mcm.oid_showRadiantDialogueMessages = mcm.AddToggleOption("Show Debug Messages", repository.showRadiantDialogueMessages)
@@ -35,7 +37,7 @@ function RightColumn(MantellaMCM mcm, MantellaRepository Repository) global
     mcm.oid_NPCInventoryToggle = mcm.AddToggleOption("Allow Inventory", Repository.NPCInventory)
     mcm.oid_NPCPackageToggle = mcm.AddToggleOption("NPCs Stop to Talk", Repository.NPCPackage)
     mcm.oid_showDialogueItems = mcm.AddToggleOption("Show Dialogue Items", repository.showDialogueItems) 
-    mcm.oid_enableVanillaDialogueAwareness = mcm.AddToggleOption("Enable Vanilla Dialogue Awareness", repository.enableVanillaDialogueAwareness)
+    mcm.oid_enableVanillaDialogueAwareness = mcm.AddToggleOption("Vanilla Dialogue Awareness", repository.enableVanillaDialogueAwareness)
 endfunction
 
 function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repository) global
@@ -55,6 +57,11 @@ function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repo
         mcm.SetSliderDialogDefaultValue(10)
         mcm.SetSliderDialogRange(5, 300)
         mcm.SetSliderDialogInterval(1)
+    elseIf optionID==mcm.oid_triggerRatio
+        mcm.SetSliderDialogStartValue(repository.triggerRatio)
+        mcm.SetSliderDialogDefaultValue(50)
+        mcm.SetSliderDialogRange(0, 100)
+        mcm.SetSliderDialogInterval(1)
     endif
 endfunction
 
@@ -70,6 +77,10 @@ function SliderOptionAccept(MantellaMCM mcm, int optionID, float value, Mantella
     elseIf optionId == mcm.oid_radiantfrequency
         mcm.SetSliderOptionValue(optionId, value)
         Repository.radiantFrequency=value
+        debug.MessageBox("Please save and reload for this change to take effect")
+    elseIf optionId == mcm.oid_triggerRatio
+        mcm.SetSliderOptionValue(optionId, value)
+        Repository.triggerRatio=value as int
         debug.MessageBox("Please save and reload for this change to take effect")
     EndIf
 endfunction
@@ -128,6 +139,9 @@ function OptionUpdate(MantellaMCM mcm, int optionID, MantellaRepository Reposito
     elseIf optionID == mcm.oid_radiantenabled
         repository.radiantEnabled =! repository.radiantEnabled
         mcm.SetToggleOptionValue(mcm.oid_radiantenabled, repository.radiantEnabled)
+    elseIf optionID == mcm.oid_approachenabled
+        repository.approachEnabled =! repository.approachEnabled
+        mcm.SetToggleOptionValue(mcm.oid_approachenabled, repository.approachEnabled)
     elseIf optionID == mcm.oid_showRadiantDialogueMessages
         repository.showRadiantDialogueMessages =! repository.showRadiantDialogueMessages
         mcm.SetToggleOptionValue(optionID, repository.showRadiantDialogueMessages)

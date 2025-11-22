@@ -35,8 +35,10 @@ int property MantellaRadiantHotkey auto
 bool property showDialogueItems auto Conditional
 
 bool property radiantEnabled auto
+bool property approachEnabled auto
 float property radiantDistance auto
 float property radiantFrequency auto
+int property triggerRatio auto
 bool property showRadiantDialogueMessages auto
 
 string property playerCharacterDescription1 auto
@@ -158,8 +160,10 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
         showDialogueItems = true
 
         radiantEnabled = false
+        approachEnabled = false
         radiantDistance = 20
         radiantFrequency = 10
+        triggerRatio = 50
 
 
         playerCharacterDescription1 = ""

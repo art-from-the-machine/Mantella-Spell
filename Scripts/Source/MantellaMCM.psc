@@ -17,8 +17,10 @@ int property oid_keymapRadiantHotkey auto
 int property oid_showDialogueItems auto
 
 int property oid_radiantenabled auto
+int property oid_approachenabled auto
 int property oid_radiantdistance auto
 int property oid_radiantfrequency auto
+int property oid_triggerRatio auto
 int property oid_showRadiantDialogueMessages auto
 
 
@@ -243,7 +245,11 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Show the dialogue tree entries to start a conversation or add and remove NPCs from it.")
 
 	elseIf optionID == oid_radiantenabled
-		SetInfoText("Starts a Mantella conversation between the nearest two NPCs to the player at a given frequency. \nNPCs must both be stationary when a radiant dialogue attempt is made.")
+		SetInfoText("Starts a Mantella conversation between the nearest NPCs to the player at a given frequency.")
+	elseIf optionID == oid_approachenabled
+		SetInfoText("Starts a Mantella conversation between the nearest NPC and the player at a given frequency.")
+	elseIf optionID == oid_triggerRatio
+		SetInfoText("Controls the the likelihood of an NPC approaching the player versus a radiant dialogue triggering (if both are enabled). \nHigher values increase the chance of radiant dialogue. Lower values increase the chance of an NPC approaching.")
 	elseIf optionID == oid_radiantdistance
 		SetInfoText("How far from the player (in meters) radiant dialogues can begin. \nDefault: 20")
 	elseIf optionID == oid_radiantfrequency
