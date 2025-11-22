@@ -112,6 +112,7 @@ string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 string property ACTION_NPC_LOOT = "mantella_npc_loot" auto
 string property ACTION_NPC_CASTSPELL = "mantella_npc_castspell" auto
 string property ACTION_NPC_GIVEDIRECTIONS = "mantella_npc_givedirections" auto
+string property ACTION_NPC_ADDTOCONVERSATION = "mantella_npc_addtoconversation" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto
