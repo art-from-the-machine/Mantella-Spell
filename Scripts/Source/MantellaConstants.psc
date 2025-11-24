@@ -103,6 +103,7 @@ string property ACTION_REMOVECHARACTER = "mantella_remove_character" auto
 string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
+string property ACTION_NPC_UNFOLLOW = "mantella_npc_unfollow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
 string property ACTION_NPC_BARTER = "mantella_npc_barter" auto
 string property ACTION_NPC_BRAWL = "mantella_npc_brawl" auto
