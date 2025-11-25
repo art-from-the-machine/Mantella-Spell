@@ -1,0 +1,21 @@
+FormKey: 2A6E5E:Mantella.esp
+EditorID: MantellaAdvancedAction_Barter
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_Barter
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

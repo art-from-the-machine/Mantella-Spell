@@ -1,0 +1,24 @@
+FormKey: 2A1D5D:Mantella.esp
+EditorID: MantellaAdvancedAction_AddToConversation
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_AddToConv
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0
