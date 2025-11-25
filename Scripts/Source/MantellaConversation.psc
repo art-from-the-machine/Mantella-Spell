@@ -413,6 +413,24 @@ Actor function GetActorByName(string actorName)
     return None
 endFunction
 
+Actor function GetFirstGuardActor()
+    ; Check each NPC in the conversation to see if they are a guard, returning the first result
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && currentActor.IsGuard()
+            return currentActor
+        endIf
+        i += 1
+    EndWhile
+    return None
+endFunction
+
+Actor[] function GetCachedNearbyActors()
+    ; Returns the most recent cached nearby actors (populated by BuildContext)
+    return _cachedNearbyActors
+endFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;       End conversation      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
