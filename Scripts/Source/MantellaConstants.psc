@@ -108,6 +108,7 @@ string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
 string property ACTION_NPC_BARTER = "mantella_npc_barter" auto
 string property ACTION_NPC_BRAWL = "mantella_npc_brawl" auto
 string property ACTION_NPC_MOVETO = "mantella_npc_moveto" auto
+string property ACTION_NPC_TRAVELTO = "mantella_npc_travelto" auto
 string property ACTION_NPC_TELEPORT = "mantella_npc_teleport" auto
 string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 string property ACTION_NPC_LOOT = "mantella_npc_loot" auto
