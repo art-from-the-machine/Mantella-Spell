@@ -118,6 +118,7 @@ string property ACTION_NPC_GIVEDIRECTIONS = "mantella_npc_givedirections" auto
 string property ACTION_NPC_ADDTOCONVERSATION = "mantella_npc_addtoconversation" auto
 string property ACTION_NPC_REPORTCRIME = "mantella_npc_reportcrime" auto
 string property ACTION_NPC_ABSOLVECRIME = "mantella_npc_absolvecrime" auto
+string property ACTION_NPC_EMOTE = "mantella_npc_emote" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto
