@@ -1,5 +1,4 @@
 FormKey: 2B6161:Mantella.esp
-VersionControl: 13177
 EditorID: MantellaAdvancedAction_AbsolveCrime
 VirtualMachineAdapter:
   Scripts:
@@ -20,5 +19,6 @@ VirtualMachineAdapter:
   FileName: ''
 Flags:
 - StartGameEnabled
+- 0x10
 - RunOnce
 NextAliasID: 0

@@ -1,0 +1,165 @@
+FormKey: 2BB262:Mantella.esp
+EditorID: MantellaAdvancedAction_TravelTo
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_CancelTravel
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  - Name: MantellaAdvancedAction_TravelTo
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: GameDaysPassed
+      Object: 000039:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LocationUtils
+      Object: 000D62:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaTravelExpireTime
+      Object: 2BB264:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaTravelToPackage
+      Object: 2BB263:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: TravelToLocationAlias
+      Object: 2BB262:Mantella.esp
+      Alias: 2
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 14
+Aliases:
+- Name: TravelToSourceAlias1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 3
+  Name: TravelToSourceAlias2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 4
+  Name: TravelToSourceAlias3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 5
+  Name: TravelToSourceAlias4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 6
+  Name: TravelToSourceAlias5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 7
+  Name: TravelToSourceAlias6
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 8
+  Name: TravelToSourceAlias7
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 9
+  Name: TravelToSourceAlias8
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 10
+  Name: TravelToSourceAlias9
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 11
+  Name: TravelToSourceAlias10
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 12
+  Name: TravelToSourceAlias11
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 13
+  Name: TravelToSourceAlias12
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - MatchingRefClosest
+  PackageData:
+  - 2BB263:Mantella.esp
+  VoiceTypes: Null
+- ID: 2
+  Name: TravelToLocationAlias
+  Flags:
+  - Optional
+  VoiceTypes: Null

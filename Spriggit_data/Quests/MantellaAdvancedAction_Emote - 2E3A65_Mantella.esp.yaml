@@ -1,27 +1,21 @@
-FormKey: 297B5C:Mantella.esp
-EditorID: MantellaAdvancedAction_GiveDirections
+FormKey: 2E3A65:Mantella.esp
+VersionControl: 13180
+EditorID: MantellaAdvancedAction_Emote
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaAdvancedAction_GiveDirections
+  - Name: MantellaAdvancedAction_Emote
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: LocationUtils
-      Object: 000D62:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
-    - MutagenObjectType: ScriptObjectProperty
-      Name: PlayerRef
-      Object: 000014:Skyrim.esm
   Versioning:
   - Break0
   ExtraBindDataVersion: 0
   FileName: ''
 Flags:
 - StartGameEnabled
-- 0x10
 - RunOnce
 NextAliasID: 0

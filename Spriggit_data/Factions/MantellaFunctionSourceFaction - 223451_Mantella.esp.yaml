@@ -3,4 +3,32 @@ EditorID: MantellaFunctionSourceFaction
 CrimeValues:
   Arrest: True
   AttackOnSight: True
+Ranks:
+- Number: 0
+- Number: 1
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: MoveTo
+    Female: {}
+- Number: 2
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: TravelTo
+    Female: {}
+- Number: 3
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Loot
+    Female: {}
+- Number: 4
+- Number: 5
+- Number: 6
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: CastSpell
+    Female: {}
 VendorValues: {}

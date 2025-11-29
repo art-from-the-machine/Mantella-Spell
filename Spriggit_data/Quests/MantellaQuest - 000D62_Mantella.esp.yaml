@@ -2,6 +2,14 @@ FormKey: 000D62:Mantella.esp
 EditorID: MantellaQuest
 VirtualMachineAdapter:
   Scripts:
+  - Name: MantellaLocationUtils
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: TimeScale
+      Object: 00003A:Skyrim.esm
   - Name: mantellarepository
     Properties:
     - MutagenObjectType: ScriptObjectProperty
