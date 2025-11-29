@@ -79,7 +79,7 @@ Event OnPlayerLoadGame()
     If(conversation.IsRunning())
         conversation.EndConversation()
     endif
-    conversation.RegisterForConversationEvents()
+    ; conversation.RegisterForConversationEvents()
     RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
