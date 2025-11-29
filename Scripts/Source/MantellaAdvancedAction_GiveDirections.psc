@@ -4,6 +4,7 @@ MantellaInterface Property EventInterface Auto
 MantellaConstants Property mConsts Auto
 MantellaLocationUtils Property LocationUtils Auto
 Actor Property PlayerRef Auto
+Idle Property IdleNoteRead Auto
 
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_GIVEDIRECTIONS, "OnNpcGiveDirectionsAdvancedActionReceived")
@@ -12,6 +13,10 @@ EndEvent
 
 event OnNpcGiveDirectionsAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
     Debug.Notification("Thinking of directions...")
+    Actor sourceActor = speaker as Actor
+    if sourceActor
+        sourceActor.PlayIdle(IdleNoteRead)
+    endIf
 
     string locationName = SKSE_HTTP.getString(argumentsHandle, "location")
     ObjectReference markerRef = LocationUtils.MapMarkerLocationToRef(locationName)

@@ -1,5 +1,4 @@
 FormKey: 2E3A65:Mantella.esp
-VersionControl: 13180
 EditorID: MantellaAdvancedAction_Emote
 VirtualMachineAdapter:
   Scripts:
@@ -9,6 +8,12 @@ VirtualMachineAdapter:
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLaugh
+      Object: 2EDC66:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaVoiceID
+      Object: 2F7E6A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
   Versioning:
@@ -17,5 +22,6 @@ VirtualMachineAdapter:
   FileName: ''
 Flags:
 - StartGameEnabled
+- 0x10
 - RunOnce
 NextAliasID: 0

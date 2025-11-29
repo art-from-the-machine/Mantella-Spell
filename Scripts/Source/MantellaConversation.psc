@@ -642,7 +642,7 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + actionIdentifier
                     int eventHandle = ModEvent.Create(eventName)
                     if eventHandle
-                        ModEvent.PushForm(eventHandle, speaker)
+                        ModEvent.PushForm(eventHandle, _lastNpcToSpeak)
                         ModEvent.PushForm(eventHandle, Self as Quest)  ; For name resolution
                         ModEvent.PushInt(eventHandle, argumentsHandle)
                         ModEvent.Send(eventHandle)
