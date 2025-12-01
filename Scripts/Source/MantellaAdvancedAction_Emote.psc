@@ -14,7 +14,7 @@ event OnNpcEmoteAdvancedActionReceived(Form speaker, Form conversationQuest, int
     
     ; Extract parameters
     string[] sourceNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
-    int emoteID = SKSE_HTTP.getInt(argumentsHandle, "emote_name")
+    int emoteID = SKSE_HTTP.getInt(argumentsHandle, "emote_name_id")
 
     Idle emote = Game.GetFormFromFile(emoteID, "Skyrim.esm") as Idle
 
