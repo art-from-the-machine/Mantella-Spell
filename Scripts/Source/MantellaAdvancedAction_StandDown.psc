@@ -2,6 +2,7 @@ Scriptname MantellaAdvancedAction_StandDown extends Quest hidden
 
 MantellaConstants property mConsts auto
 MantellaInterface property EventInterface Auto
+Faction Property MantellaFunctionSourceFaction Auto
 
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_FORGIVEN, "OnNpcStandDownAdvancedActionReceived")
@@ -30,5 +31,10 @@ Function NpcStandDown(Actor source)
     if (source)
         Debug.Notification(source.GetDisplayName() + " ended combat.")
         source.StopCombat()
+
+        if source.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+            source.RemoveFromFaction(MantellaFunctionSourceFaction)
+            source.EvaluatePackage()
+        endIf
     endif
 EndFunction
