@@ -114,6 +114,7 @@ string property ACTION_NPC_CANCELTRAVEL = "mantella_npc_canceltravel" auto
 string property ACTION_NPC_TELEPORT = "mantella_npc_teleport" auto
 string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 string property ACTION_NPC_LOOT = "mantella_npc_loot" auto
+string property ACTION_NPC_COLLECTINGREDIENTS = "mantella_npc_collectingredients" auto
 string property ACTION_NPC_CASTSPELL = "mantella_npc_castspell" auto
 string property ACTION_NPC_GIVEDIRECTIONS = "mantella_npc_givedirections" auto
 string property ACTION_NPC_ADDTOCONVERSATION = "mantella_npc_addtoconversation" auto

@@ -119,7 +119,7 @@ function StartGroupConversation()
                 conversation.StartConversation(actors)
             elseif(repository.showRadiantDialogueMessages)
                 Debug.Notification("Group ocnversation attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
             endIf
         elseif(repository.showRadiantDialogueMessages)
             Debug.Notification("Group conversation attempted. No NPCs available")
@@ -201,7 +201,7 @@ event OnUpdate()
                         endIf
                     elseif(repository.showRadiantDialogueMessages)
                         Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                        Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
                     endIf
                 elseif(repository.showRadiantDialogueMessages)
                     Debug.Notification("Radiant dialogue attempted. No NPCs available")
@@ -227,7 +227,7 @@ event OnUpdate()
 
                     elseif (repository.showRadiantDialogueMessages)
                         Debug.Notification("NPC approach attempted. NPC too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                        Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
                     endIf
                 elseif (repository.showRadiantDialogueMessages)
                     Debug.Notification("NPC approach attempted. No NPCs available")
