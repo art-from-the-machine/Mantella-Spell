@@ -42,6 +42,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -51,6 +52,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -60,6 +62,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -69,6 +72,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -78,6 +82,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -87,6 +92,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -96,6 +102,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -105,6 +112,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -114,6 +122,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -123,6 +132,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -132,6 +142,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -141,6 +152,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 223450:Mantella.esp
@@ -150,5 +162,6 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   VoiceTypes: Null

@@ -37,6 +37,7 @@ Aliases:
 - Name: FleeSourceAlias1
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -44,6 +45,7 @@ Aliases:
   Name: FleeSourceAlias2
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -51,6 +53,7 @@ Aliases:
   Name: FleeSourceAlias3
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -58,6 +61,7 @@ Aliases:
   Name: FleeSourceAlias4
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -65,6 +69,7 @@ Aliases:
   Name: FleeSourceAlias5
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -72,6 +77,7 @@ Aliases:
   Name: FleeSourceAlias6
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -79,6 +85,7 @@ Aliases:
   Name: FleeSourceAlias7
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -86,6 +93,7 @@ Aliases:
   Name: FleeSourceAlias8
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -93,6 +101,7 @@ Aliases:
   Name: FleeSourceAlias9
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -100,6 +109,7 @@ Aliases:
   Name: FleeSourceAlias10
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -107,6 +117,7 @@ Aliases:
   Name: FleeSourceAlias11
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -114,6 +125,7 @@ Aliases:
   Name: FleeSourceAlias12
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 31B58B:Mantella.esp
   VoiceTypes: Null
@@ -121,4 +133,5 @@ Aliases:
   Name: FleeTargetAlias
   Flags:
   - Optional
+  - AllowReserved
   VoiceTypes: Null

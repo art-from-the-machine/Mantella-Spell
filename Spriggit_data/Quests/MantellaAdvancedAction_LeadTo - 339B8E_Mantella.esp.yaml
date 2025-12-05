@@ -45,6 +45,7 @@ Aliases:
 - Name: LeadToSourceAlias
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 339B8F:Mantella.esp
   VoiceTypes: Null
@@ -52,9 +53,11 @@ Aliases:
   Name: LeadToTargetAlias
   Flags:
   - Optional
+  - AllowReserved
   VoiceTypes: Null
 - ID: 2
   Name: LeadToLocationAlias
   Flags:
   - Optional
+  - AllowReserved
   VoiceTypes: Null

@@ -55,6 +55,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -64,6 +65,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -73,6 +75,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -82,6 +85,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -91,6 +95,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -100,6 +105,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -109,6 +115,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -118,6 +125,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -127,6 +135,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -136,6 +145,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -145,6 +155,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -154,6 +165,7 @@ Aliases:
   Flags:
   - Optional
   - MatchingRefInLoadedArea
+  - AllowReserved
   - MatchingRefClosest
   PackageData:
   - 2BB263:Mantella.esp
@@ -162,4 +174,5 @@ Aliases:
   Name: TravelToLocationAlias
   Flags:
   - Optional
+  - AllowReserved
   VoiceTypes: Null

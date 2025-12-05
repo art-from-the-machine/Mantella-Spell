@@ -38,11 +38,13 @@ Aliases:
 - Name: CastSpellTargetAlias
   Flags:
   - Optional
+  - AllowReserved
   VoiceTypes: Null
 - ID: 1
   Name: CastSpellSourceAlias
   Flags:
   - Optional
+  - AllowReserved
   PackageData:
   - 28885A:Mantella.esp
   VoiceTypes: Null
