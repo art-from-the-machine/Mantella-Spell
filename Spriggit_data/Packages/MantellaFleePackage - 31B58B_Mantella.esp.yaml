@@ -1,0 +1,95 @@
+FormKey: 31B58B:Mantella.esp
+EditorID: MantellaFleePackage
+Flags:
+- PreferredSpeed
+- AllowSwimming
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: Any
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetFactionRankConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 4
+- MutagenObjectType: ConditionGlobal
+  CompareOperator: GreaterThan
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 32F98D:Mantella.esp
+  ComparisonValue: 000039:Skyrim.esm
+OwnerQuest: 31B58C:Mantella.esp
+PackageTemplate: 0197F1:Skyrim.esm
+DataInputVersion: 7
+Data:
+- Key: 7
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 12
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataObjectList
+    Data: 0
+- Key: 1
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 1500
+- Key: 0
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 3
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearPackageStart
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 200
+- Key: 10
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearSelf
+      Radius: 1000
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 17
+  Value:
+    MutagenObjectType: PackageDataBool
+- Key: 19
+  Value:
+    MutagenObjectType: PackageDataBool
+XnamMarker: 0x14
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

@@ -1,12 +1,19 @@
-FormKey: 204E4A:Mantella.esp
-EditorID: MantellaAdvancedAction_StandDown
+FormKey: 34DF90:Mantella.esp
+EditorID: MantellaAdvancedAction_CollectIngredients
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaAdvancedAction_StandDown
+  - Name: MantellaAdvancedAction_CollectIngr
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaCollectableItem1
+      Object: 34DF91:Mantella.esp
+      Alias: 1
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaCollectIngredientsQuest
+      Object: 34DF91:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: MantellaFunctionSourceFaction
       Object: 223451:Mantella.esp
@@ -22,4 +29,4 @@ Flags:
 - 0x10
 - RunOnce
 Priority: 100
-NextAliasID: 0
+NextAliasID: 5

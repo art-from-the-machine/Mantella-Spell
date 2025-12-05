@@ -24,11 +24,27 @@ Ranks:
       Value: Loot
     Female: {}
 - Number: 4
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Flee
+    Female: {}
 - Number: 5
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: LeadTo
+    Female: {}
 - Number: 6
   Title:
     Male:
       TargetLanguage: English
       Value: CastSpell
+    Female: {}
+- Number: 7
+  Title:
+    Male:
+      TargetLanguage: English
+      Value: Collect
     Female: {}
 VendorValues: {}

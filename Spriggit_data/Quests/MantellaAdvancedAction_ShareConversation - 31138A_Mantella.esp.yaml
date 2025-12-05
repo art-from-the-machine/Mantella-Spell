@@ -1,15 +1,15 @@
-FormKey: 204E4A:Mantella.esp
-EditorID: MantellaAdvancedAction_StandDown
+FormKey: 31138A:Mantella.esp
+EditorID: MantellaAdvancedAction_ShareConversation
 VirtualMachineAdapter:
   Scripts:
-  - Name: MantellaAdvancedAction_StandDown
+  - Name: MantellaAdvancedAction_ShareConv
     Properties:
     - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
-      Name: MantellaFunctionSourceFaction
-      Object: 223451:Mantella.esp
+      Name: IdleDialogueHandOnChinGesture
+      Object: 00D287:Dawnguard.esm
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
@@ -21,5 +21,4 @@ Flags:
 - StartGameEnabled
 - 0x10
 - RunOnce
-Priority: 100
 NextAliasID: 0
