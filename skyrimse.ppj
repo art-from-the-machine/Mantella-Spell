@@ -19,11 +19,11 @@
     </Variables>
     <Imports>
         <Import>@GameFolder\Data\Scripts\Source</Import>
-        <Import>@GameFolder\Data\Source\Scripts</Import>        
+        <!-- <Import>@GameFolder\Data\Source\Scripts</Import>         -->
         <Import>@ModsFolder\SKSE64\Scripts\Source</Import>
         <!-- <Import>@ModsFolder\PapyrusUtil AE SE - Scripting Utility Functions\Scripts\Source</Import> -->
-        <Import>@ModsFolder\SKSE_HTTP\Scripts\Source</Import>
-        <Import>@ModsFolder\SkyUI_5.1_SDK\scripts\source</Import>
+        <!-- <Import>@ModsFolder\SKSE_HTTP\Scripts\Source</Import> -->
+        <Import>@ModsFolder\SkyUI_5.1_SDK\Scripts\Source</Import>
         <Import>@ModsFolder\UIExtensions\scripts\source</Import>
     </Imports>
     <Folders>        
@@ -48,13 +48,31 @@
         <ZipFile Name="MantellaSpell" RootDir="." Compression="deflate">
             <Include>@ModName.esp</Include>
             <Include NoRecurse="true">*.bsa</Include>
+            <Include NoRecurse="true">GPT_SECRET_KEY.txt</Include>
+            <Include NoRecurse="true">Mantella_DISTR.ini</Include>
+            <Include NoRecurse="true">LICENSE.txt</Include>
             <Match In="Scripts">*.pex</Match>
             <Match In="Scripts/Source">*.psc</Match>
-            <Match In="SKSE">*.dll</Match>
+            <Match In="SKSE/Plugins">MantellaLauncher.dll</Match>
+            <Match In="SKSE/Plugins">MantellaSubtitles.dll</Match>
+            <Match In="SKSE/Plugins">SKSE_HTTP.dll</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/data">9b5ad71b2ce5302211f9c61530b329a4922fc6a4</Match>
             <Match In="Seq">*.seq</Match>
             <Match In="interface/Mantella">*.dds</Match>
             <Match In="Sound/Voice/Mantella.esp">*.wav</Match>
             <Match In="Sound/Voice/Mantella.esp">*.lip</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/data">*.csv</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/data">*.json</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/data">*.wav</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/piper">*</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/moonshine/tiny">*</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/moonshine">LICENSE.txt</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/src/ui">*.css</Match>
+            <Match In="Sound/Voice/Processing">*.exe</Match>
+            <Match In="Sound/Voice/Processing">*.md</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware">Mantella.exe</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware">*.ico</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware">custom_user_folder.ini</Match>
         </ZipFile>
     </ZipFiles>
     <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
