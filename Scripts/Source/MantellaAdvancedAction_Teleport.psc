@@ -2,10 +2,18 @@ Scriptname MantellaAdvancedAction_Teleport extends Quest Hidden
 
 MantellaInterface Property EventInterface Auto
 MantellaConstants Property mConsts Auto
+Actor Property PlayerRef Auto
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_TELEPORT, "OnNpcTeleportActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_TELEPORT, "OnNpcTeleportAdvancedActionReceived")
 EndEvent
+
+event OnNpcTeleportActionReceived(Form speaker)
+    Actor sourceActor = speaker as Actor
+    Debug.Notification(sourceActor.GetDisplayName() + " teleports to " + PlayerRef.GetDisplayName() + ".")
+    sourceActor.MoveTo(PlayerRef)
+endEvent
 
 
 event OnNpcTeleportAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)

@@ -5,8 +5,14 @@ VirtualMachineAdapter:
   - Name: MantellaAction_OffendForgiveFollow
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: DGIntimidateQuest
+      Object: 047AE6:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp

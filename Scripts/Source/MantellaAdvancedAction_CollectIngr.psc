@@ -9,8 +9,19 @@ ReferenceAlias Property MantellaCollectableItem1 Auto
 int _usedAliasCount
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_COLLECTINGREDIENTS, "OnNpcCollectIngredientsActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_COLLECTINGREDIENTS, "OnNpcCollectIngredientsAdvancedActionReceived")
 EndEvent
+
+event OnNpcCollectIngredientsActionReceived(Form speaker)
+    MantellaCollectIngredientsQuest.Start()
+    _usedAliasCount = 1
+
+    Actor sourceActor = speaker as Actor
+    NpcCollectIngredients(sourceActor, 0)
+    
+    RegisterForSingleUpdate(60)
+endEvent
 
 
 event OnNpcCollectIngredientsAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)

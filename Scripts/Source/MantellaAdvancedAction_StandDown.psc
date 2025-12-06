@@ -3,6 +3,7 @@ Scriptname MantellaAdvancedAction_StandDown extends Quest hidden
 MantellaConstants property mConsts auto
 MantellaInterface property EventInterface Auto
 Faction Property MantellaFunctionSourceFaction Auto
+Quest Property DGIntimidateQuest Auto
 
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_FORGIVEN, "OnNpcStandDownAdvancedActionReceived")
@@ -24,6 +25,10 @@ event OnNpcStandDownAdvancedActionReceived(Form speaker, Form conversationQuest,
         endIf
         i += 1
     EndWhile
+
+    if DGIntimidateQuest.IsRunning() ; End brawl quest if running
+        DGIntimidateQuest.Stop()
+    endif
 endEvent
 
 

@@ -6,10 +6,24 @@ ReferenceAlias Property FleeTargetAlias Auto
 Faction Property MantellaFunctionSourceFaction Auto
 GlobalVariable Property MantellaFleeExpireTime Auto
 GlobalVariable Property GameDaysPassed Auto
+Actor Property PlayerRef Auto
+Quest Property DGIntimidateQuest Auto
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_FLEE, "OnNpcFleeActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_FLEE, "OnNpcFleeAdvancedActionReceived")
 EndEvent
+
+event OnNpcFleeActionReceived(Form speaker)
+    FleeTargetAlias.ForceRefTo(PlayerRef)
+
+    Actor sourceActor = speaker as Actor
+    NpcFlee(sourceActor, PlayerRef, 0)
+
+    if DGIntimidateQuest.IsRunning() ; End brawl quest if running
+        DGIntimidateQuest.Stop()
+    endif
+endEvent
 
 
 event OnNpcFleeAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
@@ -30,19 +44,19 @@ event OnNpcFleeAdvancedActionReceived(Form speaker, Form conversationQuest, int 
             numSources = 12  ; Cap at available aliases
         endif
         
-        ; Track moving actors and their wait states
-        Actor[] movingActors = new Actor[12]
-        
         ; Resolve each name to an Actor reference and start fleeing
         int i = 0
         While i < numSources
             Actor sourceActor = conversation.GetActorByName(sourceNames[i])
             if sourceActor
                 NpcFlee(sourceActor, targetActor, i)
-                movingActors[i] = sourceActor
             endif
             i += 1
         EndWhile
+
+        if DGIntimidateQuest.IsRunning() ; End brawl quest if running
+            DGIntimidateQuest.Stop()
+        endif
     endIf
 endEvent
 
@@ -63,6 +77,7 @@ Function NpcFlee(Actor source, Actor target, int aliasIndex)
         ; Assign to specific alias which has the Flee package
         ReferenceAlias sourceAlias = self.GetNthAlias(aliasIndex) as ReferenceAlias
         sourceAlias.ForceRefTo(source)
+        source.SetActorValue("WaitingForPlayer", 0)
         Utility.Wait(0.5)
         source.EvaluatePackage()
     endif

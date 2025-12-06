@@ -7,11 +7,21 @@ MantellaConstants Property mConsts Auto
 Quest Property MantellaLootAnyQuest Auto
 
 int _usedAliasCount = 0
-int _numUpdates = 0
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_LOOT, "OnNpcLootActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_LOOT, "OnNpcLootAdvancedActionReceived")
 EndEvent
+
+event OnNpcLootActionReceived(Form speaker)
+    MantellaLootAnyQuest.Start()
+    _usedAliasCount = 1
+
+    Actor sourceActor = speaker as Actor
+    NpcLoot(sourceActor, 0)
+
+    RegisterForSingleUpdate(30)
+endEvent
 
 
 event OnNpcLootAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
@@ -39,7 +49,7 @@ event OnNpcLootAdvancedActionReceived(Form speaker, Form conversationQuest, int 
         i += 1
     EndWhile
 
-    RegisterForSingleUpdate(10)
+    RegisterForSingleUpdate(30)
 endEvent
 
 
@@ -68,13 +78,7 @@ EndFunction
 
 
 Event OnUpdate()
-    int i = 0
-    if _numUpdates >= 3
-        CleanupLoot()
-    else
-        _numUpdates += 1
-        RegisterForSingleUpdate(10)
-    endif
+    CleanupLoot()
 EndEvent
 
 
@@ -96,5 +100,4 @@ Function CleanupLoot()
     MantellaLootAnyQuest.Stop()
 
     _usedAliasCount = 0
-    _numUpdates = 0
 EndFunction

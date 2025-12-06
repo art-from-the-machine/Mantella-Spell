@@ -5,6 +5,9 @@ VirtualMachineAdapter:
   - Name: MantellaAdvancedAction_Follow
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: PlayerRef
       Object: 000014:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
