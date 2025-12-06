@@ -4,6 +4,8 @@ Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
 MantellaInterface property EventInterface Auto
+Quest Property DGIntimidateQuest Auto
+Faction Property MantellaFunctionSourceFaction Auto
 
 event OnInit()
     RegisterForOffendAndForgiveEvents()
@@ -25,9 +27,24 @@ event OnNpcOffendedActionReceived(Form speaker)
     if (aSpeaker)
         if PlayerRef.isinfaction(repository.giafac_AllowAnger)
             Debug.Notification(aSpeaker.GetDisplayName() + " did not like that.")
-            ;target.UnsheatheWeapon()
-            ;target.SendTrespassAlarm(caster)
+
+            if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+                aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
+                aSpeaker.EvaluatePackage()
+            endIf
+            
+            ; Add to opposing factions
+            aSpeaker.SetFactionRank(repository.MantellaCombatTeamA, 1)
+            PlayerRef.SetFactionRank(repository.MantellaCombatTeamB, 1)
+
+            ; Wait for factions to register
+            Utility.Wait(0.5)
             aSpeaker.StartCombat(PlayerRef)
+            
+            ; Remove from factions after combat starts
+            Utility.Wait(0.5)
+            aSpeaker.RemoveFromFaction(repository.MantellaCombatTeamA)
+            PlayerRef.RemoveFromFaction(repository.MantellaCombatTeamB)
         else
             Debug.Notification("Aggro action not enabled in the Mantella MCM.")
         Endif
@@ -40,6 +57,15 @@ event OnNpcForgivenActionReceived(Form speaker)
         if PlayerRef.isinfaction(repository.giafac_AllowAnger)
             Debug.Notification(aSpeaker.GetDisplayName() + " forgave you.")
             aSpeaker.StopCombat()
+
+            if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+                aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
+                aSpeaker.EvaluatePackage()
+            endIf
+
+            if DGIntimidateQuest.IsRunning() ; End brawl quest if running
+                DGIntimidateQuest.Stop()
+            endif
         endif
     endif
 endEvent
@@ -59,6 +85,7 @@ event OnNpcFollowActionReceived(Form speaker)
                 repository.gia_FollowerQst.stop();gia
                 Utility.Wait(0.5);gia
                 repository.gia_FollowerQst.start();gia
+                aSpeaker.SetActorValue("WaitingForPlayer", 0)
                 aSpeaker.EvaluatePackage();gia
             else
                 Debug.Notification("Follow action not enabled in the Mantella MCM.")
@@ -77,43 +104,3 @@ event OnNpcInventoryActionReceived(Form speaker)
         endif
     endif
 endEvent
-
-; Check aggro status after every line spoken
-;         String aggro = MiscUtil.ReadFromFile("_mantella_aggro.txt") as String
-;         if aggro == "0"
-;             if PlayerRef.isinfaction(Repository.giafac_AllowAnger)
-;                 Debug.Notification(actorName + " forgave you.")
-;                 target.StopCombat()
-; 			endif
-;             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
-;         elseIf aggro == "1"
-;             if PlayerRef.isinfaction(Repository.giafac_AllowAnger)
-;                 Debug.Notification(actorName + " did not like that.")
-;                 ;target.UnsheatheWeapon()
-;                 ;target.SendTrespassAlarm(caster)
-;                 target.StartCombat(caster)
-;             else
-;                 Debug.Notification("Aggro action not enabled in the Mantella MCM.")
-; 			Endif
-;             MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
-;         elseif aggro == "2"
-;             if actorRelationship != "4"
-;                 ;Debug.Notification(actorName + " is willing to follow you.")
-;                 ;target.setrelationshiprank(caster, 4)
-;                 ;target.addtofaction(DunPlayerAllyFactionProperty)
-;                 ;target.addtofaction(PotentialFollowerFactionProperty)
-;                 if PlayerRef.isinfaction(repository.giafac_allowfollower)
-; 					Debug.Notification(actorName + " is following you.");gia
-; 					target.SetFactionRank(repository.giafac_following, 1);gia
-; 					repository.gia_FollowerQst.reset();gia
-; 					repository.gia_FollowerQst.stop();gia
-; 					Utility.Wait(0.5);gia
-; 					repository.gia_FollowerQst.start();gia
-; 					target.EvaluatePackage();gia
-;                 else
-;                     Debug.Notification("Follow action not enabled in the Mantella MCM.")
-; 				endif
-
-;                 MiscUtil.WriteToFile("_mantella_aggro.txt", "",  append=false)
-;             endIf
-;         endIf

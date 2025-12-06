@@ -1,0 +1,102 @@
+FormKey: 307183:Mantella.esp
+Flags:
+  Flags:
+  - Random
+PreviousDialog: 307182:Mantella.esp
+FavorLevel: None
+Responses:
+- Emotion: Happy
+  EmotionValue: 100
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: (Laughs)
+  ScriptNotes: ''
+  Edits: ''
+  SpeakerIdleAnimation: 075C5F:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetIsSexConditionData
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80622
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80602
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80600
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80626
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80596
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 698579
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80620
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80614
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 937987
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80618
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80597

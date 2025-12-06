@@ -103,14 +103,26 @@ string property ACTION_REMOVECHARACTER = "mantella_remove_character" auto
 string property ACTION_NPC_OFFENDED = "mantella_npc_offended" auto
 string property ACTION_NPC_FORGIVEN = "mantella_npc_forgiven" auto
 string property ACTION_NPC_FOLLOW = "mantella_npc_follow" auto
+string property ACTION_NPC_UNFOLLOW = "mantella_npc_unfollow" auto
 string property ACTION_NPC_INVENTORY = "mantella_npc_inventory" auto
+string property ACTION_NPC_BARTER = "mantella_npc_barter" auto
 string property ACTION_NPC_BRAWL = "mantella_npc_brawl" auto
 string property ACTION_NPC_MOVETO = "mantella_npc_moveto" auto
+string property ACTION_NPC_TRAVELTO = "mantella_npc_travelto" auto
+string property ACTION_NPC_LEADTO = "mantella_npc_leadto" auto
+string property ACTION_NPC_CANCELTRAVEL = "mantella_npc_canceltravel" auto
 string property ACTION_NPC_TELEPORT = "mantella_npc_teleport" auto
 string property ACTION_NPC_WAIT = "mantella_npc_wait" auto
 string property ACTION_NPC_LOOT = "mantella_npc_loot" auto
+string property ACTION_NPC_COLLECTINGREDIENTS = "mantella_npc_collectingredients" auto
 string property ACTION_NPC_CASTSPELL = "mantella_npc_castspell" auto
 string property ACTION_NPC_GIVEDIRECTIONS = "mantella_npc_givedirections" auto
+string property ACTION_NPC_ADDTOCONVERSATION = "mantella_npc_addtoconversation" auto
+string property ACTION_NPC_SHARECONVERSATION = "mantella_npc_shareconversation" auto
+string property ACTION_NPC_REPORTCRIME = "mantella_npc_reportcrime" auto
+string property ACTION_NPC_ABSOLVECRIME = "mantella_npc_absolvecrime" auto
+string property ACTION_NPC_EMOTE = "mantella_npc_emote" auto
+string property ACTION_NPC_FLEE = "mantella_npc_flee" auto
 
 ;arguments for actions
 string property ACTION_IDENTIFIER = "identifier" auto

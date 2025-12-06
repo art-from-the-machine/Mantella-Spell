@@ -1,0 +1,26 @@
+FormKey: 30206D:Mantella.esp
+Flags:
+  Flags:
+  - Random
+PreviousDialog: 30206C:Mantella.esp
+FavorLevel: None
+Responses:
+- Emotion: Happy
+  EmotionValue: 100
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: (Laughs)
+  ScriptNotes: ''
+  Edits: ''
+  SpeakerIdleAnimation: 075C5F:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetIsSexConditionData
+    MaleFemaleGender: Female
+  ComparisonValue: 1

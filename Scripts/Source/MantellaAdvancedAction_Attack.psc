@@ -4,6 +4,7 @@ Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConstants property mConsts auto
 MantellaInterface property EventInterface Auto
+Faction Property MantellaFunctionSourceFaction Auto
 
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_OFFENDED, "OnNpcAttackAdvancedActionReceived")
@@ -34,11 +35,14 @@ Function NpcAttack(Actor source, Actor target)
     if (source && target)
         if PlayerRef.isinfaction(repository.giafac_AllowAnger)
             Debug.Notification(source.GetDisplayName() + " did not like that.")
+
+            if source.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+                source.RemoveFromFaction(MantellaFunctionSourceFaction)
+                source.EvaluatePackage()
+            endIf
             
             ; Add to opposing factions
-            source.AddToFaction(repository.MantellaCombatTeamA)
             source.SetFactionRank(repository.MantellaCombatTeamA, 1)
-            target.AddToFaction(repository.MantellaCombatTeamB)
             target.SetFactionRank(repository.MantellaCombatTeamB, 1)
 
             ; Wait for factions to register

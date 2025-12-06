@@ -79,7 +79,7 @@ Event OnPlayerLoadGame()
     If(conversation.IsRunning())
         conversation.EndConversation()
     endif
-    conversation.RegisterForConversationEvents()
+    ; conversation.RegisterForConversationEvents()
     RegisterForSingleUpdate(repository.radiantFrequency)
 EndEvent
 
@@ -119,7 +119,7 @@ function StartGroupConversation()
                 conversation.StartConversation(actors)
             elseif(repository.showRadiantDialogueMessages)
                 Debug.Notification("Group ocnversation attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
             endIf
         elseif(repository.showRadiantDialogueMessages)
             Debug.Notification("Group conversation attempted. No NPCs available")
@@ -156,52 +156,82 @@ Actor[] Function ScanNearbyActors()
 EndFunction
 
 event OnUpdate()
-    if repository.radiantEnabled
-        ; If no Mantella conversation active
-        if !conversation.IsRunning()
+    ; If no Mantella conversation active
+    if !conversation.IsRunning()
+        if repository.radiantEnabled || repository.approachEnabled
             ; MantellaActorList taken from this tutorial:
             ; http://skyrimmw.weebly.com/skyrim-modding/detecting-nearby-actors-skyrim-modding-tutorial
             MantellaActorPicker.start()
 
-            ; If at least two actors found
-            if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
-                Actor Actor1 = PotentialActor1.GetReference() as Actor
-                Actor Actor2 = PotentialActor2.GetReference() as Actor
+            int randomPct = Utility.RandomInt(1, 100)
 
-                ; First check if the player is close enough to the actors
-                float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
-                float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
-                if distanceFromPlayerToClosestActor <= maxDistance
-                    ; Then check the distance between actors
-                    float distanceBetweenActors = Actor1.GetDistance(Actor2)
-                    ; TODO: make distanceBetweenActors customisable
-                    if (distanceBetweenActors <= 1000)
-                        Actor[] actors = new Actor[5]
-                        actors[0] = Actor1
-                        actors[1] = Actor2
+            if repository.radiantEnabled && (!repository.approachEnabled || randomPct <= repository.triggerRatio)
+                ; If at least two actors found
+                if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
+                    Actor Actor1 = PotentialActor1.GetReference() as Actor
+                    Actor Actor2 = PotentialActor2.GetReference() as Actor
 
-                        ; Search for other potential actors to add
-                        if TryAddActorToParticipantsList(PotentialActor3, Actor1, 2, actors, 1000)
-                            if TryAddActorToParticipantsList(PotentialActor4, Actor1, 3, actors, 1000)
-                                if TryAddActorToParticipantsList(PotentialActor5, Actor1, 4, actors, 1000)
-                                    ; All actors added successfully
+                    ; First check if the player is close enough to the actors
+                    float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
+                    float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
+                    if distanceFromPlayerToClosestActor <= maxDistance
+                        ; Then check the distance between actors
+                        float distanceBetweenActors = Actor1.GetDistance(Actor2)
+                        ; TODO: make distanceBetweenActors customisable
+                        if (distanceBetweenActors <= 1000)
+                            Actor[] actors = new Actor[5]
+                            actors[0] = Actor1
+                            actors[1] = Actor2
+
+                            ; Search for other potential actors to add
+                            if TryAddActorToParticipantsList(PotentialActor3, Actor1, 2, actors, 1000)
+                                if TryAddActorToParticipantsList(PotentialActor4, Actor1, 3, actors, 1000)
+                                    if TryAddActorToParticipantsList(PotentialActor5, Actor1, 4, actors, 1000)
+                                        ; All actors added successfully
+                                    endIf
                                 endIf
                             endIf
+
+                            Debug.Notification("Starting conversation...")
+                            conversation.Start()
+                            conversation.StartConversation(actors)
+
+                        elseif(repository.showRadiantDialogueMessages)
+                            Debug.Notification("Radiant dialogue attempted. No NPCs available")
                         endIf
-
-                        Debug.Notification("Starting conversation...")
-                        conversation.Start()
-                        conversation.StartConversation(actors)
-
                     elseif(repository.showRadiantDialogueMessages)
-                        Debug.Notification("Radiant dialogue attempted. No NPCs available")
+                        Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
+                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
                     endIf
                 elseif(repository.showRadiantDialogueMessages)
-                    Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                    Debug.Notification("Max distance set to " + repository.radiantDistance + "m in Mantella MCM")
+                    Debug.Notification("Radiant dialogue attempted. No NPCs available")
                 endIf
-            elseif(repository.showRadiantDialogueMessages)
-                Debug.Notification("Radiant dialogue attempted. No NPCs available")
+            elseIf repository.approachEnabled
+                ; If at least one actor found
+                if (PotentialActor1.GetReference() as Actor)
+                    Actor Actor1 = PotentialActor1.GetReference() as Actor
+
+                    ; Check if the player is close enough to the actor
+                    float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
+                    float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
+                    if distanceFromPlayerToClosestActor <= maxDistance
+                        Actor[] actors = new Actor[2]
+                        actors[0] = PlayerRef
+                        actors[1] = Actor1
+
+                        conversation.Start()
+                        Debug.Notification(Actor1.GetDisplayName() + " approaches...")
+                        conversation.AddIngameEvent(Actor1.GetDisplayName() + " approaches " + getPlayerName(False) + " with something on their mind.")
+                        conversation.StartConversation(actors)
+                        conversation.TriggerApproachMoveAction(Actor1)
+
+                    elseif (repository.showRadiantDialogueMessages)
+                        Debug.Notification("NPC approach attempted. NPC too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
+                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
+                    endIf
+                elseif (repository.showRadiantDialogueMessages)
+                    Debug.Notification("NPC approach attempted. No NPCs available")
+                endIf
             endIf
 
             MantellaActorPicker.stop()
@@ -211,7 +241,7 @@ event OnUpdate()
 endEvent
 
 
-;All the event listeners  below have 'if' clauses added after Mantella 0.9.2 (except ondying)
+;All the event listeners below have 'if' clauses added after Mantella 0.9.2 (except ondying)
 Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if repository.playerTrackingOnItemAdded
         string itemName = akBaseItem.GetName()

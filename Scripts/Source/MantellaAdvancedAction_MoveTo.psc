@@ -9,11 +9,30 @@ Package Property MantellaMoveToPackage Auto
 ReferenceAlias Property MoveToTargetAlias Auto
 
 int _usedAliasCount = 0
+Actor[] _movingActors
 bool[] _wasWaitingBeforeMove ; Track wait states to restore after movement
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_MOVETO, "OnNpcMoveToActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_MOVETO, "OnNpcMoveToAdvancedActionReceived")
 EndEvent
+
+event OnNpcMoveToActionReceived(Form speaker)
+    MoveToTargetAlias.ForceRefTo(PlayerRef)
+    _usedAliasCount = 1
+
+    ; Track moving actors and their wait states
+    _movingActors = new Actor[1]
+    _wasWaitingBeforeMove = new bool[1]
+
+    Actor sourceActor = speaker as Actor
+    NpcMoveTo(sourceActor, PlayerRef, 0)
+    _movingActors[0] = sourceActor
+
+    WaitForMovement(PlayerRef, 1)
+        
+    CleanupMoveTo()
+endEvent
 
 
 event OnNpcMoveToAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
@@ -36,7 +55,7 @@ event OnNpcMoveToAdvancedActionReceived(Form speaker, Form conversationQuest, in
         endif
         
         ; Track moving actors and their wait states
-        Actor[] movingActors = new Actor[12]
+        _movingActors = new Actor[12]
         _wasWaitingBeforeMove = new bool[12]
         
         ; Resolve each name to an Actor reference and start movement
@@ -45,13 +64,13 @@ event OnNpcMoveToAdvancedActionReceived(Form speaker, Form conversationQuest, in
             Actor sourceActor = conversation.GetActorByName(sourceNames[i])
             if sourceActor
                 NpcMoveTo(sourceActor, targetActor, i)
-                movingActors[i] = sourceActor
+                _movingActors[i] = sourceActor
             endif
             i += 1
         EndWhile
 
         ; Wait for actors to reach destination
-        WaitForMovement(targetActor, movingActors, numSources)
+        WaitForMovement(targetActor, numSources)
         
         CleanupMoveTo()
     endIf
@@ -87,7 +106,7 @@ Function NpcMoveTo(Actor source, Actor target, int aliasIndex)
 EndFunction
 
 
-Function WaitForMovement(Actor target, Actor[] movingActors, int numActors)
+Function WaitForMovement(Actor target, int numActors)
     float elapsedTime = 0.0
     float maxWaitTime = 30.0
     float checkInterval = 5.0
@@ -98,8 +117,8 @@ Function WaitForMovement(Actor target, Actor[] movingActors, int numActors)
         
         ; Check if all actors are near the target
         While i < numActors
-            if movingActors[i]
-                float distance = movingActors[i].GetDistance(target)
+            if _movingActors[i]
+                float distance = _movingActors[i].GetDistance(target)
                 if distance > 256.0  ; Within default follow distance
                     allNearTarget = false
                 endif

@@ -1,0 +1,63 @@
+FormKey: 339B8E:Mantella.esp
+EditorID: MantellaAdvancedAction_LeadTo
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_LeadTo
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LeadToLocationAlias
+      Object: 339B8E:Mantella.esp
+      Alias: 2
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LeadToSourceAlias
+      Object: 339B8E:Mantella.esp
+      Alias: 0
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LeadToTargetAlias
+      Object: 339B8E:Mantella.esp
+      Alias: 1
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LocationUtils
+      Object: 000D62:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: PlayerRef
+      Object: 000014:Skyrim.esm
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 3
+Aliases:
+- Name: LeadToSourceAlias
+  Flags:
+  - Optional
+  - AllowReserved
+  PackageData:
+  - 339B8F:Mantella.esp
+  VoiceTypes: Null
+- ID: 1
+  Name: LeadToTargetAlias
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 2
+  Name: LeadToLocationAlias
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null

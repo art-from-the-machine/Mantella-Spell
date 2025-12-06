@@ -1,0 +1,27 @@
+FormKey: 2E3A65:Mantella.esp
+EditorID: MantellaAdvancedAction_Emote
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_Emote
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaLaugh
+      Object: 2EDC66:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaVoiceID
+      Object: 2F7E6A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+NextAliasID: 0

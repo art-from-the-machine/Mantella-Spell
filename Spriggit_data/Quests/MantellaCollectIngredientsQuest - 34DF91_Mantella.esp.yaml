@@ -1,0 +1,125 @@
+FormKey: 34DF91:Mantella.esp
+EditorID: MantellaCollectIngredientsQuest
+Flags:
+- 0x1000
+Priority: 100
+NextAliasID: 7
+Aliases:
+- ID: 6
+  Name: MantellaCollector1
+  Flags:
+  - Optional
+  - AllowReserved
+  PackageData:
+  - 34DF92:Mantella.esp
+  VoiceTypes: Null
+- ID: 1
+  Name: MantellaCollectableItem1
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 3000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Flora
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 2
+  Name: MantellaCollectableItem2
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 3000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Flora
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 3
+  Name: MantellaCollectableItem3
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 3000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Flora
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 4
+  Name: MantellaCollectableItem4
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 3000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Flora
+    ComparisonValue: 1
+  VoiceTypes: Null
+- ID: 5
+  Name: MantellaCollectableItem5
+  Flags:
+  - Optional
+  - MatchingRefInLoadedArea
+  - AllowReserved
+  - MatchingRefClosest
+  Conditions:
+  - MutagenObjectType: ConditionFloat
+    CompareOperator: LessThan
+    Data:
+      MutagenObjectType: GetDistanceConditionData
+      Target: 000014:Skyrim.esm
+    ComparisonValue: 3000
+  - MutagenObjectType: ConditionFloat
+    Flags:
+    - OR
+    Data:
+      MutagenObjectType: GetIsObjectTypeConditionData
+      FormType: Flora
+    ComparisonValue: 1
+  VoiceTypes: Null

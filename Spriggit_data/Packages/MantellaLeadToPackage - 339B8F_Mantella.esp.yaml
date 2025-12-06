@@ -1,0 +1,92 @@
+FormKey: 339B8F:Mantella.esp
+EditorID: MantellaLeadToPackage
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- ObserveCombatBehavior
+- GreetCorpseBehavior
+- ReactionToPlayerActions
+- FriendlyFireComments
+- AggroRadiusBehavior
+- WorldInteractions
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: Any
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetFactionRankConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 5
+- MutagenObjectType: ConditionFloat
+  CompareOperator: GreaterThan
+  Data:
+    MutagenObjectType: GetDistanceConditionData
+    UseAliases: True
+    Target: 2
+  ComparisonValue: 1000
+OwnerQuest: 339B8E:Mantella.esp
+PackageTemplate: 023B73:Skyrim.esm
+DataInputVersion: 8
+Data:
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Type: SingleRef
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 1
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataInt
+    Data: 1
+- Key: 3
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: AliasForReference
+        Data: 2
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 512
+- Key: 5
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 120
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 256
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Data: True
+- Key: 17
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Data: 500
+XnamMarker: 0x12
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

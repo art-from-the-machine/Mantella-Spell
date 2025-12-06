@@ -8,6 +8,12 @@ VirtualMachineAdapter:
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
+      Name: IdleNoteRead
+      Object: 089975:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
+      Name: LocationUtils
+      Object: 000D62:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty

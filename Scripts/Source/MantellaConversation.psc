@@ -413,6 +413,24 @@ Actor function GetActorByName(string actorName)
     return None
 endFunction
 
+Actor function GetFirstGuardActor()
+    ; Check each NPC in the conversation to see if they are a guard, returning the first result
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && currentActor.IsGuard()
+            return currentActor
+        endIf
+        i += 1
+    EndWhile
+    return None
+endFunction
+
+Actor[] function GetCachedNearbyActors()
+    ; Returns the most recent cached nearby actors (populated by BuildContext)
+    return _cachedNearbyActors
+endFunction
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;       End conversation      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -610,7 +628,7 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
         
         if actionIdentifier != ""
             ; Check for special handling (eg inventory action timing)
-            if actionIdentifier == mConsts.ACTION_NPC_INVENTORY
+            if (actionIdentifier == mConsts.ACTION_NPC_INVENTORY) || (actionIdentifier == mConsts.ACTION_NPC_BARTER)
                 Utility.Wait(0.5)
                 WaitForNpcToFinishSpeaking(speaker, _lastNpcToSpeak)
             endIf
@@ -624,7 +642,7 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + actionIdentifier
                     int eventHandle = ModEvent.Create(eventName)
                     if eventHandle
-                        ModEvent.PushForm(eventHandle, speaker)
+                        ModEvent.PushForm(eventHandle, _lastNpcToSpeak)
                         ModEvent.PushForm(eventHandle, Self as Quest)  ; For name resolution
                         ModEvent.PushInt(eventHandle, argumentsHandle)
                         ModEvent.Send(eventHandle)
@@ -1073,3 +1091,24 @@ EndFunction
 Function ClearRepeatingMessage()
     _repeatingMessage = ""
 EndFunction
+
+function TriggerApproachMoveAction(Actor approachingActor)
+    if !approachingActor
+        return
+    endIf
+
+    int argumentsHandle = SKSE_HTTP.createDictionary()
+    string[] sources = Utility.CreateStringArray(1)
+    sources[0] = approachingActor.GetDisplayName()
+    SKSE_HTTP.setStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE, sources)
+    SKSE_HTTP.setString(argumentsHandle, mConsts.ACTION_ARG_TARGET, PlayerRef.GetDisplayName())
+
+    string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_MOVETO
+    int eventHandle = ModEvent.Create(eventName)
+    if eventHandle
+        ModEvent.PushForm(eventHandle, approachingActor)
+        ModEvent.PushForm(eventHandle, Self as Quest)
+        ModEvent.PushInt(eventHandle, argumentsHandle)
+        ModEvent.Send(eventHandle)
+    endIf
+endFunction

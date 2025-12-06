@@ -1,0 +1,331 @@
+FormKey: 34DF92:Mantella.esp
+EditorID: MantellaCollectFloraPackage
+Flags:
+- PreferredSpeed
+- AllowSwimming
+Type: Package
+PreferredSpeed: Run
+InteruptFlags:
+- ObserveCombatBehavior
+- ReactionToPlayerActions
+- FriendlyFireComments
+- AggroRadiusBehavior
+- 0x400
+- 0x800
+- 0x1000
+- 0x2000
+- 0x4000
+- 0x8000
+ScheduleMonth: -1
+ScheduleDayOfWeek: Any
+ScheduleHour: -1
+ScheduleMinute: -1
+Unknown3: 0x000000
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetFactionRankConditionData
+    Faction: 223451:Mantella.esp
+  ComparisonValue: 7
+OwnerQuest: 34DF91:Mantella.esp
+Data:
+- Key: 0
+  Value:
+    MutagenObjectType: PackageDataLocation
+    Name: Search Loc
+    Flags:
+    - Public
+    Location:
+      Target:
+        MutagenObjectType: LocationFallback
+        Type: NearSelf
+      Radius: 3000
+- Key: 23
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CollectableItem1
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 1
+- Key: 24
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CollectableItem2
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 2
+- Key: 26
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CollectableItem3
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 3
+- Key: 28
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CollectableItem4
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 4
+- Key: 30
+  Value:
+    MutagenObjectType: PackageDataTarget
+    Name: CollectableItem5
+    Flags:
+    - Public
+    Target:
+      MutagenObjectType: PackageTargetAlias
+      Alias: 5
+- Key: 4
+  Value:
+    MutagenObjectType: PackageDataInt
+    Name: Num to Activate
+    Flags:
+    - Public
+    Data: 5
+- Key: 2
+  Value:
+    MutagenObjectType: PackageDataObjectList
+    Name: Find Results
+    Flags: []
+    Data: 3000
+- Key: 6
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Wander Preferred Path
+    Flags:
+    - Public
+- Key: 8
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Search own inventory
+    Flags: []
+- Key: 11
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: AllowStealing
+    Flags: []
+- Key: 13
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: AllowPickpocketing
+    Flags: []
+- Key: 15
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: AllowKilling
+    Flags: []
+- Key: 17
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: AllowHorseTravel
+    Flags:
+    - Public
+- Key: 19
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: AllowHorseWander
+    Flags: []
+- Key: 31
+  Value:
+    MutagenObjectType: PackageDataFloat
+    Name: ActualSeconds
+    Flags:
+    - Public
+    Data: 5
+- Key: 33
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: TRUE
+    Flags:
+    - Public
+    Data: True
+- Key: 35
+  Value:
+    MutagenObjectType: PackageDataBool
+    Name: Randomize Find List
+    Flags:
+    - Public
+- Key: 1
+  Value:
+    MutagenObjectType: APackageData
+    Name: Target Criteria
+    Flags:
+    - Public
+- Key: 20
+  Value:
+    MutagenObjectType: APackageData
+    Name: target
+    Flags:
+    - Public
+- Key: 21
+  Value:
+    MutagenObjectType: APackageData
+    Name: NumToActivate
+    Flags:
+    - Public
+XnamMarker: 0x24
+ProcedureTree:
+- BranchType: Sequence
+  Root:
+    BranchCount: 10
+  Unknown: []
+- BranchType: Simultaneous
+  Root:
+    BranchCount: 2
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Find
+  Flags: []
+  DataInputIndices:
+  - 0
+  - 23
+  - 2
+  - 8
+  - 35
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags: []
+  DataInputIndices:
+  - 31
+  - 33
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Activate
+  Flags: []
+  DataInputIndices:
+  - 2
+  - 4
+  Unknown: []
+- BranchType: Simultaneous
+  Root:
+    BranchCount: 2
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Find
+  Flags: []
+  DataInputIndices:
+  - 0
+  - 24
+  - 2
+  - 8
+  - 35
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags: []
+  DataInputIndices:
+  - 31
+  - 33
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Activate
+  Flags: []
+  DataInputIndices:
+  - 2
+  - 4
+  Unknown: []
+- BranchType: Simultaneous
+  Root:
+    BranchCount: 2
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Find
+  Flags: []
+  DataInputIndices:
+  - 0
+  - 26
+  - 2
+  - 8
+  - 35
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags: []
+  DataInputIndices:
+  - 31
+  - 33
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Activate
+  Flags: []
+  DataInputIndices:
+  - 2
+  - 4
+  Unknown: []
+- BranchType: Simultaneous
+  Root:
+    BranchCount: 2
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Find
+  Flags: []
+  DataInputIndices:
+  - 0
+  - 28
+  - 2
+  - 8
+  - 35
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags: []
+  DataInputIndices:
+  - 31
+  - 33
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Activate
+  Flags: []
+  DataInputIndices:
+  - 2
+  - 4
+  Unknown: []
+- BranchType: Simultaneous
+  Root:
+    BranchCount: 2
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Find
+  Flags: []
+  DataInputIndices:
+  - 0
+  - 30
+  - 2
+  - 8
+  - 35
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Wait
+  Flags: []
+  DataInputIndices:
+  - 31
+  - 33
+  Unknown: []
+- BranchType: Procedure
+  ProcedureType: Activate
+  Flags:
+  - SuccessCompletesPackage
+  DataInputIndices:
+  - 2
+  - 4
+  Unknown: []
+OnBegin:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnEnd:
+  Topics:
+  - MutagenObjectType: TopicReference
+OnChange:
+  Topics:
+  - MutagenObjectType: TopicReference

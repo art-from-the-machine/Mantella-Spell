@@ -1,0 +1,46 @@
+FormKey: 307187:Mantella.esp
+Flags:
+  Flags:
+  - Random
+PreviousDialog: 307186:Mantella.esp
+FavorLevel: None
+Responses:
+- Emotion: Happy
+  EmotionValue: 100
+  ResponseNumber: 1
+  Unknown2: 0x000000
+  Flags:
+  - UseEmotionAnimation
+  Unknown3: 0x000000
+  Text:
+    TargetLanguage: English
+    Value: (Laughs)
+  ScriptNotes: ''
+  Edits: ''
+  SpeakerIdleAnimation: 075C5F:Skyrim.esm
+Conditions:
+- MutagenObjectType: ConditionFloat
+  Data:
+    MutagenObjectType: GetIsSexConditionData
+  ComparisonValue: 1
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80601
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 80624
+- MutagenObjectType: ConditionFloat
+  Flags:
+  - OR
+  Data:
+    MutagenObjectType: GetGlobalValueConditionData
+    Global: 2F7E6A:Mantella.esp
+  ComparisonValue: 76497

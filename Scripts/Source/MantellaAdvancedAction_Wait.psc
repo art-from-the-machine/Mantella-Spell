@@ -5,8 +5,14 @@ Faction Property MantellaFunctionSourceFaction Auto
 MantellaConstants Property mConsts Auto
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_WAIT, "OnNpcWaitActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_WAIT, "OnNpcWaitAdvancedActionReceived")
 EndEvent
+
+event OnNpcWaitActionReceived(Form speaker)
+    Actor sourceActor = speaker as Actor
+    NpcWait(sourceActor)
+endEvent
 
 
 event OnNpcWaitAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)

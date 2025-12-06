@@ -1,0 +1,32 @@
+FormKey: 34DF90:Mantella.esp
+EditorID: MantellaAdvancedAction_CollectIngredients
+VirtualMachineAdapter:
+  Scripts:
+  - Name: MantellaAdvancedAction_CollectIngr
+    Properties:
+    - MutagenObjectType: ScriptObjectProperty
+      Name: EventInterface
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaCollectableItem1
+      Object: 34DF91:Mantella.esp
+      Alias: 1
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaCollectIngredientsQuest
+      Object: 34DF91:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: MantellaFunctionSourceFaction
+      Object: 223451:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
+      Name: mConsts
+      Object: 03D41A:Mantella.esp
+  Versioning:
+  - Break0
+  ExtraBindDataVersion: 0
+  FileName: ''
+Flags:
+- StartGameEnabled
+- 0x10
+- RunOnce
+Priority: 100
+NextAliasID: 5

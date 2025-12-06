@@ -5,10 +5,18 @@ Actor Property PlayerRef Auto
 MantellaRepository property repository Auto
 MantellaConstants property mConsts Auto
 MantellaInterface property EventInterface Auto
+Faction Property MantellaFunctionSourceFaction Auto
 
 event OnInit()
+    RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_BRAWL, "OnNpcBrawlActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_BRAWL, "OnNpcBrawlAdvancedActionReceived")
 EndEvent
+
+event OnNpcBrawlActionReceived(Form speaker)
+    Actor sourceActor = speaker as Actor
+    NpcBrawl(sourceActor)
+endEvent
+
 
 event OnNpcBrawlAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
     MantellaConversation conversation = conversationQuest as MantellaConversation
@@ -29,6 +37,7 @@ endEvent
 Function NpcBrawl(Actor source)
     if source
         Debug.Notification(source.GetDisplayName() + " wants a fight.")
+        source.RemoveFromFaction(MantellaFunctionSourceFaction) ; End other actions if running
         DialogueFavorGeneric.Brawl(source)
     endif
 EndFunction
