@@ -112,6 +112,8 @@ int property HttpPort auto
 
 event OnInit()
     assignDefaultSettings(0, true)
+    ; end any existing conversation that may still be running on the Mantella server when the mod is loaded
+    (Quest.GetQuest("MantellaConversation") as MantellaConversation).EndConversation() 
 endEvent
 
 ; event OnUpdate()
