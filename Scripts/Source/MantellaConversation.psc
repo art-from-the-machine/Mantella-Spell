@@ -17,6 +17,7 @@ VoiceType Property MantellaVoice00  Auto
 MantellaInterface property EventInterface Auto
 ReferenceAlias Property Narrator Auto
 MantellaListenerScript Property Listener Auto
+GlobalVariable Property GameDaysPassed Auto
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;           Globals           ;
@@ -443,6 +444,7 @@ Function EndConversation()
     _hasBeenStopped = true
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
+    SKSE_HTTP.setFloat(handle, mConsts.KEY_ENDCONVERSATION_TIMESTAMP, GameDaysPassed.GetValue() + 1) ; +1 because days start at 0
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 EndFunction
 
@@ -1001,6 +1003,7 @@ int function BuildContext(bool isConversationStart = false)
         _initialTime = GetCurrentHourOfDay()
     endIf
     SKSE_HTTP.setInt(_contextHandle, mConsts.KEY_CONTEXT_TIME, _initialTime)
+    SKSE_HTTP.setFloat(_contextHandle, mConsts.KEY_CONTEXT_GAMEDAYS, GameDaysPassed.GetValue() + 1) ; +1 because days start at 0
 
     string[] past_events = deepcopy(_ingameEvents)
     SKSE_HTTP.setStringArray(_contextHandle, mConsts.KEY_CONTEXT_INGAMEEVENTS, past_events)
@@ -1062,7 +1065,7 @@ int function AddCurrentWeather(int contextHandle)
 endFunction
 
 int function GetCurrentHourOfDay()
-	float Time = Utility.GetCurrentGameTime()
+	float Time = GameDaysPassed.GetValue()
 	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
 	Time *= 24 ; Convert from fraction of a day to number of hours
 	int Hour = Math.Floor(Time) ; Get whole hour
