@@ -4,9 +4,11 @@ Scriptname MantellaTargetListenerScript extends ReferenceAlias
 Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
+Form[] Property NPCTargets Auto
 
 event OnInit()
     conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
+    NPCTargets = Utility.CreateFormArray(0)
 endEvent
 
 Function AddIngameEventToConversation(string eventText)
@@ -34,17 +36,14 @@ Event OnItemAdded(Form akBaseItem, int aiItemCount, ObjectReference akItemRefere
         if itemName == "gold" ; only count the number of items if it is gold
             itemCount = aiItemCount+" "
         endIf
-
-        string itemPickedUpMessage = selfName+" picked up " + itemCount + itemName 
-
-        string sourceName = akSourceContainer.getbaseobject().getname()
-        if sourceName != ""
-            itemPickedUpMessage = selfName+" picked up " + itemCount + itemName + " from " + sourceName 
-        endIf
-        
+        string sourceName = ""
+        if akSourceContainer != None
+            sourceName = " from " + akSourceContainer.GetDisplayName()
+        endif
+        string itemPickedUpMessage = selfName + " picked up/took " + itemCount + itemName + sourceName         
         if (itemName != "Iron Arrow") && (itemName != "") && sourceName != PlayerRef.GetDisplayName() ;Papyrus hallucinates iron arrows
             ;Debug.Notification(itemPickedUpMessage)
-            AddIngameEventToConversation( itemPickedUpMessage)
+            AddIngameEventToConversation(itemPickedUpMessage)
         endIf
     endif
 EndEvent
@@ -58,14 +57,11 @@ Event OnItemRemoved(Form akBaseItem, int aiItemCount, ObjectReference akItemRefe
         if itemName == "gold" ; only count the number of items if it is gold
             itemCount = aiItemCount+" "
         endIf
-
-        string itemDroppedMessage = selfName+" dropped " + itemCount + itemName
-
-        string destName = akDestContainer.getbaseobject().getname()
-        if (destName != "")
-            itemDroppedMessage = selfName+" placed " + itemCount + itemName + " in/on " + destName 
-        endIf
-        
+        string destName = ""
+        if akDestContainer != None
+            destName = " in/on/to " + akDestContainer.GetDisplayName()
+        endif
+        string itemDroppedMessage = selfName + " dropped/gave " + itemCount + itemName + destName 
         if  (itemName != "Iron Arrow") && (itemName != "") && destName != PlayerRef.GetDisplayName() ; Papyrus hallucinates iron arrows
             ;Debug.Notification(itemDroppedMessage)
             AddIngameEventToConversation(itemDroppedMessage)
@@ -79,8 +75,8 @@ Event OnSpellCast(Form akSpell)
         String selfName = self.GetActorReference().getdisplayname()
         string spellCast = (akSpell as form).getname()
         if spellCast && spellCast != "Mantella Placeholder Spell"
-            ;Debug.Notification(selfName+" casted the spell "+ spellCast)
-            AddIngameEventToConversation(selfName+" casted the spell " + spellCast )
+            ;Debug.Notification(selfName+" cast the spell "+ spellCast)
+            AddIngameEventToConversation(selfName+" cast the spell " + spellCast )
         endIf
     endif
 endEvent
@@ -125,28 +121,50 @@ EndEvent
 
 Event OnCombatStateChanged(Actor akTarget, int aeCombatState)
     if repository.targetTrackingOnCombatStateChanged
-        String selfName = self.GetActorReference().getdisplayname()
+        Actor actorRef = self.GetActorReference()
+        String selfName = actorRef.getdisplayname()
         String targetName
-        if akTarget == PlayerRef
-            targetName = getPlayerName(False)
-        else
-            targetName = akTarget.getdisplayname()
+
+        if akTarget != None
+            if akTarget == PlayerRef
+                targetName = getPlayerName(False)
+            else
+                targetName = akTarget.getdisplayname()
+            endif
         endif
 
         if (aeCombatState == 0)
-            ;Debug.MessageBox(selfName+" is no longer in combat")
-            AddIngameEventToConversation(selfName+" is no longer in combat.")
-            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
-            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "False", append=false)
-        elseif (aeCombatState == 1)
-            ;Debug.MessageBox(selfName+" has entered combat with "+targetName)
-            AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
-            ;ToDo: Find a new way to trigger interrupting the LLM when combat state changes
-            ;MiscUtil.WriteToFile("_mantella_actor_is_in_combat.txt", "True", append=false)
-        elseif (aeCombatState == 2)
-            ;Debug.MessageBox(selfName+" is searching for "+targetName)
-            AddIngameEventToConversation( selfName+" is searching for "+targetName)
-        endIf
+            ; the NPC has exited combat - check if any of its targets were killed by the group
+            int i = 0
+            while i < NPCTargets.Length
+                Actor target = NPCTargets[i] as Actor
+                bool targetKilled = target.IsDead()
+                Actor targetKiller = target.GetKiller()
+
+                if targetKilled && targetKiller != None && (targetKiller == PlayerRef || targetKiller == actorRef)
+                    AddIngameEventToConversation(target.getdisplayname() + " was killed by the group")
+                endif
+                i += 1
+            endWhile
+
+            ; remove all remaining NPC targets
+            NPCTargets = Utility.CreateFormArray(0)
+            AddIngameEventToConversation(selfName+" is no longer in combat")
+        else
+            ; the NPC has entered combat
+
+            ; track the target, so that we can check if it was killed by the group when the NPC exits combat
+            if NPCTargets.Find(akTarget) < 0
+                NPCTargets = Utility.ResizeFormArray(NPCTargets, NPCTargets.Length + 1)
+                NPCTargets[NPCTargets.Length - 1] = akTarget
+            endif
+
+            if (aeCombatState == 1)
+                AddIngameEventToConversation(selfName+" has entered combat with "+targetName)
+            elseif (aeCombatState == 2)
+                AddIngameEventToConversation(selfName+" is searching for "+targetName)
+            endIf
+        endif
     endif
 endEvent
 
