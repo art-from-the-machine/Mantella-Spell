@@ -28,6 +28,9 @@ VirtualMachineAdapter:
       Name: PlayerRef
       Object: 000014:Skyrim.esm
     - MutagenObjectType: ScriptObjectProperty
+      Name: GameDaysPassed
+      Object: 000039:Skyrim.esm
+    - MutagenObjectType: ScriptObjectProperty
       Name: Participants
       Object: 0E4537:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty

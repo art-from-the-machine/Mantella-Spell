@@ -43,6 +43,7 @@ string property KEY_REPLYTYPE_ENDCONVERSATION = "mantella_end_conversation" auto
 
 string property KEY_STARTCONVERSATION_WORLDID = "mantella_worldid" auto
 string property KEY_STARTCONVERSATION_USENARRATOR = "mantella_use_narrator" auto
+string property KEY_ENDCONVERSATION_TIMESTAMP = "mantella_end_timestamp" auto
 string property KEY_CONTINUECONVERSATION_TOPICINFOFILE = "mantella_topicinfofile" auto
 
 ;Actors
@@ -79,6 +80,7 @@ string property KEY_CONTEXT_WEATHER = "mantella_weather" auto
 string property KEY_CONTEXT_WEATHER_ID = "mantella_weather_id" auto
 string property KEY_CONTEXT_WEATHER_CLASSIFICATION = "mantella_weather_classification" auto
 string property KEY_CONTEXT_TIME = "mantella_time" auto
+string property KEY_CONTEXT_GAMEDAYS = "mantella_gamedays" auto
 string property KEY_CONTEXT_INGAMEEVENTS = "mantella_ingame_events" auto
 string property KEY_CONTEXT_NEARBYACTORS = "mantella_nearby_actors" auto
 
