@@ -202,7 +202,20 @@ EndEvent
 
 
 Event OnDying(Actor akKiller)
+    Debug.Notification(self.GetActorReference().getdisplayname() + " has died")
+    String selfName = self.GetActorReference().getdisplayname()
+    String killerName = ""
+
+    if akKiller == None
+        AddIngameEventToConversation(selfName + " died")
+    else
+        killerName = akKiller.getdisplayname()
+        AddIngameEventToConversation(selfName + " was killed by " + killerName)
+    EndIf
+
     If (conversation.IsRunning())
-        conversation.EndConversation()
+        Actor[] actors = new Actor[1]
+        actors[0] = self.GetActorReference()
+        conversation.RemoveActorsFromConversation(actors)
     EndIf
 EndEvent
