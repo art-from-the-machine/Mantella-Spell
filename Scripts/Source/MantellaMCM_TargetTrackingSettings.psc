@@ -48,7 +48,7 @@ function RightColumn(MantellaMCM mcm) global
         currentActorSex = "Male"
     endif
     ;this part below chops down the string from the text file to get the race
-    string currentActorRaceSubstring = actorToDisplay.GetRace() ;MiscUtil.ReadFromFile("_mantella_actor_race.txt") as string
+    string currentActorRaceSubstring = actorToDisplay.GetRace().GetName() ;MiscUtil.ReadFromFile("_mantella_actor_race.txt") as string
     ; string currentActorRaceSubstring= Substring(currentActorRace, 7)
     ; int currentActorRaceSpacePlacement = Find(currentActorRaceSubstring, "race ")
     ; currentActorRaceSubstring= Substring(currentActorRaceSubstring, 0, currentActorRaceSpacePlacement)
@@ -71,7 +71,7 @@ function RightColumn(MantellaMCM mcm) global
     ; string currentActorVoiceSubstring= Substring(currentActorVoice, 12)
     ; int currentActorVoiceSpacePlacement = Find(currentActorVoiceSubstring, " ")
     ; currentActorVoiceSubstring= Substring(currentActorVoiceSubstring, 0, currentActorVoiceSpacePlacement)
-    string currentActorVoiceSubstring = actorToDisplay.GetVoiceType()
+    string currentActorVoiceSubstring = actorToDisplay.GetVoiceType().GetName()
     string currentActorIsEnemy = actorToDisplay.getcombattarget() == game.getplayer();MiscUtil.ReadFromFile("_mantella_actor_is_enemy.txt") as string
     
     ;this part tells the MCM what to display
