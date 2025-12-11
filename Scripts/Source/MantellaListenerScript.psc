@@ -35,7 +35,6 @@ event OnInit()
     PlayerRef.AddSpell(MantellaRemoveNpcSpell)
     PlayerRef.AddSpell(MantellaRemoveNpcPower)
     PlayerRef.AddToFaction(repository.giafac_AllowDialogue);gia
-    Debug.Notification("Please save and reload to activate Mantella.")
 endEvent
 
 Function AddIngameEventToConversation(string eventText)
