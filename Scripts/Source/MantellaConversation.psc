@@ -656,7 +656,11 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                 else
                     ; LEGACY ACTION PATH
                     if !(speaker)
-                        speaker = _lastNpcToSpeak
+                        if _lastNpcToSpeak
+                            speaker = _lastNpcToSpeak
+                        else
+                            speaker = GetActorInConversationByIndex(1)
+                        endIf
                     endIf
                     string eventName = EventInterface.EVENT_ACTIONS_PREFIX + actionIdentifier
                     ; Legacy action: no arguments, send with simple signature
@@ -990,7 +994,7 @@ EndFunction
 int function BuildContext(bool isConversationStart = false)
     _contextHandle = SKSE_HTTP.createDictionary()
     if (isConversationStart)
-        _location = ((Participants.GetAt(0) as Actor).GetCurrentLocation() as Form).getName()
+        _location = (PlayerRef.GetCurrentLocation() as Form).getName()
         if _location == ""
             _location = "Skyrim"
         endIf
