@@ -111,7 +111,7 @@ Function ClearCooldown()
     RecentActor4 = None
     RecentActor5 = None
     if repository.showRadiantDialogueMessages
-        Debug.Notification("Radiant cooldown list cleared")
+        Debug.Notification("Cooldown list cleared")
     endIf
 EndFunction
 
