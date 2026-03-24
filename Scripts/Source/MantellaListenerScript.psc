@@ -25,6 +25,12 @@ ReferenceAlias Property NearbyActor3 Auto
 ReferenceAlias Property NearbyActor4 Auto
 ReferenceAlias Property NearbyActor5 Auto
 
+Actor Property RecentActor1 Auto Hidden
+Actor Property RecentActor2 Auto Hidden
+Actor Property RecentActor3 Auto Hidden
+Actor Property RecentActor4 Auto Hidden
+Actor Property RecentActor5 Auto Hidden
+
 
 
 event OnInit()
@@ -73,6 +79,132 @@ bool Function TryAddActorToParticipantsList(ReferenceAlias potentialActor, Actor
     endIf
     return false
 endFunction
+
+
+bool Function IsOnCooldown(Actor akActor)
+    ; Checks whether an actor is in the recent cooldown list.
+    ; Returns true if the actor matches any of the 5 RecentActor slots.
+    return akActor == RecentActor1 || akActor == RecentActor2 || akActor == RecentActor3 || akActor == RecentActor4 || akActor == RecentActor5
+EndFunction
+
+Function AddToCooldown(Actor akActor)
+    ; Adds an actor to the cooldown list using a shift-down pattern.
+    ; The most recently added actor is always in slot 1, and the oldest is pushed out of slot 5.
+    if akActor
+        RecentActor5 = RecentActor4
+        RecentActor4 = RecentActor3
+        RecentActor3 = RecentActor2
+        RecentActor2 = RecentActor1
+        RecentActor1 = akActor
+        if repository.showRadiantDialogueMessages
+            Debug.Notification("Radiant cooldown added: " + akActor.GetDisplayName())
+        endIf
+    endIf
+EndFunction
+
+Function ClearCooldown()
+    ; Resets all cooldown slots to None.
+    ; Called when all nearby NPCs are on cooldown, so conversations can start fresh.
+    RecentActor1 = None
+    RecentActor2 = None
+    RecentActor3 = None
+    RecentActor4 = None
+    RecentActor5 = None
+    if repository.showRadiantDialogueMessages
+        Debug.Notification("Radiant cooldown list cleared")
+    endIf
+EndFunction
+
+Actor[] Function CollectEligibleActors(Actor referenceActor, float maxDistance)
+    ; Gathers all PotentialActors from the actor picker that are within maxDistance of the referenceActor.
+    ; Actors currently in the cooldown list are excluded.
+    ; Returns an Actor[5] array where None entries indicate empty slots.
+    Actor[] eligible = new Actor[5]
+    int count = 0
+
+    Actor[] candidates = new Actor[5]
+    if PotentialActor1.GetReference() as Actor
+        candidates[0] = PotentialActor1.GetReference() as Actor
+    endIf
+    if PotentialActor2.GetReference() as Actor
+        candidates[1] = PotentialActor2.GetReference() as Actor
+    endIf
+    if PotentialActor3.GetReference() as Actor
+        candidates[2] = PotentialActor3.GetReference() as Actor
+    endIf
+    if PotentialActor4.GetReference() as Actor
+        candidates[3] = PotentialActor4.GetReference() as Actor
+    endIf
+    if PotentialActor5.GetReference() as Actor
+        candidates[4] = PotentialActor5.GetReference() as Actor
+    endIf
+
+    int i = 0
+    while i < 5
+        if candidates[i]
+            float dist = referenceActor.GetDistance(candidates[i])
+            if dist <= maxDistance
+                if !IsOnCooldown(candidates[i])
+                    eligible[count] = candidates[i]
+                    count += 1
+                endIf
+            endIf
+        endIf
+        i += 1
+    endWhile
+
+    if repository.showRadiantDialogueMessages
+        Debug.Notification("Eligible Radiant NPCs found: " + count)
+    endIf
+
+    return eligible
+EndFunction
+
+int Function CountActors(Actor[] actors)
+    ; Counts the number of non-None entries in an actor array.
+    int count = 0
+    int i = 0
+    while i < actors.Length
+        if actors[i]
+            count += 1
+        endIf
+        i += 1
+    endWhile
+    return count
+EndFunction
+
+Actor Function PickRandomActor(Actor[] actors)
+    ; Picks a random non-None actor from the array using Utility.RandomInt.
+    ; Returns None if the array is empty.
+    int count = CountActors(actors)
+    if count == 0
+        return None
+    endIf
+    int target = Utility.RandomInt(0, count - 1)
+    int seen = 0
+    int i = 0
+    while i < actors.Length
+        if actors[i]
+            if seen == target
+                return actors[i]
+            endIf
+            seen += 1
+        endIf
+        i += 1
+    endWhile
+    return None
+EndFunction
+
+Function RemoveActorFromArray(Actor[] actors, Actor toRemove)
+    ; Sets matching entries in the array to None, so subsequent random picks will not select the same actor.
+    int i = 0
+    while i < actors.Length
+        if actors[i] == toRemove
+            actors[i] = None
+        endIf
+        i += 1
+    endWhile
+EndFunction
 
 Event OnPlayerLoadGame()
     If(conversation.IsRunning())
@@ -165,69 +297,79 @@ event OnUpdate()
             int randomPct = Utility.RandomInt(1, 100)
 
             if repository.radiantEnabled && (!repository.approachEnabled || randomPct <= repository.triggerRatio)
-                ; If at least two actors found
-                if (PotentialActor1.GetReference() as Actor) && (PotentialActor2.GetReference() as Actor)
-                    Actor Actor1 = PotentialActor1.GetReference() as Actor
-                    Actor Actor2 = PotentialActor2.GetReference() as Actor
+                float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
 
-                    ; First check if the player is close enough to the actors
-                    float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
-                    float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
-                    if distanceFromPlayerToClosestActor <= maxDistance
-                        ; Then check the distance between actors
-                        float distanceBetweenActors = Actor1.GetDistance(Actor2)
-                        ; TODO: make distanceBetweenActors customisable
-                        if (distanceBetweenActors <= 1000)
-                            Actor[] actors = new Actor[5]
-                            actors[0] = Actor1
-                            actors[1] = Actor2
+                ; Collect eligible actors within radiant distance, filtering out recently used NPCs
+                Actor[] eligible = CollectEligibleActors(PlayerRef, maxDistance)
+                int eligibleCount = CountActors(eligible)
 
-                            ; Search for other potential actors to add
-                            if TryAddActorToParticipantsList(PotentialActor3, Actor1, 2, actors, 1000)
-                                if TryAddActorToParticipantsList(PotentialActor4, Actor1, 3, actors, 1000)
-                                    if TryAddActorToParticipantsList(PotentialActor5, Actor1, 4, actors, 1000)
-                                        ; All actors added successfully
-                                    endIf
-                                endIf
-                            endIf
+                ; If fewer than 2 eligible, clear cooldown and retry without filter
+                if eligibleCount < 2
+                    ClearCooldown()
+                    eligible = CollectEligibleActors(PlayerRef, maxDistance)
+                    eligibleCount = CountActors(eligible)
+                endIf
 
-                            Debug.Notification("Starting conversation...")
-                            conversation.Start()
-                            conversation.StartConversation(actors)
+                if eligibleCount >= 2
+                    ; Randomly pick the two initiator NPCs
+                    Actor Actor1 = PickRandomActor(eligible)
+                    RemoveActorFromArray(eligible, Actor1)
+                    Actor Actor2 = PickRandomActor(eligible)
+                    RemoveActorFromArray(eligible, Actor2)
 
-                        elseif(repository.showRadiantDialogueMessages)
-                            Debug.Notification("Radiant dialogue attempted. No NPCs available")
+                    Actor[] actors = new Actor[5]
+                    actors[0] = Actor1
+                    actors[1] = Actor2
+
+                    ; For each remaining eligible NPC, coin flip to include them
+                    int slot = 2
+                    int i = 0
+                    while i < eligible.Length && slot < 5
+                        if eligible[i] && Utility.RandomInt(0, 1) == 1
+                            actors[slot] = eligible[i]
+                            slot += 1
                         endIf
-                    elseif(repository.showRadiantDialogueMessages)
-                        Debug.Notification("Radiant dialogue attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
-                    endIf
+                        i += 1
+                    endWhile
+
+                    ; Only cooldown the two initiators
+                    AddToCooldown(Actor1)
+                    AddToCooldown(Actor2)
+
+                    Debug.Notification("Starting conversation...")
+                    conversation.Start()
+                    conversation.StartConversation(actors)
                 elseif(repository.showRadiantDialogueMessages)
                     Debug.Notification("Radiant dialogue attempted. No NPCs available")
                 endIf
             elseIf repository.approachEnabled
-                ; If at least one actor found
-                if (PotentialActor1.GetReference() as Actor)
-                    Actor Actor1 = PotentialActor1.GetReference() as Actor
+                float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
 
-                    ; Check if the player is close enough to the actor
-                    float distanceFromPlayerToClosestActor = PlayerRef.GetDistance(Actor1)
-                    float maxDistance = ConvertMeterToGameUnits(repository.radiantDistance)
-                    if distanceFromPlayerToClosestActor <= maxDistance
-                        Actor[] actors = new Actor[2]
-                        actors[0] = PlayerRef
-                        actors[1] = Actor1
+                ; Collect eligible actors within range, filtering out recently used NPCs
+                Actor[] eligible = CollectEligibleActors(PlayerRef, maxDistance)
+                int eligibleCount = CountActors(eligible)
 
-                        conversation.Start()
-                        Debug.Notification(Actor1.GetDisplayName() + " approaches...")
-                        conversation.AddIngameEvent(Actor1.GetDisplayName() + " approaches " + getPlayerName(False) + " with something on their mind.")
-                        conversation.StartConversation(actors)
-                        conversation.TriggerApproachMoveAction(Actor1)
+                ; If none eligible, clear cooldown and retry
+                if eligibleCount < 1
+                    ClearCooldown()
+                    eligible = CollectEligibleActors(PlayerRef, maxDistance)
+                    eligibleCount = CountActors(eligible)
+                endIf
 
-                    elseif (repository.showRadiantDialogueMessages)
-                        Debug.Notification("NPC approach attempted. NPC too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
-                        Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
-                    endIf
+                if eligibleCount >= 1
+                    Actor chosenActor = PickRandomActor(eligible)
+
+                    Actor[] actors = new Actor[2]
+                    actors[0] = PlayerRef
+                    actors[1] = chosenActor
+
+                    AddToCooldown(chosenActor)
+
+                    conversation.Start()
+                    Debug.Notification(chosenActor.GetDisplayName() + " approaches...")
+                    conversation.AddIngameEvent(chosenActor.GetDisplayName() + " approaches " + getPlayerName(False) + " with something on their mind.")
+                    conversation.StartConversation(actors)
+                    conversation.TriggerApproachMoveAction(chosenActor)
                 elseif (repository.showRadiantDialogueMessages)
                     Debug.Notification("NPC approach attempted. No NPCs available")
                 endIf
