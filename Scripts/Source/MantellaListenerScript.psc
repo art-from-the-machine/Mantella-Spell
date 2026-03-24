@@ -97,7 +97,7 @@ Function AddToCooldown(Actor akActor)
         RecentActor2 = RecentActor1
         RecentActor1 = akActor
         if repository.showRadiantDialogueMessages
-            Debug.Notification("Radiant cooldown added: " + akActor.GetDisplayName())
+            Debug.Notification("Cooldown added: " + akActor.GetDisplayName())
         endIf
     endIf
 EndFunction
