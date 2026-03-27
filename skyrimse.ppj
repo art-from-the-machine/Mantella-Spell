@@ -53,6 +53,8 @@
             <Include NoRecurse="true">LICENSE.txt</Include>
             <Match In="Scripts">*.pex</Match>
             <Match In="Scripts/Source">*.psc</Match>
+            <Match In="SKSE/Plugins">MantellaDialogue.dll</Match>
+            <Match In="SKSE/Plugins">MantellaDialogue.ini</Match>
             <Match In="SKSE/Plugins">MantellaLauncher.dll</Match>
             <Match In="SKSE/Plugins">MantellaSubtitles.dll</Match>
             <Match In="SKSE/Plugins">SKSE_HTTP.dll</Match>
@@ -61,6 +63,7 @@
             <Match In="interface/Mantella">*.dds</Match>
             <Match In="Sound/Voice/Mantella.esp">*.wav</Match>
             <Match In="Sound/Voice/Mantella.esp">*.lip</Match>
+            <Match In="Sound/Voice/Mantella.esp">*.fuz</Match>
             <Match In="SKSE/Plugins/MantellaSoftware/data">*.csv</Match>
             <Match In="SKSE/Plugins/MantellaSoftware/data">*.json</Match>
             <Match In="SKSE/Plugins/MantellaSoftware/data">*.wav</Match>
@@ -70,8 +73,13 @@
             <Match In="SKSE/Plugins/MantellaSoftware/src/ui">*.css</Match>
             <Match In="Sound/Voice/Processing">*.exe</Match>
             <Match In="Sound/Voice/Processing">*.md</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/_internal">*</Match>
+            <!-- The traverser ignores .folders by default, so adding them explicitly here -->
+            <Match In="SKSE/Plugins/MantellaSoftware/_internal/numpy/.libs">*</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware/_internal/sklearn/.libs">*</Match>
             <Match In="SKSE/Plugins/MantellaSoftware">Mantella.exe</Match>
             <Match In="SKSE/Plugins/MantellaSoftware">*.ico</Match>
+            <Match In="SKSE/Plugins/MantellaSoftware">LICENSE.txt</Match>
             <Match In="SKSE/Plugins/MantellaSoftware">custom_user_folder.ini</Match>
         </ZipFile>
     </ZipFiles>
