@@ -67,7 +67,7 @@ endEvent
 event OnNpcFollowActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
-        if (aSpeaker.getrelationshiprank(PlayerRef) != "4")
+        if (aSpeaker.getrelationshiprank(PlayerRef) != 4)
             ;Debug.Notification(actorName + " is willing to follow you.")
             ;target.setrelationshiprank(caster, 4)
             ;target.addtofaction(DunPlayerAllyFactionProperty)

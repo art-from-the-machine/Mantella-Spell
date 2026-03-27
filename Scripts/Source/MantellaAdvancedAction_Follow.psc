@@ -31,7 +31,7 @@ Function NpcFollow(Actor speaker)
         Debug.Notification(speaker.GetDisplayName() + " is following you.")
         speaker.SetActorValue("WaitingForPlayer", 0)
 
-        if (speaker.getrelationshiprank(PlayerRef) != "4")
+        if (speaker.getrelationshiprank(PlayerRef) != 4)
             speaker.SetFactionRank(repository.giafac_following, 1)
             repository.gia_FollowerQst.reset()
             repository.gia_FollowerQst.stop()
