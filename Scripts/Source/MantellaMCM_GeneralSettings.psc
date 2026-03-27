@@ -55,7 +55,7 @@ function SliderOptionOpen(MantellaMCM mcm, int optionID, MantellaRepository Repo
     elseIf optionID==mcm.oid_radiantfrequency
         mcm.SetSliderDialogStartValue(repository.radiantFrequency)
         mcm.SetSliderDialogDefaultValue(10)
-        mcm.SetSliderDialogRange(5, 300)
+        mcm.SetSliderDialogRange(5, 300)    
         mcm.SetSliderDialogInterval(1)
     elseIf optionID==mcm.oid_triggerRatio
         mcm.SetSliderDialogStartValue(repository.triggerRatio)
