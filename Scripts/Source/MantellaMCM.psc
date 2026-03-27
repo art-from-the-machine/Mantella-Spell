@@ -87,9 +87,6 @@ int property oid_targetEquipmentAll auto
 bool property targetEquipmentAllToggle auto
 
 
-int property oid_AllowForNPCtoFollowToggle auto ;gia
-int property oid_NPCAngerToggle auto ;gia
-int property oid_NPCInventoryToggle auto
 int property oid_NPCPackageToggle auto
 int property oid_enableVanillaDialogueAwareness auto
 
@@ -359,12 +356,6 @@ Event OnOptionHighlight (Int optionID)
 		SetInfoText("Enable / disable all description options for the target.")
 
 
-	elseIf optionID == oid_AllowForNPCtoFollowToggle ;gia
-		SetInfoText("NPCs can be convinced to follow (not tested over long playthroughs).")
-	elseIf optionID == oid_NPCAngerToggle ;gia
-		SetInfoText("NPCs can attack the player if provoked.")
-	elseIf optionID == oid_NPCInventoryToggle
-		SetInfoText("NPCs can open their inventory to share items.")
 	elseIf optionID == oid_NPCPackageToggle
 		SetInfoText("NPCs will stop to talk to you and will not engage in non-Mantella conversations.")
 	elseIf optionID == oid_enableVanillaDialogueAwareness

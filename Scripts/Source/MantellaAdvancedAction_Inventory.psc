@@ -24,11 +24,7 @@ endEvent
 
 Function NpcInventory(Actor source)
     if (source)
-        if PlayerRef.isinfaction(repository.fac_AllowInventory)
-            source.OpenInventory(true)
-            EventInterface.AddMantellaEvent(source.GetDisplayName() + "'s inventory opened.")
-        else
-            Debug.Notification("Inventory action not enabled in the Mantella MCM.")
-        endif
+        source.OpenInventory(true)
+        EventInterface.AddMantellaEvent(source.GetDisplayName() + "'s inventory opened.")
     endif
 EndFunction
