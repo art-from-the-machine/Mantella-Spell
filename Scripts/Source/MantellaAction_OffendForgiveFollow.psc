@@ -25,47 +25,41 @@ EndFunction
 event OnNpcOffendedActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
-        if PlayerRef.isinfaction(repository.giafac_AllowAnger)
-            Debug.Notification(aSpeaker.GetDisplayName() + " did not like that.")
+        Debug.Notification(aSpeaker.GetDisplayName() + " did not like that.")
 
-            if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
-                aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
-                aSpeaker.EvaluatePackage()
-            endIf
-            
-            ; Add to opposing factions
-            aSpeaker.SetFactionRank(repository.MantellaCombatTeamA, 1)
-            PlayerRef.SetFactionRank(repository.MantellaCombatTeamB, 1)
+        if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+            aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
+            aSpeaker.EvaluatePackage()
+        endIf
 
-            ; Wait for factions to register
-            Utility.Wait(0.5)
-            aSpeaker.StartCombat(PlayerRef)
-            
-            ; Remove from factions after combat starts
-            Utility.Wait(0.5)
-            aSpeaker.RemoveFromFaction(repository.MantellaCombatTeamA)
-            PlayerRef.RemoveFromFaction(repository.MantellaCombatTeamB)
-        else
-            Debug.Notification("Aggro action not enabled in the Mantella MCM.")
-        Endif
+        ; Add to opposing factions
+        aSpeaker.SetFactionRank(repository.MantellaCombatTeamA, 1)
+        PlayerRef.SetFactionRank(repository.MantellaCombatTeamB, 1)
+
+        ; Wait for factions to register
+        Utility.Wait(0.5)
+        aSpeaker.StartCombat(PlayerRef)
+
+        ; Remove from factions after combat starts
+        Utility.Wait(0.5)
+        aSpeaker.RemoveFromFaction(repository.MantellaCombatTeamA)
+        PlayerRef.RemoveFromFaction(repository.MantellaCombatTeamB)
     endif
 endEvent
 
 event OnNpcForgivenActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
-        if PlayerRef.isinfaction(repository.giafac_AllowAnger)
-            Debug.Notification(aSpeaker.GetDisplayName() + " forgave you.")
-            aSpeaker.StopCombat()
+        Debug.Notification(aSpeaker.GetDisplayName() + " forgave you.")
+        aSpeaker.StopCombat()
 
-            if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
-                aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
-                aSpeaker.EvaluatePackage()
-            endIf
+        if aSpeaker.GetFactionRank(MantellaFunctionSourceFaction) == 4 ; 4 = Flee faction
+            aSpeaker.RemoveFromFaction(MantellaFunctionSourceFaction)
+            aSpeaker.EvaluatePackage()
+        endIf
 
-            if DGIntimidateQuest.IsRunning() ; End brawl quest if running
-                DGIntimidateQuest.Stop()
-            endif
+        if DGIntimidateQuest.IsRunning() ; End brawl quest if running
+            DGIntimidateQuest.Stop()
         endif
     endif
 endEvent
@@ -78,18 +72,14 @@ event OnNpcFollowActionReceived(Form speaker)
             ;target.setrelationshiprank(caster, 4)
             ;target.addtofaction(DunPlayerAllyFactionProperty)
             ;target.addtofaction(PotentialFollowerFactionProperty)
-            if PlayerRef.isinfaction(repository.giafac_allowfollower)
-                Debug.Notification(aSpeaker.GetDisplayName() + " is following you.");gia
-                aSpeaker.SetFactionRank(repository.giafac_following, 1);gia
-                repository.gia_FollowerQst.reset();gia
-                repository.gia_FollowerQst.stop();gia
-                Utility.Wait(0.5);gia
-                repository.gia_FollowerQst.start();gia
-                aSpeaker.SetActorValue("WaitingForPlayer", 0)
-                aSpeaker.EvaluatePackage();gia
-            else
-                Debug.Notification("Follow action not enabled in the Mantella MCM.")
-            endif
+            Debug.Notification(aSpeaker.GetDisplayName() + " is following you.");gia
+            aSpeaker.SetFactionRank(repository.giafac_following, 1);gia
+            repository.gia_FollowerQst.reset();gia
+            repository.gia_FollowerQst.stop();gia
+            Utility.Wait(0.5);gia
+            repository.gia_FollowerQst.start();gia
+            aSpeaker.SetActorValue("WaitingForPlayer", 0)
+            aSpeaker.EvaluatePackage();gia
         endif
     endif
 endEvent
@@ -97,10 +87,6 @@ endEvent
 event OnNpcInventoryActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor
     if (aSpeaker)
-        if PlayerRef.isinfaction(repository.fac_AllowInventory)
-            aSpeaker.OpenInventory(true)
-        else
-            Debug.Notification("Inventory action not enabled in the Mantella MCM.")
-        endif
+        aSpeaker.OpenInventory(true)
     endif
 endEvent

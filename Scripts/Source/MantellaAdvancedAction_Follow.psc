@@ -28,20 +28,16 @@ endEvent
 
 Function NpcFollow(Actor speaker)
     if (speaker)
-        if PlayerRef.isinfaction(repository.giafac_allowfollower)
-            Debug.Notification(speaker.GetDisplayName() + " is following you.")
-            speaker.SetActorValue("WaitingForPlayer", 0)
+        Debug.Notification(speaker.GetDisplayName() + " is following you.")
+        speaker.SetActorValue("WaitingForPlayer", 0)
 
-            if (speaker.getrelationshiprank(PlayerRef) != "4")
-                speaker.SetFactionRank(repository.giafac_following, 1)
-                repository.gia_FollowerQst.reset()
-                repository.gia_FollowerQst.stop()
-                Utility.Wait(0.5)
-                repository.gia_FollowerQst.start()
-                speaker.EvaluatePackage()
-            endif
-        else
-            Debug.Notification("Follow action not enabled in the Mantella MCM.")
+        if (speaker.getrelationshiprank(PlayerRef) != "4")
+            speaker.SetFactionRank(repository.giafac_following, 1)
+            repository.gia_FollowerQst.reset()
+            repository.gia_FollowerQst.stop()
+            Utility.Wait(0.5)
+            repository.gia_FollowerQst.start()
+            speaker.EvaluatePackage()
         endif
     endif
 EndFunction

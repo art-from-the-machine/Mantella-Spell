@@ -10,7 +10,6 @@ Spell Property MantellaEndSpell auto
 ;Faction Property giafac_talktome  Auto ;gia
 Faction Property giafac_AllowFollower  Auto ;gia
 Faction Property giafac_AllowAnger  Auto ;gia
-;Faction Property giafac_AllowForgive  Auto ;gia
 Faction Property fac_AllowInventory  Auto
 Faction Property giafac_AllowDialogue  Auto ;gia
 Faction Property giafac_Following  Auto ;gia
@@ -95,12 +94,9 @@ bool property targetEquipmentRightHand auto
 bool property targetEquipmentLeftHand auto
 
 bool property enableVanillaDialogueAwareness auto
-bool property AllowForNPCtoFollow auto ;gia
 ;bool property followingNPCsit auto ;gia
 ;bool property followingNPCsleep auto ;gia
 ;bool property NPCstopandTalk auto ;gia
-bool property NPCAnger auto ;gia
-bool property NPCInventory auto
 bool property NPCPackage auto Conditional
 ;bool property NPCForgive auto ;gia
 bool property NPCDialogue auto ;gia
@@ -130,9 +126,6 @@ endEvent
 function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
     If (lastVersion < 7 || isFirstInit)
         enableVanillaDialogueAwareness = true
-    EndIf
-    If (lastVersion < 6 || isFirstInit)
-        NPCInventory = false
     EndIf
     If (lastVersion < 5 || isFirstInit)
         showReminderMessages = true
@@ -219,8 +212,6 @@ function assignDefaultSettings(int lastVersion, bool isFirstInit = false)
 	;followingNPCsit = false ;gia
 	;followingNPCsleep = false ;gia
 	;NPCstopandTalk = false ;gia
-	AllowForNPCtoFollow = false ;gia
-	NPCAnger = false ;gia
     NPCPackage = true
 	;NPCForgive = false ;gia
 	NPCDialogue = True ;gia
