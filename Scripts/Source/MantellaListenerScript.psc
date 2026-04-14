@@ -96,9 +96,9 @@ Function AddToCooldown(Actor akActor)
         RecentActor3 = RecentActor2
         RecentActor2 = RecentActor1
         RecentActor1 = akActor
-        if repository.showRadiantDialogueMessages
-            Debug.Notification("Cooldown added: " + akActor.GetDisplayName())
-        endIf
+        ; if repository.showRadiantDialogueMessages
+        ;     Debug.Notification("Cooldown added: " + akActor.GetDisplayName())
+        ; endIf
     endIf
 EndFunction
 
@@ -110,9 +110,9 @@ Function ClearCooldown()
     RecentActor3 = None
     RecentActor4 = None
     RecentActor5 = None
-    if repository.showRadiantDialogueMessages
-        Debug.Notification("Cooldown list cleared")
-    endIf
+    ; if repository.showRadiantDialogueMessages
+    ;     Debug.Notification("Cooldown list cleared")
+    ; endIf
 EndFunction
 
 Actor[] Function CollectEligibleActors(Actor referenceActor, float maxDistance)
@@ -249,7 +249,7 @@ function StartGroupConversation()
                 conversation.Start()
                 conversation.StartConversation(actors)
             elseif(repository.showRadiantDialogueMessages)
-                Debug.Notification("Group ocnversation attempted. NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
+                Debug.Notification("NPCs too far away at " + ConvertGameUnitsToMeter(distanceFromPlayerToClosestActor) + " meters")
                 Debug.Notification("Max distance set to " + repository.radiantDistance as int + "m in Mantella MCM")
             endIf
         elseif(repository.showRadiantDialogueMessages)
