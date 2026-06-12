@@ -208,9 +208,11 @@ function RequestContinueConversation(bool updateInGameEvents = false)
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
 
-        int nextTopicInfo = GetNextTopicID()
-        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, nextTopicInfo)
-        _lastTopicInfo = nextTopicInfo
+        ; _lastTopicInfo is only updated once a voiceline actually plays (see ProcessNpcSpeak)
+        ; If this request does not result in a voiceline (eg the reply is "playertalk"),
+        ; the same topic ID is re-sent on the next request instead of being skipped,
+        ; keeping the alternation in sync with what was last heard in-game
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, GetNextTopicID())
 
         if(_extraRequestActions && _extraRequestActions.Length > 0)
             ;Debug.Notification("_extraRequestActions contains items. Sending them along with continue!")
@@ -311,6 +313,11 @@ function ProcessNpcSpeak(int handle)
             endif
             _lastNpcToSpeak = speaker
             _lastSpeakerName = speakerName
+            ; Track the topic of the last voiceline actually played so that GetNextTopicID()
+            ; always alternates relative to the last audible line
+            ; Playing the same topic twice in a row can cause the engine to replay the
+            ; previous (cached) voiceline instead of the newly written audio file
+            _lastTopicInfo = topicID
         endIf
     endIf
     ; Get actions only after the NPC starts speaking to improve response times
@@ -492,6 +499,9 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
+        ; Send the topic to use in case the player's input is voiced
+        ; (without this the server falls back to topic 1, which can break the topic alternation)
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, GetNextTopicID())
 
         if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
             UpdateNpcsInConversationArray()
