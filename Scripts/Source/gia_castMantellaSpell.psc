@@ -7,12 +7,7 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 if WhatDo == "exit"
-	akspeaker.SetFactionRank(giafac_follower, -2)
-	getowningquest().reset()
-	getowningquest().stop()
-	Utility.Wait(0.5)
-	getowningquest().start()
-	akspeaker.EvaluatePackage()
+	MantellaFollowerUtils.DismissFollower(akspeaker, GetOwningQuest(), giafac_follower)
 	endif
 
 	if WhatDo == "speakto"
