@@ -38,12 +38,7 @@ endEvent
 Function NpcUnfollow(Actor speaker)
     if (speaker)
         Debug.Notification(speaker.GetDisplayName() + " stops following you.")
-        speaker.RemoveFromFaction(repository.giafac_following)
-        repository.gia_FollowerQst.reset()
-        repository.gia_FollowerQst.stop()
-        Utility.Wait(0.5)
-        repository.gia_FollowerQst.start()
         speaker.SetActorValue("WaitingForPlayer", 0)
-        speaker.EvaluatePackage()
+        MantellaFollowerUtils.DismissFollower(speaker, repository.gia_FollowerQst, repository.giafac_following)
     endif
 EndFunction
