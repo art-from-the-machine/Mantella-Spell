@@ -6,6 +6,7 @@ MantellaConstants property mConsts auto
 MantellaInterface property EventInterface Auto
 Quest Property DGIntimidateQuest Auto
 Faction Property MantellaFunctionSourceFaction Auto
+MantellaConversation Property conversation Auto
 
 event OnInit()
     RegisterForOffendAndForgiveEvents()
@@ -65,13 +66,52 @@ event OnNpcForgivenActionReceived(Form speaker)
 endEvent
 
 event OnNpcFollowActionReceived(Form speaker)
-    Actor aSpeaker = speaker as Actor
+    int actorCount = 0
+    if (conversation)
+        actorCount = conversation.CountActorsInConversation()
+    endif
+
+    if (actorCount == 0)
+        ; Conversation unavailable: fall back to the speaker only
+        NpcFollow(speaker as Actor)
+        return
+    endif
+
+    ; Apply the follow action to every NPC in the conversation
+    bool anyNewFollowers = false
+    int i = 0
+    While i < actorCount
+        Actor participant = conversation.GetActorInConversationByIndex(i)
+        if (participant && participant != PlayerRef && participant.getrelationshiprank(PlayerRef) != 4)
+            Debug.Notification(participant.GetDisplayName() + " is following you.")
+            participant.SetFactionRank(repository.giafac_following, 1)
+            participant.SetActorValue("WaitingForPlayer", 0)
+            anyNewFollowers = true
+        endif
+        i += 1
+    EndWhile
+
+    ; Restart the follower quest once after all faction ranks are set so its
+    ; aliases pick up every new follower in a single fill
+    if (anyNewFollowers)
+        repository.gia_FollowerQst.reset()
+        repository.gia_FollowerQst.stop()
+        Utility.Wait(0.5)
+        repository.gia_FollowerQst.start()
+        i = 0
+        While i < actorCount
+            Actor participant = conversation.GetActorInConversationByIndex(i)
+            if (participant && participant != PlayerRef)
+                participant.EvaluatePackage()
+            endif
+            i += 1
+        EndWhile
+    endif
+endEvent
+
+Function NpcFollow(Actor aSpeaker)
     if (aSpeaker)
         if (aSpeaker.getrelationshiprank(PlayerRef) != 4)
-            ;Debug.Notification(actorName + " is willing to follow you.")
-            ;target.setrelationshiprank(caster, 4)
-            ;target.addtofaction(DunPlayerAllyFactionProperty)
-            ;target.addtofaction(PotentialFollowerFactionProperty)
             Debug.Notification(aSpeaker.GetDisplayName() + " is following you.");gia
             aSpeaker.SetFactionRank(repository.giafac_following, 1);gia
             repository.gia_FollowerQst.reset();gia
@@ -82,7 +122,7 @@ event OnNpcFollowActionReceived(Form speaker)
             aSpeaker.EvaluatePackage();gia
         endif
     endif
-endEvent
+EndFunction
 
 event OnNpcInventoryActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor

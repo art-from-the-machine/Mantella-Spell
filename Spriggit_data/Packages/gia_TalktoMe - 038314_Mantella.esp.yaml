@@ -3,7 +3,7 @@ EditorID: gia_TalktoMe
 Type: PackageTemplate
 PreferredSpeed: Run
 Unknown: 101
-InteruptFlags:
+InterruptFlags:
 - HellosToPlayer
 - RandomConversations
 - ObserveCombatBehavior

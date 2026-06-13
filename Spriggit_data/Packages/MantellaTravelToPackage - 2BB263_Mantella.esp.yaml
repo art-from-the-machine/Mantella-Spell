@@ -2,7 +2,7 @@ FormKey: 2BB263:Mantella.esp
 EditorID: MantellaTravelToPackage
 Type: Package
 PreferredSpeed: Run
-InteruptFlags:
+InterruptFlags:
 - ObserveCombatBehavior
 - GreetCorpseBehavior
 - ReactionToPlayerActions

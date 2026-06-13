@@ -5,7 +5,7 @@ Flags:
 - AllowSwimming
 Type: Package
 PreferredSpeed: Run
-InteruptFlags:
+InterruptFlags:
 - ObserveCombatBehavior
 - ReactionToPlayerActions
 - FriendlyFireComments

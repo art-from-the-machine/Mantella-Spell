@@ -2,7 +2,7 @@ FormKey: 339B8F:Mantella.esp
 EditorID: MantellaLeadToPackage
 Type: Package
 PreferredSpeed: Run
-InteruptFlags:
+InterruptFlags:
 - ObserveCombatBehavior
 - GreetCorpseBehavior
 - ReactionToPlayerActions

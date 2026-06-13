@@ -5,6 +5,9 @@ VirtualMachineAdapter:
   - Name: MantellaAdvancedAction_MoveTo
     Properties:
     - MutagenObjectType: ScriptObjectProperty
+      Name: conversation
+      Object: 03D41A:Mantella.esp
+    - MutagenObjectType: ScriptObjectProperty
       Name: EventInterface
       Object: 03D41A:Mantella.esp
     - MutagenObjectType: ScriptObjectProperty
