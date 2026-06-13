@@ -6,7 +6,7 @@ Flags:
 Type: Package
 PreferredSpeed: Run
 Unknown: 116
-InteruptFlags:
+InterruptFlags:
 - RandomConversations
 - ObserveCombatBehavior
 - GreetCorpseBehavior

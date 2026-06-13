@@ -3,6 +3,8 @@ Scriptname MantellaAdvancedAction_Wait extends Quest Hidden
 MantellaInterface Property EventInterface Auto
 Faction Property MantellaFunctionSourceFaction Auto
 MantellaConstants Property mConsts Auto
+MantellaConversation Property conversation Auto
+Actor Property PlayerRef Auto
 
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_WAIT, "OnNpcWaitActionReceived")
@@ -10,14 +12,30 @@ event OnInit()
 EndEvent
 
 event OnNpcWaitActionReceived(Form speaker)
-    Actor sourceActor = speaker as Actor
-    NpcWait(sourceActor)
+    int actorCount = 0
+    if (conversation)
+        actorCount = conversation.CountActorsInConversation()
+    endif
+
+    if (actorCount == 0)
+        ; Conversation unavailable: fall back to the speaker only
+        NpcWait(speaker as Actor)
+        return
+    endif
+
+    ; Apply the wait action to every NPC in the conversation
+    int i = 0
+    While i < actorCount
+        Actor participant = conversation.GetActorInConversationByIndex(i)
+        if (participant && participant != PlayerRef)
+            NpcWait(participant)
+        endif
+        i += 1
+    EndWhile
 endEvent
 
 
-event OnNpcWaitAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
-    MantellaConversation conversation = conversationQuest as MantellaConversation
-    
+event OnNpcWaitAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)    
     ; Extract NPC names from parameters
     string[] sourceNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
 

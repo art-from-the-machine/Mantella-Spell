@@ -7,6 +7,7 @@ MantellaInterface property EventInterface Auto
 Faction Property MantellaFunctionSourceFaction Auto
 Package Property MantellaMoveToPackage Auto
 ReferenceAlias Property MoveToTargetAlias Auto
+MantellaConversation Property conversation Auto
 
 int _usedAliasCount = 0
 Actor[] _movingActors
@@ -18,26 +19,53 @@ event OnInit()
 EndEvent
 
 event OnNpcMoveToActionReceived(Form speaker)
+    int actorCount = 0
+    if (conversation)
+        actorCount = conversation.CountActorsInConversation()
+    endif
+
     MoveToTargetAlias.ForceRefTo(PlayerRef)
-    _usedAliasCount = 1
+
+    ; Reset tracking
+    _usedAliasCount = 0
 
     ; Track moving actors and their wait states
-    _movingActors = new Actor[1]
-    _wasWaitingBeforeMove = new bool[1]
+    _movingActors = new Actor[12]
+    _wasWaitingBeforeMove = new bool[12]
 
-    Actor sourceActor = speaker as Actor
-    NpcMoveTo(sourceActor, PlayerRef, 0)
-    _movingActors[0] = sourceActor
+    if (actorCount == 0)
+        ; Conversation unavailable: fall back to the speaker only
+        Actor sourceActor = speaker as Actor
+        NpcMoveTo(sourceActor, PlayerRef, 0)
+        _movingActors[0] = sourceActor
 
-    WaitForMovement(PlayerRef, 1)
-        
+        WaitForMovement(PlayerRef, 1)
+
+        CleanupMoveTo()
+        return
+    endif
+
+    ; Apply the move to action to every NPC in the conversation
+    int numMoving = 0
+    int i = 0
+    While i < actorCount && numMoving < 12 ; Cap at available aliases
+        Actor participant = conversation.GetActorInConversationByIndex(i)
+        if (participant && participant != PlayerRef)
+            NpcMoveTo(participant, PlayerRef, numMoving)
+            _movingActors[numMoving] = participant
+            numMoving += 1
+        endif
+        i += 1
+    EndWhile
+
+    ; Wait for actors to reach destination
+    WaitForMovement(PlayerRef, numMoving)
+
     CleanupMoveTo()
 endEvent
 
 
 event OnNpcMoveToAdvancedActionReceived(Form speaker, Form conversationQuest, int argumentsHandle)
-    MantellaConversation conversation = conversationQuest as MantellaConversation
-    
     ; Extract NPC names from parameters
     string[] sourceNames = SKSE_HTTP.getStringArray(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
     string targetName = SKSE_HTTP.getString(argumentsHandle, mConsts.ACTION_ARG_TARGET)
