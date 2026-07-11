@@ -44,6 +44,7 @@ bool microphoneEnabledLastKnownStatus = false
 Actor[] _cachedNearbyActors = None
 bool _waitingForActionResponse = true
 int _actionResponseTimeout = 0
+bool _playerInputPending = false
 
 event OnInit()
     RegisterForConversationEvents()
@@ -178,6 +179,11 @@ function ContinueConversation(string nextAction, int handle)
         RequestContinueConversation()
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCTALK)
         ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to realise NPC needs to respond", 2)
+        If (_playerInputPending)
+            ; A new response is starting after player input: make sure nothing from the previous response is still playing
+            _playerInputPending = false
+            StopCurrentVoiceline()
+        EndIf
         int npcTalkHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCTALK)
         ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get NPC talk handle", 2)
         ProcessNpcSpeak(npcTalkHandle)
@@ -193,6 +199,12 @@ function ContinueConversation(string nextAction, int handle)
         ClearRepeatingMessage()
         string transcribe = SKSE_HTTP.getString(handle, mConsts.KEY_TRANSCRIBE, "*Complete gibberish*")
         sendRequestForPlayerInput(transcribe, updateContext=True)
+    elseIf (nextAction == mConsts.KEY_REPLYTYPE_INTERRUPTED)
+        ; The player talked over the current line: follow up with a player input request.
+        ; The current voiceline is not stopped here. Instead, it is cut just before the new response 
+        ; starts to minimise the silence gap (and latency perception) between the old and new voiceline.
+        ClearRepeatingMessage()
+        sendRequestForPlayerInput("", updateContext=False)
     elseIf(nextAction == mConsts.KEY_REPLYTYPE_NPCACTION)
         int npcActionHandle = SKSE_HTTP.getNestedDictionary(handle, mConsts.KEY_REPLYTYPE_NPCACTION)
         ProcessNpcAction(npcActionHandle)
@@ -467,6 +479,7 @@ Function CleanupConversation()
     _lastNpcToSpeak = None
     _lastTopicInfo = 0
     _cachedNearbyActors = None
+    _playerInputPending = false
     ;SKSE_HTTP.clearAllDictionaries()
     If (MantellaConversationParticipantsQuest.IsRunning())
         MantellaConversationParticipantsQuest.Stop()
@@ -496,6 +509,7 @@ endEvent
 
 function sendRequestForPlayerInput(string playerInput, bool updateContext)
     if(!_hasBeenStopped)
+        _playerInputPending = true
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
@@ -593,6 +607,16 @@ function WaitForNpcToFinishSpeaking(Actor speaker, Actor lastNpcToSpeak)
         WaitForSpecificNpcToFinishSpeaking(speaker)
     endIf
 endFunction
+
+Function StopCurrentVoiceline()
+    If (_lastNpcToSpeak != None)
+        SKSE_HTTP.StopVoiceLine(_lastNpcToSpeak)
+        ; RemoveSpell fires OnEffectFinish -> SetIsTalking(false), 
+        ; but is set here too so the clear is immediate
+        _lastNpcToSpeak.RemoveSpell(MantellaIsTalkingSpell)
+        _isTalking = false
+    EndIf
+EndFunction
 
 function WaitForSpecificNpcToFinishSpeaking(Actor selectedNpc)
     float waitTime = 0.01
