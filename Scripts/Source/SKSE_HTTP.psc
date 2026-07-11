@@ -64,3 +64,8 @@ VoiceType Function GetVoiceType(Actor actor) global native
 Function SetVoiceType(Actor actor, VoiceType voice) global native
 VoiceType Function GetRaceDefaultVoiceType(Actor actor) global native
 Function SetRaceDefaultVoiceType(Actor actor, VoiceType voice) global native
+
+;/  Stops/fades out the voice line currently playing on the actor.
+    Returns true if a playing voice sound was stopped.
+/;
+Bool Function StopVoiceLine(Actor actor, Int fadeMs = 150) global native
