@@ -136,7 +136,7 @@ Form Function FindEquipableItemByName(Actor sourceActor, string normalizedReques
         if IsEquipableForm(itemForm) && sourceActor.GetItemCount(itemForm) > 0
             normalizedInventoryName = ToLowerAscii(itemForm.GetName())
             if normalizedInventoryName != ""
-                if StringUtil.Find(normalizedInventoryName, normalizedRequest) >= 0 || StringUtil.Find(normalizedRequest, normalizedInventoryName) >= 0
+                if StringUtil.Find(normalizedInventoryName, normalizedRequest) >= 0
                     return itemForm
                 endIf
             endIf
