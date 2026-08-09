@@ -56,7 +56,7 @@ Function HandleEquipAction(Form speaker, Form conversationQuest, int argumentsHa
 EndFunction
 
 bool Function EquipRequestedItem(Actor sourceActor, string requestedItemName)
-    string normalizedRequest = StringUtil.ToLower(requestedItemName)
+    string normalizedRequest = ToLowerAscii(requestedItemName)
 
     if IsGenericArmorRequest(normalizedRequest)
         int equippedCount = EquipBestArmorSet(sourceActor)
@@ -122,7 +122,7 @@ Form Function FindEquipableItemByName(Actor sourceActor, string normalizedReques
     While i < itemCount
         itemForm = sourceActor.GetNthForm(i)
         if IsEquipableForm(itemForm) && sourceActor.GetItemCount(itemForm) > 0
-            normalizedInventoryName = StringUtil.ToLower(itemForm.GetName())
+            normalizedInventoryName = ToLowerAscii(itemForm.GetName())
             if normalizedInventoryName == normalizedRequest
                 return itemForm
             endIf
@@ -134,7 +134,7 @@ Form Function FindEquipableItemByName(Actor sourceActor, string normalizedReques
     While i < itemCount
         itemForm = sourceActor.GetNthForm(i)
         if IsEquipableForm(itemForm) && sourceActor.GetItemCount(itemForm) > 0
-            normalizedInventoryName = StringUtil.ToLower(itemForm.GetName())
+            normalizedInventoryName = ToLowerAscii(itemForm.GetName())
             if normalizedInventoryName != ""
                 if StringUtil.Find(normalizedInventoryName, normalizedRequest) >= 0 || StringUtil.Find(normalizedRequest, normalizedInventoryName) >= 0
                     return itemForm
@@ -145,6 +145,24 @@ Form Function FindEquipableItemByName(Actor sourceActor, string normalizedReques
     EndWhile
 
     return None
+EndFunction
+
+string Function ToLowerAscii(string value)
+    string result = ""
+    int length = StringUtil.GetLength(value)
+    int i = 0
+
+    While i < length
+        string character = StringUtil.GetNthChar(value, i)
+        int characterCode = StringUtil.AsOrd(character)
+        if characterCode >= 65 && characterCode <= 90
+            character = StringUtil.AsChar(characterCode + 32)
+        endIf
+        result += character
+        i += 1
+    EndWhile
+
+    return result
 EndFunction
 
 bool Function IsEquipableForm(Form itemForm)
