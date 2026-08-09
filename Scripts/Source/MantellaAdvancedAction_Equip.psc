@@ -149,10 +149,10 @@ EndFunction
 
 string Function ToLowerAscii(string value)
     string result = ""
-    int length = StringUtil.GetLength(value)
+    int valueLength = StringUtil.GetLength(value)
     int i = 0
 
-    While i < length
+    While i < valueLength
         string character = StringUtil.GetNthChar(value, i)
         int characterCode = StringUtil.AsOrd(character)
         if characterCode >= 65 && characterCode <= 90
