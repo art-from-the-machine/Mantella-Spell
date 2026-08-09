@@ -664,7 +664,10 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
         ; Extract action identifier
         string actionIdentifier = SKSE_HTTP.getString(actionHandle, mConsts.ACTION_IDENTIFIER, "")
         
-        if actionIdentifier != ""
+        if actionIdentifier == "mantella_npc_equip"
+            int equipArgumentsHandle = SKSE_HTTP.getNestedDictionary(actionHandle, mConsts.ACTION_ARGUMENTS, 0)
+            HandleEquipActionDirect(speaker, equipArgumentsHandle)
+        elseIf actionIdentifier != ""
             ; Check for special handling (eg inventory action timing)
             if (actionIdentifier == mConsts.ACTION_NPC_INVENTORY) || (actionIdentifier == mConsts.ACTION_NPC_BARTER)
                 Utility.Wait(0.5)
@@ -714,6 +717,235 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
         
         i += 1
     EndWhile
+EndFunction
+
+Function HandleEquipActionDirect(Actor fallbackSpeaker, int argumentsHandle)
+    Actor sourceActor = fallbackSpeaker
+    string requestedItemName = "best armor"
+
+    if argumentsHandle != 0
+        string sourceName = SKSE_HTTP.getString(argumentsHandle, mConsts.ACTION_ARG_SOURCE, "")
+        if sourceName != ""
+            Actor resolvedActor = GetActorByName(sourceName)
+            if resolvedActor
+                sourceActor = resolvedActor
+            endIf
+        endIf
+        requestedItemName = SKSE_HTTP.getString(argumentsHandle, "item_name", "best armor")
+    endIf
+
+    if !sourceActor
+        EventInterface.AddMantellaEvent("Equip failed: the requested NPC could not be resolved in Skyrim.")
+        EventInterface.MarkActionResponseCompleted("mantella_npc_equip")
+        return
+    endIf
+
+    bool success = false
+    Form requestedItem = FindEquipableItemByNameDirect(sourceActor, requestedItemName)
+
+    if requestedItem
+        success = ForceEquipItemDirect(sourceActor, requestedItem)
+        if success
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " equipped " + requestedItem.GetName() + ".")
+        else
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " owns " + requestedItem.GetName() + " but Skyrim refused to equip it.")
+        endIf
+    elseIf IsGenericArmorRequestDirect(requestedItemName)
+        int equippedCount = EquipBestArmorSetDirect(sourceActor)
+        success = equippedCount > 0
+        if success
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " equipped available armor from their real inventory.")
+        else
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " has no armor that Skyrim could equip from their real inventory.")
+        endIf
+    elseIf IsGenericWeaponRequestDirect(requestedItemName)
+        Weapon bestWeapon = FindBestWeaponDirect(sourceActor)
+        if bestWeapon
+            success = ForceEquipItemDirect(sourceActor, bestWeapon)
+            if success
+                EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " equipped " + bestWeapon.GetName() + ".")
+            else
+                EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " owns " + bestWeapon.GetName() + " but Skyrim refused to equip it.")
+            endIf
+        else
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " has no weapon in their real inventory to equip.")
+        endIf
+    else
+        EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " has no equippable inventory item matching '" + requestedItemName + "'.")
+    endIf
+
+    if success
+        sourceActor.QueueNiNodeUpdate()
+        Utility.Wait(0.10)
+
+        ; Equipment is part of the actor payload that Mantella sends to the LLM.
+        ; Rebuild it immediately after a verified equip so the continuation request
+        ; carries the NPC's CURRENT worn gear instead of the conversation-start snapshot.
+        BuildNpcsInConversationArray()
+
+        EventInterface.AddMantellaEvent("AUTHORITATIVE CURRENT EQUIPMENT: " + sourceActor.GetDisplayName() + " successfully changed equipment in Skyrim. The refreshed actor equipment state sent with this action response overrides any earlier worn-equipment description or dialogue claim.")
+    endIf
+    EventInterface.MarkActionResponseCompleted("mantella_npc_equip")
+EndFunction
+
+bool Function ForceEquipItemDirect(Actor sourceActor, Form itemForm)
+    if !sourceActor || !itemForm || sourceActor.GetItemCount(itemForm) <= 0
+        return false
+    endIf
+
+    ; Use the vanilla equip path first, then SKSE's stronger EquipItemEx fallback.
+    sourceActor.EquipItem(itemForm, false, true)
+    Utility.Wait(0.05)
+    if !sourceActor.IsEquipped(itemForm)
+        sourceActor.EquipItemEx(itemForm, 0, false, false)
+        Utility.Wait(0.05)
+    endIf
+
+    return sourceActor.IsEquipped(itemForm)
+EndFunction
+
+Form Function FindEquipableItemByNameDirect(Actor sourceActor, string requestedItemName)
+    if !sourceActor || requestedItemName == ""
+        return None
+    endIf
+
+    int itemCount = sourceActor.GetNumItems()
+    int i = 0
+    Form itemForm = None
+
+    While i < itemCount
+        itemForm = sourceActor.GetNthForm(i)
+        if IsEquipableFormDirect(itemForm) && sourceActor.GetItemCount(itemForm) > 0 && itemForm.GetName() == requestedItemName
+            return itemForm
+        endIf
+        i += 1
+    EndWhile
+
+    i = 0
+    While i < itemCount
+        itemForm = sourceActor.GetNthForm(i)
+        if IsEquipableFormDirect(itemForm) && sourceActor.GetItemCount(itemForm) > 0
+            string inventoryName = itemForm.GetName()
+            if inventoryName != ""
+                if StringUtil.Find(inventoryName, requestedItemName) >= 0 || StringUtil.Find(requestedItemName, inventoryName) >= 0
+                    return itemForm
+                endIf
+            endIf
+        endIf
+        i += 1
+    EndWhile
+
+    return None
+EndFunction
+
+bool Function IsEquipableFormDirect(Form itemForm)
+    if !itemForm
+        return false
+    endIf
+    if itemForm as Armor
+        return true
+    endIf
+    if itemForm as Weapon
+        return true
+    endIf
+    if itemForm as Ammo
+        return true
+    endIf
+    return false
+EndFunction
+
+bool Function IsGenericArmorRequestDirect(string requestedItemName)
+    if requestedItemName == "" || requestedItemName == "armor" || requestedItemName == "armour" || requestedItemName == "best armor" || requestedItemName == "best armour" || requestedItemName == "gear" || requestedItemName == "clothes" || requestedItemName == "clothing"
+        return true
+    endIf
+    if StringUtil.Find(requestedItemName, "armor") >= 0 || StringUtil.Find(requestedItemName, "armour") >= 0
+        return true
+    endIf
+    return false
+EndFunction
+
+bool Function IsGenericWeaponRequestDirect(string requestedItemName)
+    return requestedItemName == "weapon" || requestedItemName == "best weapon" || requestedItemName == "your weapon"
+EndFunction
+
+int Function EquipBestArmorSetDirect(Actor sourceActor)
+    int equippedCount = 0
+
+    if EquipBestArmorForSlotDirect(sourceActor, 30)
+        equippedCount += 1
+    endIf
+    if EquipBestArmorForSlotDirect(sourceActor, 31)
+        equippedCount += 1
+    endIf
+    if EquipBestArmorForSlotDirect(sourceActor, 32)
+        equippedCount += 1
+    endIf
+    if EquipBestArmorForSlotDirect(sourceActor, 33)
+        equippedCount += 1
+    endIf
+    if EquipBestArmorForSlotDirect(sourceActor, 37)
+        equippedCount += 1
+    endIf
+
+    return equippedCount
+EndFunction
+
+bool Function EquipBestArmorForSlotDirect(Actor sourceActor, int slotNumber)
+    if !sourceActor
+        return false
+    endIf
+
+    int desiredMask = Armor.GetMaskForSlot(slotNumber)
+    Armor bestArmor = None
+    int bestRating = -1
+    int itemCount = sourceActor.GetNumItems()
+    int i = 0
+
+    While i < itemCount
+        Form itemForm = sourceActor.GetNthForm(i)
+        Armor armorItem = itemForm as Armor
+        if armorItem && sourceActor.GetItemCount(armorItem) > 0
+            if Math.LogicalAnd(armorItem.GetSlotMask(), desiredMask) != 0
+                int armorRating = armorItem.GetArmorRating()
+                if armorRating > bestRating
+                    bestRating = armorRating
+                    bestArmor = armorItem
+                endIf
+            endIf
+        endIf
+        i += 1
+    EndWhile
+
+    if bestArmor
+        return ForceEquipItemDirect(sourceActor, bestArmor)
+    endIf
+    return false
+EndFunction
+
+Weapon Function FindBestWeaponDirect(Actor sourceActor)
+    if !sourceActor
+        return None
+    endIf
+
+    Weapon bestWeapon = None
+    int bestDamage = -1
+    int itemCount = sourceActor.GetNumItems()
+    int i = 0
+
+    While i < itemCount
+        Form itemForm = sourceActor.GetNthForm(i)
+        Weapon weaponItem = itemForm as Weapon
+        if weaponItem && sourceActor.GetItemCount(weaponItem) > 0
+            int weaponDamage = weaponItem.GetBaseDamage()
+            if weaponDamage > bestDamage
+                bestDamage = weaponDamage
+                bestWeapon = weaponItem
+            endIf
+        endIf
+        i += 1
+    EndWhile
+
+    return bestWeapon
 EndFunction
 
 Function AddExtraRequestAction(string extraAction)
