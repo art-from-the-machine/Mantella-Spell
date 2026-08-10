@@ -24,7 +24,40 @@ endEvent
 
 Function NpcInventory(Actor source)
     if (source)
+        AddAuthoritativeInventorySnapshot(source)
         source.OpenInventory(true)
         EventInterface.AddMantellaEvent(source.GetDisplayName() + "'s inventory opened.")
+    else
+        EventInterface.AddMantellaEvent("Inventory failed: the requested NPC could not be found.")
     endif
+    EventInterface.MarkActionResponseCompleted(mConsts.ACTION_NPC_INVENTORY)
+EndFunction
+
+Function AddAuthoritativeInventorySnapshot(Actor source)
+    string snapshot = ""
+    int namedItemCount = 0
+    int itemIndex = 0
+    int itemTotal = source.GetNumItems()
+    While itemIndex < itemTotal && namedItemCount < 40
+        Form itemForm = source.GetNthForm(itemIndex)
+        if itemForm && source.GetItemCount(itemForm) > 0 && itemForm.GetName() != ""
+            if snapshot != ""
+                snapshot += ", "
+            endIf
+            snapshot += itemForm.GetName()
+            int count = source.GetItemCount(itemForm)
+            if count > 1
+                snapshot += " x" + count
+            endIf
+            namedItemCount += 1
+        endIf
+        itemIndex += 1
+    EndWhile
+
+    if snapshot == ""
+        snapshot = "no named items"
+    elseIf itemIndex < itemTotal
+        snapshot += ", and additional items not listed"
+    endIf
+    EventInterface.AddMantellaEvent("Authoritative Skyrim inventory for " + source.GetDisplayName() + " at action time: " + snapshot + ".")
 EndFunction

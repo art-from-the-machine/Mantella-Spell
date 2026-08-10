@@ -13,13 +13,155 @@ VirtualMachineAdapter:
     - MutagenObjectType: ScriptObjectProperty
       Name: mConsts
       Object: 03D41A:Mantella.esp
-  Versioning:
-  - Break0
-  ExtraBindDataVersion: 0
+  Aliases:
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 0
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 1
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 2
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 3
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 4
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 5
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 6
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 7
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 8
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 9
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 10
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
+  - Property:
+      Name: ''
+      Object: 34DF93:Mantella.esp
+      Alias: 11
+    Scripts:
+    - Name: MantellaManagedEquipmentAlias
   FileName: ''
 Flags:
 - StartGameEnabled
 - 0x10
 - RunOnce
 Priority: 100
-NextAliasID: 0
+NextAliasID: 12
+Aliases:
+- Name: ManagedEquipmentActor1
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 1
+  Name: ManagedEquipmentActor2
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 2
+  Name: ManagedEquipmentActor3
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 3
+  Name: ManagedEquipmentActor4
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 4
+  Name: ManagedEquipmentActor5
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 5
+  Name: ManagedEquipmentActor6
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 6
+  Name: ManagedEquipmentActor7
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 7
+  Name: ManagedEquipmentActor8
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 8
+  Name: ManagedEquipmentActor9
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 9
+  Name: ManagedEquipmentActor10
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 10
+  Name: ManagedEquipmentActor11
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null
+- ID: 11
+  Name: ManagedEquipmentActor12
+  Flags:
+  - Optional
+  - AllowReserved
+  VoiceTypes: Null

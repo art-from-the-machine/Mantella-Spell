@@ -5,6 +5,7 @@ Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
 Form[] Property NPCTargets Auto
+MantellaAdvancedAction_Equip equipManager
 
 event OnInit()
     conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
@@ -170,7 +171,8 @@ endEvent
 
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-    if repository.targetTrackingOnObjectEquipped
+    QueueManagedEquipmentCheck(akBaseObject)
+    if repository.targetTrackingOnObjectEquipped && !IsManagedEquipmentRestore()
         String selfName = self.GetActorReference().getdisplayname()
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" equipped " + itemEquipped)
@@ -182,7 +184,8 @@ endEvent
 
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
-    if repository.targetTrackingOnObjectUnequipped
+    QueueManagedEquipmentCheck(akBaseObject)
+    if repository.targetTrackingOnObjectUnequipped && !IsManagedEquipmentRestore()
         String selfName = self.GetActorReference().getdisplayname()
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" unequipped " + itemUnequipped)
@@ -191,6 +194,17 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
         endif
     endif
 endEvent
+
+bool Function IsManagedEquipmentRestore()
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        return equipManager.IsRestoringEquipmentFor(targetActor)
+    endIf
+    return false
+EndFunction
 
 
 Event OnSit(ObjectReference akFurniture)
@@ -217,6 +231,16 @@ Event OnGetUp(ObjectReference akFurniture)
         endIf
     endif
 EndEvent
+
+Function QueueManagedEquipmentCheck(Form changedItem)
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        equipManager.QueueManagedEquipmentRestoreForActor(targetActor)
+    endIf
+EndFunction
 
 
 Event OnDying(Actor akKiller)

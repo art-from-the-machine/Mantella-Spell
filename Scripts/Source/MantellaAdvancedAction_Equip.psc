@@ -4,6 +4,20 @@ MantellaInterface Property EventInterface Auto
 MantellaConstants Property mConsts Auto
 MantellaConversation Property Conversation Auto
 
+; Save-persistent, Form-based desired equipment. The quest owns one alias per
+; managed actor so Skyrim can forward OnCellAttach without global polling.
+Form[] managedActors
+Form[] managedItems
+int[] managedSlotMasks
+int[] managedCategories
+Form[] pendingRestoreActors
+bool isRestoringManagedEquipment = false
+Actor restoringActor = None
+
+int PROPERTY MANAGED_ARMOR = 1 AutoReadOnly
+int PROPERTY MANAGED_WEAPON = 2 AutoReadOnly
+int PROPERTY MANAGED_AMMO = 3 AutoReadOnly
+
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_EQUIP, "OnNpcEquipActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_EQUIP, "OnNpcEquipAdvancedActionReceived")
@@ -78,6 +92,18 @@ bool Function EquipRequestedItem(Actor sourceActor, string requestedItemName)
         endIf
         EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " owns " + bestWeapon.GetName() + ", but Skyrim did not equip it.")
         return false
+    elseIf IsGenericShieldRequest(normalizedRequest)
+        Armor bestShield = FindBestShield(sourceActor)
+        if !bestShield
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " has no shield in their inventory to equip.")
+            return false
+        endIf
+        if EquipAndVerify(sourceActor, bestShield)
+            EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " equipped " + bestShield.GetName() + ".")
+            return true
+        endIf
+        EventInterface.AddMantellaEvent(sourceActor.GetDisplayName() + " owns " + bestShield.GetName() + ", but Skyrim did not equip it.")
+        return false
     endIf
 
     Form requestedItem = FindEquipableItemByName(sourceActor, normalizedRequest)
@@ -99,14 +125,317 @@ bool Function EquipAndVerify(Actor sourceActor, Form itemForm)
         return false
     endIf
 
-    sourceActor.EquipItem(itemForm, false, true)
+    ; Release a conflicting item first so a later explicit Mantella request can
+    ; replace equipment that an earlier request protected from outfit resets.
+    isRestoringManagedEquipment = true
+    restoringActor = sourceActor
+    ReleaseConflictingEquipment(sourceActor, itemForm)
+
+    sourceActor.EquipItem(itemForm, true, true)
     Utility.Wait(0.05)
     if !sourceActor.IsEquipped(itemForm)
-        sourceActor.EquipItemEx(itemForm, 0, false, false)
+        sourceActor.EquipItemEx(itemForm, 0, true, false)
         Utility.Wait(0.05)
     endIf
 
-    return sourceActor.IsEquipped(itemForm)
+    bool verified = sourceActor.IsEquipped(itemForm)
+    restoringActor = None
+    isRestoringManagedEquipment = false
+    if verified
+        RecordManagedEquipment(sourceActor, itemForm)
+    endIf
+    return verified
+EndFunction
+
+; Called by the actor listener when Skyrim's outfit/equipment evaluation changes
+; an item on an actor with Mantella-managed slots.  It is deliberately a no-op
+; for unrelated actors and does not emit a game event or start an LLM turn.
+Function QueueManagedEquipmentRestoreIfNeeded(Actor sourceActor, Form changedItem)
+    QueueManagedEquipmentRestoreForActor(sourceActor)
+EndFunction
+
+; Outfit evaluation may report only the replacement item (for example Belted
+; Tunic) and not the managed item that was removed.  Queue a single delayed
+; check for any actor with managed state so either event shape is handled.
+Function QueueManagedEquipmentRestoreForActor(Actor sourceActor)
+    EnsureManagedState()
+    if !sourceActor || IsRestoringEquipmentFor(sourceActor) || !HasManagedEquipment(sourceActor)
+        return
+    endIf
+    QueueManagedEquipmentRestore(sourceActor)
+EndFunction
+
+Function EnsureManagedState()
+    if managedActors == None
+        managedActors = Utility.CreateFormArray(0)
+    endIf
+    if managedItems == None
+        managedItems = Utility.CreateFormArray(0)
+    endIf
+    if managedSlotMasks == None
+        managedSlotMasks = Utility.CreateIntArray(0)
+    endIf
+    if managedCategories == None
+        managedCategories = Utility.CreateIntArray(0)
+    endIf
+    if pendingRestoreActors == None
+        pendingRestoreActors = Utility.CreateFormArray(0)
+    endIf
+EndFunction
+
+Function RecordManagedEquipment(Actor sourceActor, Form itemForm)
+    EnsureManagedState()
+    int category = GetManagedCategory(itemForm)
+    if category == 0 || !EnsureManagedActorAlias(sourceActor)
+        return
+    endIf
+
+    int slotMask = GetManagedSlotMask(itemForm)
+    int i = managedItems.Length - 1
+    While i >= 0
+        if managedActors[i] == sourceActor && ManagedEntriesConflict(category, slotMask, managedCategories[i], managedSlotMasks[i])
+            RemoveManagedEntry(i)
+        endIf
+        i -= 1
+    EndWhile
+
+    managedActors = Utility.ResizeFormArray(managedActors, managedActors.Length + 1)
+    managedItems = Utility.ResizeFormArray(managedItems, managedItems.Length + 1)
+    managedSlotMasks = Utility.ResizeIntArray(managedSlotMasks, managedSlotMasks.Length + 1)
+    managedCategories = Utility.ResizeIntArray(managedCategories, managedCategories.Length + 1)
+    int newIndex = managedItems.Length - 1
+    managedActors[newIndex] = sourceActor
+    managedItems[newIndex] = itemForm
+    managedSlotMasks[newIndex] = slotMask
+    managedCategories[newIndex] = category
+EndFunction
+
+bool Function EnsureManagedActorAlias(Actor sourceActor)
+    int i = 0
+    int emptyAliasIndex = -1
+    While i < GetNumAliases()
+        ReferenceAlias managedAlias = GetNthAlias(i) as ReferenceAlias
+        if managedAlias
+            if managedAlias.GetActorReference() == sourceActor
+                return true
+            elseIf !managedAlias.GetReference() && emptyAliasIndex < 0
+                emptyAliasIndex = i
+            endIf
+        endIf
+        i += 1
+    EndWhile
+    if emptyAliasIndex >= 0
+        ReferenceAlias emptyAlias = GetNthAlias(emptyAliasIndex) as ReferenceAlias
+        emptyAlias.ForceRefTo(sourceActor)
+        return true
+    endIf
+    Debug.Trace("Mantella Equip could not persist equipment: all managed actor aliases are in use.")
+    return false
+EndFunction
+
+Function QueueManagedEquipmentRestore(Actor sourceActor)
+    EnsureManagedState()
+    if !sourceActor || !HasManagedEquipment(sourceActor) || pendingRestoreActors.Find(sourceActor) >= 0
+        return
+    endIf
+    pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, pendingRestoreActors.Length + 1)
+    pendingRestoreActors[pendingRestoreActors.Length - 1] = sourceActor
+    Debug.Trace("Mantella Equip: queued managed restore for " + sourceActor.GetDisplayName())
+    ; One event-driven delay lets Skyrim finish default-outfit evaluation and
+    ; batches actors that attach together. This does not schedule a polling loop.
+    RegisterForSingleUpdate(0.50)
+EndFunction
+
+Event OnUpdate()
+    EnsureManagedState()
+    While pendingRestoreActors.Length > 0
+        int lastIndex = pendingRestoreActors.Length - 1
+        Actor sourceActor = pendingRestoreActors[lastIndex] as Actor
+        pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, lastIndex)
+        RestoreManagedEquipment(sourceActor)
+    EndWhile
+EndEvent
+
+Function RestoreManagedEquipment(Actor sourceActor)
+    EnsureManagedState()
+    if !sourceActor || isRestoringManagedEquipment
+        return
+    endIf
+
+    bool changed = false
+    isRestoringManagedEquipment = true
+    restoringActor = sourceActor
+    int i = managedItems.Length - 1
+    While i >= 0
+        if managedActors[i] == sourceActor
+            Form itemForm = managedItems[i]
+            if !itemForm || sourceActor.GetItemCount(itemForm) <= 0
+                RemoveManagedEntry(i)
+                i = managedItems.Length
+            elseIf !sourceActor.IsEquipped(itemForm)
+                Debug.Trace("Mantella Equip: restoring managed item " + itemForm.GetName() + " for " + sourceActor.GetDisplayName())
+                ReleaseConflictingEquipment(sourceActor, itemForm)
+                sourceActor.EquipItem(itemForm, true, true)
+                Utility.Wait(0.05)
+                if !sourceActor.IsEquipped(itemForm)
+                    sourceActor.EquipItemEx(itemForm, 0, true, false)
+                    Utility.Wait(0.05)
+                endIf
+                if sourceActor.IsEquipped(itemForm)
+                    changed = true
+                    Debug.Trace("Mantella Equip: managed restore verified " + itemForm.GetName() + " for " + sourceActor.GetDisplayName())
+                endIf
+            else
+                Debug.Trace("Mantella Equip: managed item already equipped " + itemForm.GetName() + " for " + sourceActor.GetDisplayName())
+            endIf
+        endIf
+        i -= 1
+    EndWhile
+    ; Let equip/unequip listener events raised by the silent restore observe the
+    ; suppression flag before it is cleared.
+    Utility.Wait(0.10)
+    restoringActor = None
+    isRestoringManagedEquipment = false
+
+    if !HasManagedEquipment(sourceActor)
+        ClearManagedActorAlias(sourceActor)
+    elseIf changed
+        sourceActor.QueueNiNodeUpdate()
+        if Conversation && Conversation.IsRunning()
+            Conversation.RefreshActorEquipmentState()
+        endIf
+    endIf
+EndFunction
+
+Function ForgetManagedEquipment(Actor sourceActor)
+    EnsureManagedState()
+    int i = managedItems.Length - 1
+    While i >= 0
+        if managedActors[i] == sourceActor
+            RemoveManagedEntry(i)
+        endIf
+        i -= 1
+    EndWhile
+    int pendingIndex = pendingRestoreActors.Find(sourceActor)
+    if pendingIndex >= 0
+        int lastPendingIndex = pendingRestoreActors.Length - 1
+        pendingRestoreActors[pendingIndex] = pendingRestoreActors[lastPendingIndex]
+        pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, lastPendingIndex)
+    endIf
+    ClearManagedActorAlias(sourceActor)
+EndFunction
+
+bool Function IsRestoringEquipmentFor(Actor sourceActor)
+    return isRestoringManagedEquipment && restoringActor == sourceActor
+EndFunction
+
+bool Function HasManagedEquipment(Actor sourceActor)
+    int i = 0
+    While i < managedActors.Length
+        if managedActors[i] == sourceActor
+            return true
+        endIf
+        i += 1
+    EndWhile
+    return false
+EndFunction
+
+Function ClearManagedActorAlias(Actor sourceActor)
+    int i = 0
+    While i < GetNumAliases()
+        ReferenceAlias managedAlias = GetNthAlias(i) as ReferenceAlias
+        if managedAlias && managedAlias.GetActorReference() == sourceActor
+            managedAlias.Clear()
+            return
+        endIf
+        i += 1
+    EndWhile
+EndFunction
+
+Function RemoveManagedEntry(int index)
+    int lastIndex = managedItems.Length - 1
+    if index < 0 || index > lastIndex
+        return
+    endIf
+    if index != lastIndex
+        managedActors[index] = managedActors[lastIndex]
+        managedItems[index] = managedItems[lastIndex]
+        managedSlotMasks[index] = managedSlotMasks[lastIndex]
+        managedCategories[index] = managedCategories[lastIndex]
+    endIf
+    managedActors = Utility.ResizeFormArray(managedActors, lastIndex)
+    managedItems = Utility.ResizeFormArray(managedItems, lastIndex)
+    managedSlotMasks = Utility.ResizeIntArray(managedSlotMasks, lastIndex)
+    managedCategories = Utility.ResizeIntArray(managedCategories, lastIndex)
+EndFunction
+
+int Function GetManagedCategory(Form itemForm)
+    if itemForm as Armor
+        return MANAGED_ARMOR
+    elseIf itemForm as Weapon
+        return MANAGED_WEAPON
+    elseIf itemForm as Ammo
+        return MANAGED_AMMO
+    endIf
+    return 0
+EndFunction
+
+int Function GetManagedSlotMask(Form itemForm)
+    Armor armorItem = itemForm as Armor
+    if armorItem
+        return armorItem.GetSlotMask()
+    endIf
+    return 0
+EndFunction
+
+bool Function ManagedEntriesConflict(int newCategory, int newMask, int oldCategory, int oldMask)
+    if newCategory != oldCategory
+        return false
+    endIf
+    if newCategory == MANAGED_ARMOR
+        return Math.LogicalAnd(newMask, oldMask) != 0
+    endIf
+    return true
+EndFunction
+
+Function ReleaseConflictingEquipment(Actor sourceActor, Form requestedItem)
+    Armor requestedArmor = requestedItem as Armor
+    if requestedArmor
+        int requestedMask = requestedArmor.GetSlotMask()
+        int slot = 30
+        While slot <= 61
+            int slotMask = Armor.GetMaskForSlot(slot)
+            if Math.LogicalAnd(requestedMask, slotMask) != 0
+                Armor equippedArmor = sourceActor.GetEquippedArmorInSlot(slot)
+                if equippedArmor && equippedArmor != requestedArmor
+                    UnequipForReplacement(sourceActor, equippedArmor)
+                endIf
+            endIf
+            slot += 1
+        EndWhile
+        return
+    endIf
+
+    Weapon requestedWeapon = requestedItem as Weapon
+    if requestedWeapon
+        Weapon rightWeapon = sourceActor.GetEquippedWeapon(false)
+        if rightWeapon && rightWeapon != requestedWeapon
+            UnequipForReplacement(sourceActor, rightWeapon)
+        endIf
+        Weapon leftWeapon = sourceActor.GetEquippedWeapon(true)
+        if leftWeapon && leftWeapon != requestedWeapon
+            UnequipForReplacement(sourceActor, leftWeapon)
+        endIf
+    endIf
+EndFunction
+
+Function UnequipForReplacement(Actor sourceActor, Form itemForm)
+    sourceActor.UnequipItem(itemForm, false, true)
+    Utility.Wait(0.02)
+    if sourceActor.IsEquipped(itemForm)
+        sourceActor.UnequipItemEx(itemForm, 0, false)
+        Utility.Wait(0.02)
+    endIf
 EndFunction
 
 Form Function FindEquipableItemByName(Actor sourceActor, string normalizedRequest)
@@ -184,6 +513,10 @@ bool Function IsGenericWeaponRequest(string normalizedRequest)
     return normalizedRequest == "weapon" || normalizedRequest == "best weapon" || normalizedRequest == "your weapon"
 EndFunction
 
+bool Function IsGenericShieldRequest(string normalizedRequest)
+    return normalizedRequest == "shield" || normalizedRequest == "best shield" || normalizedRequest == "your shield"
+EndFunction
+
 int Function EquipBestArmorSet(Actor sourceActor)
     int equippedCount = 0
     int selectedMask = 0
@@ -243,4 +576,24 @@ Weapon Function FindBestWeapon(Actor sourceActor)
     EndWhile
 
     return bestWeapon
+EndFunction
+
+Armor Function FindBestShield(Actor sourceActor)
+    Armor bestShield = None
+    int bestRating = -1
+    int itemCount = sourceActor.GetNumItems()
+    int i = 0
+    int shieldMask = Armor.GetMaskForSlot(41)
+    While i < itemCount
+        Armor armorItem = sourceActor.GetNthForm(i) as Armor
+        if armorItem && sourceActor.GetItemCount(armorItem) > 0 && Math.LogicalAnd(armorItem.GetSlotMask(), shieldMask) != 0
+            int armorRating = armorItem.GetArmorRating()
+            if armorRating > bestRating
+                bestRating = armorRating
+                bestShield = armorItem
+            endIf
+        endIf
+        i += 1
+    EndWhile
+    return bestShield
 EndFunction

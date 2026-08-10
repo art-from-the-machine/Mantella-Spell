@@ -126,7 +126,12 @@ EndFunction
 
 event OnNpcInventoryActionReceived(Form speaker)
     Actor aSpeaker = speaker as Actor
-    if (aSpeaker)
+    MantellaAdvancedAction_Inventory inventoryHandler = Quest.GetQuest("MantellaAdvancedAction_Inventory") as MantellaAdvancedAction_Inventory
+    if inventoryHandler
+        inventoryHandler.NpcInventory(aSpeaker)
+    elseIf aSpeaker
+        ; Compatibility fallback for saves where the advanced Inventory quest is
+        ; unavailable. The UI remains authoritative even without the snapshot.
         aSpeaker.OpenInventory(true)
     endif
 endEvent
