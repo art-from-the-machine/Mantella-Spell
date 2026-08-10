@@ -517,9 +517,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         ; (without this the server falls back to topic 1, which can break the topic alternation)
         SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, GetNextTopicID())
 
-        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
-            UpdateNpcsInConversationArray()
-        endIf
+        UpdateNpcsInConversationArray()
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
         if updateContext ; if context has not been refreshed recently
@@ -989,6 +987,7 @@ int[] function UpdateNpcsInConversationArray()
     While i < Participants.GetSize()
         Actor actorToBuild = Participants.GetAt(i) as Actor
         SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        EquipmentDescriber.AddEquipmentDescription(_actorHandles[i], actorToBuild, actorToBuild == PlayerRef, repository)
         i += 1
     EndWhile
 endFunction
