@@ -74,7 +74,7 @@ Function HandleEquipAction(Form speaker, Form conversationQuest, int argumentsHa
 
     bool success = EquipRequestedItem(sourceActor, requestedItemName)
     if success
-        sourceActor.QueueNiNodeUpdate()
+        RefreshActor3DIfSafe(sourceActor, "verified equip")
         Utility.Wait(0.10)
         if activeConversation
             activeConversation.RefreshActorEquipmentState()
@@ -145,16 +145,24 @@ bool Function EquipAndVerify(Actor sourceActor, Form itemForm)
     ; replace equipment that an earlier request protected from outfit resets.
     isRestoringManagedEquipment = true
     restoringActor = sourceActor
+    TraceArmorState(sourceActor, "before equip " + itemForm.GetName())
     ReleaseConflictingEquipment(sourceActor, itemForm)
+    if HasConflictingEquippedArmor(sourceActor, itemForm)
+        Debug.Trace("Mantella Equip: refusing to equip " + itemForm.GetName() + " because a conflicting armor form remained equipped on " + sourceActor.GetDisplayName())
+        restoringActor = None
+        isRestoringManagedEquipment = false
+        return false
+    endIf
 
     sourceActor.EquipItem(itemForm, true, true)
     Utility.Wait(0.05)
-    if !sourceActor.IsEquipped(itemForm)
+    if !IsItemEffectivelyEquipped(sourceActor, itemForm)
         sourceActor.EquipItemEx(itemForm, 0, true, false)
         Utility.Wait(0.05)
     endIf
 
-    bool verified = sourceActor.IsEquipped(itemForm)
+    bool verified = IsItemEffectivelyEquipped(sourceActor, itemForm)
+    TraceArmorState(sourceActor, "after equip " + itemForm.GetName())
     restoringActor = None
     isRestoringManagedEquipment = false
     if verified
@@ -179,6 +187,29 @@ Function QueueManagedEquipmentRestoreForActor(Actor sourceActor)
         return
     endIf
     QueueManagedEquipmentRestore(sourceActor)
+EndFunction
+
+; Lifecycle callbacks can arrive before inventory construction is complete.
+; Make an early, zero-wait restoration attempt only when every managed Form is
+; already visible in the actor inventory. A missed early attempt is harmless:
+; the existing delayed queue remains the authoritative recovery path.
+Function TryManagedEquipmentRestoreImmediately(Actor sourceActor, string lifecycleEvent)
+    EnsureManagedState()
+    if !sourceActor || IsRestoringEquipmentFor(sourceActor) || !HasManagedEquipment(sourceActor)
+        return
+    endIf
+    if !sourceActor.Is3DLoaded()
+        Debug.Trace("Mantella Equip: early restore deferred at " + lifecycleEvent + " because " + sourceActor.GetDisplayName() + " 3D is not loaded")
+        return
+    endIf
+    if !AreManagedItemsAvailable(sourceActor)
+        ; Do not treat a transient zero count during attach as item loss.
+        Debug.Trace("Mantella Equip: early restore deferred at " + lifecycleEvent + " because managed inventory is not ready for " + sourceActor.GetDisplayName())
+        return
+    endIf
+
+    Debug.Trace("Mantella Equip: early managed restore at " + lifecycleEvent + " for " + sourceActor.GetDisplayName())
+    RestoreManagedEquipment(sourceActor, false)
 EndFunction
 
 Function EnsureManagedState()
@@ -290,7 +321,7 @@ Event OnUpdate()
     EndWhile
 EndEvent
 
-Function RestoreManagedEquipment(Actor sourceActor)
+Function RestoreManagedEquipment(Actor sourceActor, bool allowMissingItemCleanup = true)
     EnsureManagedState()
     if !sourceActor || isRestoringManagedEquipment
         return
@@ -299,6 +330,7 @@ Function RestoreManagedEquipment(Actor sourceActor)
     bool changed = false
     isRestoringManagedEquipment = true
     restoringActor = sourceActor
+    TraceArmorState(sourceActor, "before managed restore")
     int i = managedItems.Length - 1
     While i >= 0
         if managedActors[i] == sourceActor
@@ -312,18 +344,30 @@ Function RestoreManagedEquipment(Actor sourceActor)
                 ; during this lifecycle window.
                 i = managedItems.Length
             elseIf sourceActor.GetItemCount(itemForm) <= 0
-                RemoveManagedEntry(i)
-                i = managedItems.Length
-            elseIf !sourceActor.IsEquipped(itemForm)
+                if allowMissingItemCleanup
+                    RemoveManagedEntry(i)
+                    i = managedItems.Length
+                else
+                    ; An immediate attach/load pass must never erase desired
+                    ; state solely because the engine has not populated this
+                    ; actor's inventory yet.
+                    Debug.Trace("Mantella Equip: retaining managed item " + itemForm.GetName() + " while early inventory is unavailable for " + sourceActor.GetDisplayName())
+                endIf
+            elseIf !IsItemEffectivelyEquipped(sourceActor, itemForm) || HasConflictingEquippedArmor(sourceActor, itemForm)
                 Debug.Trace("Mantella Equip: restoring managed item " + itemForm.GetName() + " for " + sourceActor.GetDisplayName())
                 ReleaseConflictingEquipment(sourceActor, itemForm)
-                sourceActor.EquipItem(itemForm, true, true)
-                Utility.Wait(0.05)
-                if !sourceActor.IsEquipped(itemForm)
-                    sourceActor.EquipItemEx(itemForm, 0, true, false)
+                if !HasConflictingEquippedArmor(sourceActor, itemForm)
+                    ; Re-equip even when the desired form was already marked
+                    ; worn: clearing an overlapping outfit form requires a
+                    ; fresh native equip to rebuild a coherent biped state.
+                    sourceActor.EquipItem(itemForm, true, true)
                     Utility.Wait(0.05)
+                    if !IsItemEffectivelyEquipped(sourceActor, itemForm)
+                        sourceActor.EquipItemEx(itemForm, 0, true, false)
+                        Utility.Wait(0.05)
+                    endIf
                 endIf
-                if sourceActor.IsEquipped(itemForm)
+                if IsItemEffectivelyEquipped(sourceActor, itemForm)
                     changed = true
                     Debug.Trace("Mantella Equip: managed restore verified " + itemForm.GetName() + " for " + sourceActor.GetDisplayName())
                 endIf
@@ -338,12 +382,20 @@ Function RestoreManagedEquipment(Actor sourceActor)
     Utility.Wait(0.10)
     restoringActor = None
     isRestoringManagedEquipment = false
+    TraceArmorState(sourceActor, "after managed restore")
 
     if !HasManagedEquipment(sourceActor)
         ClearManagedActorAlias(sourceActor)
-    elseIf changed
-        sourceActor.QueueNiNodeUpdate()
-        if Conversation && Conversation.IsRunning()
+    else
+        ; A load/cell-attach restore can find the desired Form logically worn
+        ; while the actor's currently loaded mesh still represents the outfit
+        ; that was evaluated during attach. QueueNiNodeUpdate is the supported
+        ; SKSE mesh rebuild for armor changes. The restore itself is deduped
+        ; and event-driven, so this is one refresh per lifecycle check rather
+        ; than a polling/re-equip loop. The SKSE declaration forbids use while
+        ; mounted, so defer to Skyrim in that case.
+        RefreshActor3DIfSafe(sourceActor, "managed lifecycle restore")
+        if changed && Conversation && Conversation.IsRunning()
             Conversation.RefreshActorEquipmentState()
         endIf
     endIf
@@ -382,6 +434,20 @@ bool Function HasManagedEquipment(Actor sourceActor)
         i += 1
     EndWhile
     return false
+EndFunction
+
+bool Function AreManagedItemsAvailable(Actor sourceActor)
+    int i = 0
+    While i < managedActors.Length
+        if managedActors[i] == sourceActor
+            Form itemForm = managedItems[i]
+            if !itemForm || sourceActor.GetItemCount(itemForm) <= 0
+                return false
+            endIf
+        endIf
+        i += 1
+    EndWhile
+    return true
 EndFunction
 
 Function ClearManagedActorAlias(Actor sourceActor)
@@ -446,16 +512,55 @@ Function ReleaseConflictingEquipment(Actor sourceActor, Form requestedItem)
     Armor requestedArmor = requestedItem as Armor
     if requestedArmor
         int requestedMask = requestedArmor.GetSlotMask()
+        ; GetEquippedArmorInSlot returns only one form for a biped slot. During
+        ; outfit reevaluation Skyrim can retain another overlapping armor form
+        ; (for example a default tunic) that is not the form returned here.
+        ; Sweep the actor's equipped inventory forms first, then clear each
+        ; requested biped slot so the new item owns the rendered slot.
+        int itemCount = sourceActor.GetNumItems()
+        int itemIndex = 0
+        While itemIndex < itemCount
+            Armor inventoryArmor = sourceActor.GetNthForm(itemIndex) as Armor
+            if inventoryArmor && inventoryArmor != requestedArmor && sourceActor.IsEquipped(inventoryArmor)
+                if Math.LogicalAnd(requestedMask, inventoryArmor.GetSlotMask()) != 0
+                    Debug.Trace("Mantella Equip: releasing conflicting armor " + inventoryArmor.GetName() + " mask=" + inventoryArmor.GetSlotMask() + " for " + requestedArmor.GetName() + " mask=" + requestedMask)
+                    UnequipForReplacement(sourceActor, inventoryArmor)
+                endIf
+            endIf
+            itemIndex += 1
+        EndWhile
         int slot = 30
         While slot <= 61
             int slotMask = Armor.GetMaskForSlot(slot)
             if Math.LogicalAnd(requestedMask, slotMask) != 0
                 Armor equippedArmor = sourceActor.GetEquippedArmorInSlot(slot)
                 if equippedArmor && equippedArmor != requestedArmor
+                    Debug.Trace("Mantella Equip: clearing slot " + slot + " armor " + equippedArmor.GetName() + " before " + requestedArmor.GetName())
                     UnequipForReplacement(sourceActor, equippedArmor)
                 endIf
+                ; This handles a conflicting outfit form that Skyrim did not
+                ; expose through GetEquippedArmorInSlot. It is limited to the
+                ; slots the requested item is about to replace.
+                sourceActor.UnequipItemSlot(slot)
+                Utility.Wait(0.02)
             endIf
             slot += 1
+        EndWhile
+
+        ; UnequipItemSlot has no prevent-equip argument. If clearing a hidden
+        ; outfit entry caused Skyrim to immediately select its default garment
+        ; again, remove that newly selected conflict with prevent-equip set
+        ; before the requested item is equipped.
+        itemIndex = 0
+        While itemIndex < itemCount
+            Armor inventoryArmor = sourceActor.GetNthForm(itemIndex) as Armor
+            if inventoryArmor && inventoryArmor != requestedArmor && sourceActor.IsEquipped(inventoryArmor)
+                if Math.LogicalAnd(requestedMask, inventoryArmor.GetSlotMask()) != 0
+                    Debug.Trace("Mantella Equip: blocking post-slot-clear conflict " + inventoryArmor.GetName() + " before " + requestedArmor.GetName())
+                    UnequipForReplacement(sourceActor, inventoryArmor)
+                endIf
+            endIf
+            itemIndex += 1
         EndWhile
         return
     endIf
@@ -473,13 +578,99 @@ Function ReleaseConflictingEquipment(Actor sourceActor, Form requestedItem)
     endIf
 EndFunction
 
+bool Function IsItemEffectivelyEquipped(Actor sourceActor, Form itemForm)
+    if !sourceActor.IsEquipped(itemForm)
+        return false
+    endIf
+    Armor armorItem = itemForm as Armor
+    if !armorItem
+        return true
+    endIf
+
+    int armorMask = armorItem.GetSlotMask()
+    int slot = 30
+    While slot <= 61
+        int slotMask = Armor.GetMaskForSlot(slot)
+        if Math.LogicalAnd(armorMask, slotMask) != 0
+            if sourceActor.GetEquippedArmorInSlot(slot) != armorItem
+                return false
+            endIf
+        endIf
+        slot += 1
+    EndWhile
+    return true
+EndFunction
+
 Function UnequipForReplacement(Actor sourceActor, Form itemForm)
-    sourceActor.UnequipItem(itemForm, false, true)
+    ; abPreventEquip must be true here. With false, Skyrim's outfit evaluator
+    ; is free to re-equip the default garment in the gap between releasing it
+    ; and equipping the requested Mantella item, leaving two conflicting worn
+    ; states. A later explicit EquipItem still replaces this temporary block.
+    sourceActor.UnequipItem(itemForm, true, true)
     Utility.Wait(0.02)
     if sourceActor.IsEquipped(itemForm)
-        sourceActor.UnequipItemEx(itemForm, 0, false)
+        sourceActor.UnequipItemEx(itemForm, 0, true)
         Utility.Wait(0.02)
     endIf
+EndFunction
+
+bool Function HasConflictingEquippedArmor(Actor sourceActor, Form requestedItem)
+    Armor requestedArmor = requestedItem as Armor
+    if !requestedArmor
+        return false
+    endIf
+
+    int requestedMask = requestedArmor.GetSlotMask()
+    int itemCount = sourceActor.GetNumItems()
+    int itemIndex = 0
+    While itemIndex < itemCount
+        Armor inventoryArmor = sourceActor.GetNthForm(itemIndex) as Armor
+        if inventoryArmor && inventoryArmor != requestedArmor && sourceActor.IsEquipped(inventoryArmor)
+            if Math.LogicalAnd(requestedMask, inventoryArmor.GetSlotMask()) != 0
+                return true
+            endIf
+        endIf
+        itemIndex += 1
+    EndWhile
+    return false
+EndFunction
+
+Function TraceArmorState(Actor sourceActor, string phase)
+    if !sourceActor || !sourceActor.Is3DLoaded()
+        return
+    endIf
+
+    Debug.Trace("Mantella Equip: " + phase + " actor=" + sourceActor.GetDisplayName() + " 3D=" + sourceActor.Is3DLoaded() + " mounted=" + sourceActor.IsOnMount())
+    int slot = 30
+    While slot <= 39
+        int slotMask = Armor.GetMaskForSlot(slot)
+        Form wornForm = sourceActor.GetWornForm(slotMask)
+        Armor equippedArmor = sourceActor.GetEquippedArmorInSlot(slot)
+        if wornForm || equippedArmor
+            string wornName = "None"
+            string equippedName = "None"
+            if wornForm
+                wornName = wornForm.GetName()
+            endIf
+            if equippedArmor
+                equippedName = equippedArmor.GetName()
+            endIf
+            Debug.Trace("Mantella Equip: slot=" + slot + " mask=" + slotMask + " worn=" + wornName + " equipped=" + equippedName)
+        endIf
+        slot += 1
+    EndWhile
+EndFunction
+
+Function RefreshActor3DIfSafe(Actor sourceActor, string reason)
+    if !sourceActor || !sourceActor.Is3DLoaded()
+        return
+    endIf
+    if sourceActor.IsOnMount()
+        Debug.Trace("Mantella Equip: deferred mesh refresh for mounted actor " + sourceActor.GetDisplayName() + " after " + reason)
+        return
+    endIf
+    Debug.Trace("Mantella Equip: QueueNiNodeUpdate for " + sourceActor.GetDisplayName() + " after " + reason)
+    sourceActor.QueueNiNodeUpdate()
 EndFunction
 
 Form Function FindEquipableItemByName(Actor sourceActor, string normalizedRequest)
@@ -627,7 +818,9 @@ Armor Function FindBestShield(Actor sourceActor)
     int bestRating = -1
     int itemCount = sourceActor.GetNumItems()
     int i = 0
-    int shieldMask = Armor.GetMaskForSlot(41)
+    ; Skyrim's shield biped slot is 39. Slot 41 is long hair and must not be
+    ; used to select a shield candidate.
+    int shieldMask = Armor.GetMaskForSlot(39)
     While i < itemCount
         Armor armorItem = sourceActor.GetNthForm(i) as Armor
         if armorItem && sourceActor.GetItemCount(armorItem) > 0 && Math.LogicalAnd(armorItem.GetSlotMask(), shieldMask) != 0

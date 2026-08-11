@@ -17,11 +17,15 @@ endEvent
 ; during fast travel. Queue the same bounded restore path; unmanaged actors
 ; are ignored by the Equip quest.
 Event OnCellAttach()
-    QueueManagedEquipmentCheck(None)
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnCellAttach")
+EndEvent
+
+Event OnCellLoad()
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnCellLoad")
 EndEvent
 
 Event OnLoad()
-    QueueManagedEquipmentCheck(None)
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnLoad")
 EndEvent
 
 Function AddIngameEventToConversation(string eventText)
@@ -261,6 +265,17 @@ Function QueueManagedEquipmentCheck(Form changedItem)
     endIf
     Actor targetActor = GetActorReference()
     if equipManager && targetActor
+        equipManager.QueueManagedEquipmentRestoreForActor(targetActor)
+    endIf
+EndFunction
+
+Function RestoreManagedEquipmentAtLifecycleBoundary(string lifecycleEvent)
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        equipManager.TryManagedEquipmentRestoreImmediately(targetActor, lifecycleEvent)
         equipManager.QueueManagedEquipmentRestoreForActor(targetActor)
     endIf
 EndFunction
