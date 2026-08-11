@@ -12,6 +12,18 @@ event OnInit()
     NPCTargets = Utility.CreateFormArray(0)
 endEvent
 
+; The conversation target alias is also attached to active NPCs and is a more
+; reliable lifecycle signal than a dynamically filled managed-equipment alias
+; during fast travel. Queue the same bounded restore path; unmanaged actors
+; are ignored by the Equip quest.
+Event OnCellAttach()
+    QueueManagedEquipmentCheck(None)
+EndEvent
+
+Event OnLoad()
+    QueueManagedEquipmentCheck(None)
+EndEvent
+
 Function AddIngameEventToConversation(string eventText)
     If (conversation.IsRunning())
         conversation.AddIngameEvent(eventText)
@@ -172,7 +184,10 @@ endEvent
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
     QueueManagedEquipmentCheck(akBaseObject)
-    if repository.targetTrackingOnObjectEquipped && !IsManagedEquipmentRestore()
+    ; Managed actors are described from live equipped forms. Suppress transient
+    ; outfit-evaluation events (for example, a temporary Belted Tunic) so they
+    ; cannot override the authoritative equipment snapshot in the next prompt.
+    if repository.targetTrackingOnObjectEquipped && !IsManagedEquipmentRestore() && !HasManagedEquipmentState()
         String selfName = self.GetActorReference().getdisplayname()
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" equipped " + itemEquipped)
@@ -185,7 +200,7 @@ endEvent
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
     QueueManagedEquipmentCheck(akBaseObject)
-    if repository.targetTrackingOnObjectUnequipped && !IsManagedEquipmentRestore()
+    if repository.targetTrackingOnObjectUnequipped && !IsManagedEquipmentRestore() && !HasManagedEquipmentState()
         String selfName = self.GetActorReference().getdisplayname()
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" unequipped " + itemUnequipped)
@@ -194,6 +209,14 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
         endif
     endif
 endEvent
+
+bool Function HasManagedEquipmentState()
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    return equipManager != None && targetActor != None && equipManager.HasManagedEquipment(targetActor)
+EndFunction
 
 bool Function IsManagedEquipmentRestore()
     if !equipManager

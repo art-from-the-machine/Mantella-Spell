@@ -14,9 +14,16 @@ event OnNpcInventoryAdvancedActionReceived(Form speaker, Form conversationQuest,
     MantellaConversation conversation = conversationQuest as MantellaConversation
     
     ; Extract NPC names from parameters
-    string sourceName = SKSE_HTTP.getString(argumentsHandle, mConsts.ACTION_ARG_SOURCE)
-    ; Only one NPC can open their inventory per response
-    Actor sourceActor = conversation.GetActorByName(sourceName)
+    string sourceName = SKSE_HTTP.getString(argumentsHandle, mConsts.ACTION_ARG_SOURCE, "")
+    ; Runtime-injected actions may have no source argument. The ModEvent
+    ; speaker is authoritative for a single-NPC turn.
+    Actor sourceActor = speaker as Actor
+    if sourceName != ""
+        Actor namedSource = conversation.GetActorByName(sourceName)
+        if namedSource
+            sourceActor = namedSource
+        endIf
+    endIf
 
     NpcInventory(sourceActor)
 endEvent

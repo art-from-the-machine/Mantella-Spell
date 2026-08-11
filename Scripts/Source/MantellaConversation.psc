@@ -678,7 +678,14 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + actionIdentifier
                     int eventHandle = ModEvent.Create(eventName)
                     if eventHandle
-                        ModEvent.PushForm(eventHandle, _lastNpcToSpeak)
+                        ; Preserve the speaker bound to this generated sentence.
+                        ; Runtime-injected obligations use that actor even when
+                        ; _lastNpcToSpeak is stale after a transition.
+                        Actor actionSpeaker = speaker
+                        if !actionSpeaker
+                            actionSpeaker = _lastNpcToSpeak
+                        endIf
+                        ModEvent.PushForm(eventHandle, actionSpeaker)
                         ModEvent.PushForm(eventHandle, Self as Quest)  ; For name resolution
                         ModEvent.PushInt(eventHandle, argumentsHandle)
                         ModEvent.Send(eventHandle)

@@ -11,6 +11,7 @@ Form[] managedItems
 int[] managedSlotMasks
 int[] managedCategories
 Form[] pendingRestoreActors
+int[] pendingRestoreAttempts
 bool isRestoringManagedEquipment = false
 Actor restoringActor = None
 
@@ -21,6 +22,21 @@ int PROPERTY MANAGED_AMMO = 3 AutoReadOnly
 event OnInit()
     RegisterForModEvent(EventInterface.EVENT_ACTIONS_PREFIX + mConsts.ACTION_NPC_EQUIP, "OnNpcEquipActionReceived")
     RegisterForModEvent(EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + mConsts.ACTION_NPC_EQUIP, "OnNpcEquipAdvancedActionReceived")
+EndEvent
+
+Event OnPlayerLoadGame()
+    ; Quest arrays are save-persistent, but dynamically filled aliases may not
+    ; receive a lifecycle callback on every load. Reattach through the same
+    ; bounded, delayed restore path without touching unmanaged actors.
+    EnsureManagedState()
+    int i = 0
+    While i < managedActors.Length
+        Actor sourceActor = managedActors[i] as Actor
+        if sourceActor
+            QueueManagedEquipmentRestoreForActor(sourceActor)
+        endIf
+        i += 1
+    EndWhile
 EndEvent
 
 event OnNpcEquipActionReceived(Form speaker)
@@ -181,6 +197,9 @@ Function EnsureManagedState()
     if pendingRestoreActors == None
         pendingRestoreActors = Utility.CreateFormArray(0)
     endIf
+    if pendingRestoreAttempts == None
+        pendingRestoreAttempts = Utility.CreateIntArray(0)
+    endIf
 EndFunction
 
 Function RecordManagedEquipment(Actor sourceActor, Form itemForm)
@@ -239,7 +258,9 @@ Function QueueManagedEquipmentRestore(Actor sourceActor)
         return
     endIf
     pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, pendingRestoreActors.Length + 1)
+    pendingRestoreAttempts = Utility.ResizeIntArray(pendingRestoreAttempts, pendingRestoreAttempts.Length + 1)
     pendingRestoreActors[pendingRestoreActors.Length - 1] = sourceActor
+    pendingRestoreAttempts[pendingRestoreAttempts.Length - 1] = 0
     Debug.Trace("Mantella Equip: queued managed restore for " + sourceActor.GetDisplayName())
     ; One event-driven delay lets Skyrim finish default-outfit evaluation and
     ; batches actors that attach together. This does not schedule a polling loop.
@@ -251,8 +272,21 @@ Event OnUpdate()
     While pendingRestoreActors.Length > 0
         int lastIndex = pendingRestoreActors.Length - 1
         Actor sourceActor = pendingRestoreActors[lastIndex] as Actor
+        int attempt = pendingRestoreAttempts[lastIndex]
         pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, lastIndex)
-        RestoreManagedEquipment(sourceActor)
+        pendingRestoreAttempts = Utility.ResizeIntArray(pendingRestoreAttempts, lastIndex)
+        ; Fast travel can deliver an alias callback before the actor's 3D and
+        ; inventory are available. Never interpret that transient state as an
+        ; item having been removed; retry a bounded number of times instead.
+        if sourceActor && !sourceActor.Is3DLoaded() && attempt < 3
+            pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, pendingRestoreActors.Length + 1)
+            pendingRestoreAttempts = Utility.ResizeIntArray(pendingRestoreAttempts, pendingRestoreAttempts.Length + 1)
+            pendingRestoreActors[pendingRestoreActors.Length - 1] = sourceActor
+            pendingRestoreAttempts[pendingRestoreAttempts.Length - 1] = attempt + 1
+            RegisterForSingleUpdate(1.0)
+        elseIf sourceActor && sourceActor.Is3DLoaded()
+            RestoreManagedEquipment(sourceActor)
+        endIf
     EndWhile
 EndEvent
 
@@ -269,7 +303,15 @@ Function RestoreManagedEquipment(Actor sourceActor)
     While i >= 0
         if managedActors[i] == sourceActor
             Form itemForm = managedItems[i]
-            if !itemForm || sourceActor.GetItemCount(itemForm) <= 0
+            if !itemForm
+                RemoveManagedEntry(i)
+                i = managedItems.Length
+            elseIf !sourceActor.Is3DLoaded()
+                ; Keep the Form-based desired state while Skyrim is unloading
+                ; or attaching the actor. Inventory queries are not reliable
+                ; during this lifecycle window.
+                i = managedItems.Length
+            elseIf sourceActor.GetItemCount(itemForm) <= 0
                 RemoveManagedEntry(i)
                 i = managedItems.Length
             elseIf !sourceActor.IsEquipped(itemForm)
@@ -320,7 +362,9 @@ Function ForgetManagedEquipment(Actor sourceActor)
     if pendingIndex >= 0
         int lastPendingIndex = pendingRestoreActors.Length - 1
         pendingRestoreActors[pendingIndex] = pendingRestoreActors[lastPendingIndex]
+        pendingRestoreAttempts[pendingIndex] = pendingRestoreAttempts[lastPendingIndex]
         pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, lastPendingIndex)
+        pendingRestoreAttempts = Utility.ResizeIntArray(pendingRestoreAttempts, lastPendingIndex)
     endIf
     ClearManagedActorAlias(sourceActor)
 EndFunction
