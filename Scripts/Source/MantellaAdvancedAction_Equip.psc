@@ -300,12 +300,19 @@ EndFunction
 
 Event OnUpdate()
     EnsureManagedState()
-    While pendingRestoreActors.Length > 0
-        int lastIndex = pendingRestoreActors.Length - 1
-        Actor sourceActor = pendingRestoreActors[lastIndex] as Actor
-        int attempt = pendingRestoreAttempts[lastIndex]
-        pendingRestoreActors = Utility.ResizeFormArray(pendingRestoreActors, lastIndex)
-        pendingRestoreAttempts = Utility.ResizeIntArray(pendingRestoreAttempts, lastIndex)
+    ; Work from a snapshot. Appending a retry to pendingRestoreActors while
+    ; draining that same array would otherwise consume all retries in this
+    ; one event, despite RegisterForSingleUpdate(1.0) below. The separate
+    ; pending queue makes each bounded retry a real later lifecycle check.
+    Form[] scheduledActors = pendingRestoreActors
+    int[] scheduledAttempts = pendingRestoreAttempts
+    pendingRestoreActors = Utility.CreateFormArray(0)
+    pendingRestoreAttempts = Utility.CreateIntArray(0)
+
+    int index = scheduledActors.Length - 1
+    While index >= 0
+        Actor sourceActor = scheduledActors[index] as Actor
+        int attempt = scheduledAttempts[index]
         ; Fast travel can deliver an alias callback before the actor's 3D and
         ; inventory are available. Never interpret that transient state as an
         ; item having been removed; retry a bounded number of times instead.
@@ -318,7 +325,12 @@ Event OnUpdate()
         elseIf sourceActor && sourceActor.Is3DLoaded()
             RestoreManagedEquipment(sourceActor)
         endIf
+        index -= 1
     EndWhile
+
+    if pendingRestoreActors.Length > 0
+        RegisterForSingleUpdate(1.0)
+    endIf
 EndEvent
 
 Function RestoreManagedEquipment(Actor sourceActor, bool allowMissingItemCleanup = true)
