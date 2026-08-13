@@ -517,9 +517,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         ; (without this the server falls back to topic 1, which can break the topic alternation)
         SKSE_HTTP.setInt(handle, mConsts.KEY_CONTINUECONVERSATION_TOPICINFOFILE, GetNextTopicID())
 
-        if repository.targetTrackingAngerState ; only the anger state of the NPCs is updated by UpdateNpcsInConversationArray()
-            UpdateNpcsInConversationArray()
-        endIf
+        UpdateNpcsInConversationArray()
         SKSE_HTTP.setNestedDictionariesArray(handle, mConsts.KEY_ACTORS, _actorHandles)
 
         if updateContext ; if context has not been refreshed recently
@@ -680,7 +678,14 @@ Function RaiseActionEvent(Actor speaker, int[] actionsHandles)
                     string eventName = EventInterface.EVENT_ADVANCED_ACTIONS_PREFIX + actionIdentifier
                     int eventHandle = ModEvent.Create(eventName)
                     if eventHandle
-                        ModEvent.PushForm(eventHandle, _lastNpcToSpeak)
+                        ; Preserve the speaker bound to this generated sentence.
+                        ; Runtime-injected obligations use that actor even when
+                        ; _lastNpcToSpeak is stale after a transition.
+                        Actor actionSpeaker = speaker
+                        if !actionSpeaker
+                            actionSpeaker = _lastNpcToSpeak
+                        endIf
+                        ModEvent.PushForm(eventHandle, actionSpeaker)
                         ModEvent.PushForm(eventHandle, Self as Quest)  ; For name resolution
                         ModEvent.PushInt(eventHandle, argumentsHandle)
                         ModEvent.Send(eventHandle)
@@ -979,12 +984,17 @@ int[] function BuildNpcsInConversationArray()
     _actorsUpdated = true
 endFunction
 
+Function RefreshActorEquipmentState()
+    BuildNpcsInConversationArray()
+EndFunction
+
 int[] function UpdateNpcsInConversationArray()
     ; Update NPC details where variables are dynamic
     int i = 0
     While i < Participants.GetSize()
         Actor actorToBuild = Participants.GetAt(i) as Actor
         SKSE_HTTP.setBool(_actorHandles[i], mConsts.KEY_ACTOR_ISINCOMBAT, actorToBuild.IsInCombat())
+        EquipmentDescriber.AddEquipmentDescription(_actorHandles[i], actorToBuild, actorToBuild == PlayerRef, repository)
         i += 1
     EndWhile
 endFunction

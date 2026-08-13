@@ -5,11 +5,28 @@ Actor Property PlayerRef Auto
 MantellaRepository property repository auto
 MantellaConversation Property conversation auto
 Form[] Property NPCTargets Auto
+MantellaAdvancedAction_Equip equipManager
 
 event OnInit()
     conversation = Quest.GetQuest("MantellaConversation") as MantellaConversation
     NPCTargets = Utility.CreateFormArray(0)
 endEvent
+
+; The conversation target alias is also attached to active NPCs and is a more
+; reliable lifecycle signal than a dynamically filled managed-equipment alias
+; during fast travel. Queue the same bounded restore path; unmanaged actors
+; are ignored by the Equip quest.
+Event OnCellAttach()
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnCellAttach")
+EndEvent
+
+Event OnCellLoad()
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnCellLoad")
+EndEvent
+
+Event OnLoad()
+    RestoreManagedEquipmentAtLifecycleBoundary("target listener OnLoad")
+EndEvent
 
 Function AddIngameEventToConversation(string eventText)
     If (conversation.IsRunning())
@@ -170,7 +187,11 @@ endEvent
 
 
 Event OnObjectEquipped(Form akBaseObject, ObjectReference akReference)
-    if repository.targetTrackingOnObjectEquipped
+    QueueManagedEquipmentCheck(akBaseObject)
+    ; Managed actors are described from live equipped forms. Suppress transient
+    ; outfit-evaluation events (for example, a temporary Belted Tunic) so they
+    ; cannot override the authoritative equipment snapshot in the next prompt.
+    if repository.targetTrackingOnObjectEquipped && !IsManagedEquipmentRestore() && !HasManagedEquipmentState()
         String selfName = self.GetActorReference().getdisplayname()
         string itemEquipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" equipped " + itemEquipped)
@@ -182,7 +203,8 @@ endEvent
 
 
 Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
-    if repository.targetTrackingOnObjectUnequipped
+    QueueManagedEquipmentCheck(akBaseObject)
+    if repository.targetTrackingOnObjectUnequipped && !IsManagedEquipmentRestore() && !HasManagedEquipmentState()
         String selfName = self.GetActorReference().getdisplayname()
         string itemUnequipped = akBaseObject.getname()
         ;Debug.MessageBox(selfName+" unequipped " + itemUnequipped)
@@ -191,6 +213,25 @@ Event OnObjectUnequipped(Form akBaseObject, ObjectReference akReference)
         endif
     endif
 endEvent
+
+bool Function HasManagedEquipmentState()
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    return equipManager != None && targetActor != None && equipManager.HasManagedEquipment(targetActor)
+EndFunction
+
+bool Function IsManagedEquipmentRestore()
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        return equipManager.IsRestoringEquipmentFor(targetActor)
+    endIf
+    return false
+EndFunction
 
 
 Event OnSit(ObjectReference akFurniture)
@@ -217,6 +258,27 @@ Event OnGetUp(ObjectReference akFurniture)
         endIf
     endif
 EndEvent
+
+Function QueueManagedEquipmentCheck(Form changedItem)
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        equipManager.QueueManagedEquipmentRestoreForActor(targetActor)
+    endIf
+EndFunction
+
+Function RestoreManagedEquipmentAtLifecycleBoundary(string lifecycleEvent)
+    if !equipManager
+        equipManager = Quest.GetQuest("MantellaAdvancedAction_Equip") as MantellaAdvancedAction_Equip
+    endIf
+    Actor targetActor = GetActorReference()
+    if equipManager && targetActor
+        equipManager.TryManagedEquipmentRestoreImmediately(targetActor, lifecycleEvent)
+        equipManager.QueueManagedEquipmentRestoreForActor(targetActor)
+    endIf
+EndFunction
 
 
 Event OnDying(Actor akKiller)
