@@ -45,6 +45,8 @@ Actor[] _cachedNearbyActors = None
 bool _waitingForActionResponse = true
 int _actionResponseTimeout = 0
 bool _playerInputPending = false
+int _conversationSession = 0
+bool _participantTerminalEvaluationPending = false
 
 event OnInit()
     RegisterForConversationEvents()
@@ -76,6 +78,7 @@ endEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 function StartConversation(Actor[] actorsToStartConversationWith)
+    _conversationSession += 1
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_INIT)
     ; send request to initialize Mantella settings (set LLM connection, start up TTS service, load character_df etc) 
@@ -90,6 +93,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     endIf
     
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
+    SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     BuildContext(true)
     AddCurrentActorsAndContext(handle, true)
@@ -124,7 +128,11 @@ Function AddActorsToConversation(Actor[] actorsToAdd)
 EndFunction
 
 Function RemoveActorsFromConversation(Actor[] actorsToRemove)
-    RemoveActors(actorsToRemove)  
+    RemoveActors(actorsToRemove, true)
+EndFunction
+
+Function RemoveActorsImmediately(Actor[] actorsToRemove)
+    RemoveActors(actorsToRemove, false)
 EndFunction
 
 Function SetIsTalking(bool isTalking)
@@ -156,6 +164,11 @@ event OnHttpReplyReceived(int typedDictionaryHandle)
     ; NOTE: When testing run times, remember to factor in the time it takes to trace a message (noted below) and subtract this number to get the "true" operation run time
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to trace a message", 2)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
+    int responseSession = SKSE_HTTP.getInt(typedDictionaryHandle, mConsts.KEY_CONVERSATION_SESSION, 0)
+    if responseSession != 0 && responseSession != _conversationSession
+        Debug.Trace("Mantella: ignoring stale protocol reply session=" + responseSession + " active=" + _conversationSession)
+        return
+    endif
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to determine reply type", 2)
     IF replyType == mConsts.KEY_REPLYTTYPE_INITCOMPLETED
         None
@@ -219,6 +232,7 @@ function RequestContinueConversation(bool updateInGameEvents = false)
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
 
         ; _lastTopicInfo is only updated once a voiceline actually plays (see ProcessNpcSpeak)
         ; If this request does not result in a voiceline (eg the reply is "playertalk"),
@@ -465,6 +479,7 @@ Function EndConversation()
     _hasBeenStopped = true
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
+    SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
     SKSE_HTTP.setFloat(handle, mConsts.KEY_ENDCONVERSATION_TIMESTAMP, GameDaysPassed.GetValue() + 1) ; +1 because days start at 0
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 EndFunction
@@ -512,6 +527,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         _playerInputPending = true
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
         ; Send the topic to use in case the player's input is voiced
         ; (without this the server falls back to topic 1, which can break the topic alternation)
@@ -784,6 +800,7 @@ endEvent
 
 event OnActionResponseCompleted(string actionIdentifier)
     _waitingForActionResponse = false
+    EvaluatePendingParticipantTerminal()
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -878,6 +895,7 @@ Function AddActors(Actor[] actorsToAdd)
         i += 1
     EndWhile
     If (actorsAdded.Length > 0)
+        _participantTerminalEvaluationPending = false
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
         SendActorAddedEvents(actorsAdded)
@@ -886,7 +904,7 @@ Function AddActors(Actor[] actorsToAdd)
     ;PrintActorsInConversation()
 EndFunction
 
-Function RemoveActors(Actor[] actorsToRemove)
+Function RemoveActors(Actor[] actorsToRemove, bool deferTerminalEvaluation = false)
     PrintActorsArray("Actors to remove: ",actorsToRemove)
     Form[] actorsRemoved = Utility.CreateFormArray(0)
     int i = 0
@@ -902,13 +920,28 @@ Function RemoveActors(Actor[] actorsToRemove)
         i += 1
     EndWhile
     if (Participants.GetSize() < 2)
-        EndConversation()
+        if deferTerminalEvaluation
+            _participantTerminalEvaluationPending = true
+        else
+            _participantTerminalEvaluationPending = false
+            EndConversation()
+        endif
     ElseIf (actorsRemoved.Length > 0)
+        _participantTerminalEvaluationPending = false
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
         SendActorRemovedEvents(actorsRemoved)
     endIf
     ;PrintActorsInConversation()
+EndFunction
+
+Function EvaluatePendingParticipantTerminal()
+    if _participantTerminalEvaluationPending
+        _participantTerminalEvaluationPending = false
+        if Participants.GetSize() < 2
+            EndConversation()
+        endif
+    endif
 EndFunction
 
 Function ClearParticipants()
