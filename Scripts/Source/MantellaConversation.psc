@@ -289,6 +289,7 @@ endFunction
 
 function ProcessNpcSpeak(int handle)
     string speakerName = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_SPEAKER, "Error: No speaker transmitted for action 'NPC talk'")
+    int speakerRefId = SKSE_HTTP.getInt(handle, mConsts.KEY_ACTOR_REFID, 0)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get speaker name", 2)
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = None
@@ -303,10 +304,22 @@ function ProcessNpcSpeak(int handle)
         lineDuration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         ;Debug.Notification("Using Narrator.")
     ; If actor is already loaded, do not load again from actors list
+    elseif speakerRefId > 0
+        speaker = GetActorInConversationByRefId(speakerRefId)
+        if speaker != None
+            Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " resolved", 2)
+        else
+            speaker = GetUniqueActorInConversation(speakerName)
+            if speaker != None
+                Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " stable_unresolved unique_name_fallback", 2)
+            else
+                Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " unresolved", 1)
+            endIf
+        endIf
     elseif speakerName == _lastSpeakerName
         speaker = _lastNpcToSpeak
     else
-        speaker = GetActorInConversation(speakerName)
+        speaker = GetUniqueActorInConversation(speakerName)
     endIf
     
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " to get actor based on speaker name", 2)
@@ -421,6 +434,36 @@ Actor function GetActorInConversation(string actorName)
         i += 1
     EndWhile
     return none
+endFunction
+
+Actor function GetActorInConversationByRefId(int actorRefId)
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && (currentActor as Form).GetFormID() == actorRefId
+            return currentActor
+        endIf
+        i += 1
+    EndWhile
+    return none
+endFunction
+
+Actor function GetUniqueActorInConversation(string actorName)
+    Actor matchingActor = None
+    int matchCount = 0
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && GetActorName(currentActor) == actorName
+            matchingActor = currentActor
+            matchCount += 1
+        endIf
+        i += 1
+    EndWhile
+    if matchCount == 1
+        return matchingActor
+    endIf
+    return None
 endFunction
 
 Actor function GetActorByName(string actorName)
