@@ -234,6 +234,6 @@ Event OnDying(Actor akKiller)
     If (conversation.IsRunning())
         Actor[] actors = new Actor[1]
         actors[0] = self.GetActorReference()
-        conversation.RemoveActorsFromConversation(actors)
+        conversation.RemoveActorsImmediately(actors)
     EndIf
 EndEvent

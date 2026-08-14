@@ -45,6 +45,8 @@ Actor[] _cachedNearbyActors = None
 bool _waitingForActionResponse = true
 int _actionResponseTimeout = 0
 bool _playerInputPending = false
+int _conversationSession = 0
+bool _participantTerminalEvaluationPending = false
 
 event OnInit()
     RegisterForConversationEvents()
@@ -76,6 +78,7 @@ endEvent
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 function StartConversation(Actor[] actorsToStartConversationWith)
+    _conversationSession += 1
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_INIT)
     ; send request to initialize Mantella settings (set LLM connection, start up TTS service, load character_df etc) 
@@ -90,6 +93,7 @@ function StartConversation(Actor[] actorsToStartConversationWith)
     endIf
     
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_STARTCONVERSATION)
+    SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
     SKSE_HTTP.setString(handle, mConsts.KEY_STARTCONVERSATION_WORLDID, PlayerRef.GetDisplayName() + repository.worldID)
     BuildContext(true)
     AddCurrentActorsAndContext(handle, true)
@@ -124,7 +128,11 @@ Function AddActorsToConversation(Actor[] actorsToAdd)
 EndFunction
 
 Function RemoveActorsFromConversation(Actor[] actorsToRemove)
-    RemoveActors(actorsToRemove)  
+    RemoveActors(actorsToRemove, true)
+EndFunction
+
+Function RemoveActorsImmediately(Actor[] actorsToRemove)
+    RemoveActors(actorsToRemove, false)
 EndFunction
 
 Function SetIsTalking(bool isTalking)
@@ -156,6 +164,11 @@ event OnHttpReplyReceived(int typedDictionaryHandle)
     ; NOTE: When testing run times, remember to factor in the time it takes to trace a message (noted below) and subtract this number to get the "true" operation run time
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to trace a message", 2)
     string replyType = SKSE_HTTP.getString(typedDictionaryHandle, mConsts.KEY_REPLYTYPE ,"error")
+    int responseSession = SKSE_HTTP.getInt(typedDictionaryHandle, mConsts.KEY_CONVERSATION_SESSION, 0)
+    if responseSession != 0 && responseSession != _conversationSession
+        Debug.Trace("Mantella: ignoring stale protocol reply session=" + responseSession + " active=" + _conversationSession)
+        return
+    endif
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to determine reply type", 2)
     IF replyType == mConsts.KEY_REPLYTTYPE_INITCOMPLETED
         None
@@ -219,6 +232,7 @@ function RequestContinueConversation(bool updateInGameEvents = false)
     if(!_hasBeenStopped)    
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_CONTINUECONVERSATION)
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
 
         ; _lastTopicInfo is only updated once a voiceline actually plays (see ProcessNpcSpeak)
         ; If this request does not result in a voiceline (eg the reply is "playertalk"),
@@ -275,6 +289,7 @@ endFunction
 
 function ProcessNpcSpeak(int handle)
     string speakerName = SKSE_HTTP.getString(handle, mConsts.KEY_ACTOR_SPEAKER, "Error: No speaker transmitted for action 'NPC talk'")
+    int speakerRefId = SKSE_HTTP.getInt(handle, mConsts.KEY_ACTOR_REFID, 0)
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " seconds to get speaker name", 2)
     ;Debug.Notification("Transmitted speaker name: "+ speakerName)
     Actor speaker = None
@@ -289,10 +304,22 @@ function ProcessNpcSpeak(int handle)
         lineDuration = SKSE_HTTP.getFloat(handle, mConsts.KEY_ACTOR_DURATION, 0)
         ;Debug.Notification("Using Narrator.")
     ; If actor is already loaded, do not load again from actors list
+    elseif speakerRefId > 0
+        speaker = GetActorInConversationByRefId(speakerRefId)
+        if speaker != None
+            Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " resolved", 2)
+        else
+            speaker = GetUniqueActorInConversation(speakerName)
+            if speaker != None
+                Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " stable_unresolved unique_name_fallback", 2)
+            else
+                Debug.Trace("Mantella speaker routing name=" + speakerName + " ref_id=" + speakerRefId + " unresolved", 1)
+            endIf
+        endIf
     elseif speakerName == _lastSpeakerName
         speaker = _lastNpcToSpeak
     else
-        speaker = GetActorInConversation(speakerName)
+        speaker = GetUniqueActorInConversation(speakerName)
     endIf
     
     ; Debug.Trace((Utility.GetCurrentRealTime() - httpReceivedTime) + " to get actor based on speaker name", 2)
@@ -409,6 +436,36 @@ Actor function GetActorInConversation(string actorName)
     return none
 endFunction
 
+Actor function GetActorInConversationByRefId(int actorRefId)
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && (currentActor as Form).GetFormID() == actorRefId
+            return currentActor
+        endIf
+        i += 1
+    EndWhile
+    return none
+endFunction
+
+Actor function GetUniqueActorInConversation(string actorName)
+    Actor matchingActor = None
+    int matchCount = 0
+    int i = 0
+    While i < Participants.GetSize()
+        Actor currentActor = Participants.GetAt(i) as Actor
+        if currentActor != None && GetActorName(currentActor) == actorName
+            matchingActor = currentActor
+            matchCount += 1
+        endIf
+        i += 1
+    EndWhile
+    if matchCount == 1
+        return matchingActor
+    endIf
+    return None
+endFunction
+
 Actor function GetActorByName(string actorName)
     ; First, search conversation participants
     Actor currentActor = GetActorInConversation(actorName)
@@ -465,6 +522,7 @@ Function EndConversation()
     _hasBeenStopped = true
     int handle = SKSE_HTTP.createDictionary()
     SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE,mConsts.KEY_REQUESTTYPE_ENDCONVERSATION)
+    SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
     SKSE_HTTP.setFloat(handle, mConsts.KEY_ENDCONVERSATION_TIMESTAMP, GameDaysPassed.GetValue() + 1) ; +1 because days start at 0
     SKSE_HTTP.sendLocalhostHttpRequest(handle, repository.HttpPort, mConsts.HTTP_ROUTE_MAIN)
 EndFunction
@@ -512,6 +570,7 @@ function sendRequestForPlayerInput(string playerInput, bool updateContext)
         _playerInputPending = true
         int handle = SKSE_HTTP.createDictionary()
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE, mConsts.KEY_REQUESTTYPE_PLAYERINPUT)
+        SKSE_HTTP.setInt(handle, mConsts.KEY_CONVERSATION_SESSION, _conversationSession)
         SKSE_HTTP.setString(handle, mConsts.KEY_REQUESTTYPE_PLAYERINPUT, playerinput)
         ; Send the topic to use in case the player's input is voiced
         ; (without this the server falls back to topic 1, which can break the topic alternation)
@@ -784,6 +843,7 @@ endEvent
 
 event OnActionResponseCompleted(string actionIdentifier)
     _waitingForActionResponse = false
+    EvaluatePendingParticipantTerminal()
 endEvent
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -878,6 +938,7 @@ Function AddActors(Actor[] actorsToAdd)
         i += 1
     EndWhile
     If (actorsAdded.Length > 0)
+        _participantTerminalEvaluationPending = false
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
         SendActorAddedEvents(actorsAdded)
@@ -886,7 +947,7 @@ Function AddActors(Actor[] actorsToAdd)
     ;PrintActorsInConversation()
 EndFunction
 
-Function RemoveActors(Actor[] actorsToRemove)
+Function RemoveActors(Actor[] actorsToRemove, bool deferTerminalEvaluation = false)
     PrintActorsArray("Actors to remove: ",actorsToRemove)
     Form[] actorsRemoved = Utility.CreateFormArray(0)
     int i = 0
@@ -902,13 +963,28 @@ Function RemoveActors(Actor[] actorsToRemove)
         i += 1
     EndWhile
     if (Participants.GetSize() < 2)
-        EndConversation()
+        if deferTerminalEvaluation
+            _participantTerminalEvaluationPending = true
+        else
+            _participantTerminalEvaluationPending = false
+            EndConversation()
+        endif
     ElseIf (actorsRemoved.Length > 0)
+        _participantTerminalEvaluationPending = false
         CauseReassignmentOfParticipantAlias()
         BuildNpcsInConversationArray()
         SendActorRemovedEvents(actorsRemoved)
     endIf
     ;PrintActorsInConversation()
+EndFunction
+
+Function EvaluatePendingParticipantTerminal()
+    if _participantTerminalEvaluationPending
+        _participantTerminalEvaluationPending = false
+        if Participants.GetSize() < 2
+            EndConversation()
+        endif
+    endif
 EndFunction
 
 Function ClearParticipants()

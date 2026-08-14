@@ -41,6 +41,8 @@ string property KEY_REPLYTYPE_PLAYERTALK = "mantella_player_talk" auto
 string property KEY_REPLYTYPE_NPCACTION = "mantella_npc_action" auto
 string property KEY_REPLYTYPE_ENDCONVERSATION = "mantella_end_conversation" auto
 string property KEY_REPLYTYPE_INTERRUPTED = "mantella_interrupted" auto
+string property KEY_REPLYTYPE_STALE_REQUEST = "mantella_stale_request" auto
+string property KEY_CONVERSATION_SESSION = "mantella_conversation_session" auto
 
 string property KEY_STARTCONVERSATION_WORLDID = "mantella_worldid" auto
 string property KEY_STARTCONVERSATION_USENARRATOR = "mantella_use_narrator" auto
