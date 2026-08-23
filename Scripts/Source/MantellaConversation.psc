@@ -65,7 +65,7 @@ Function RegisterForConversationEvents()
 EndFunction
 
 event OnUpdate()
-    If (_repeatingMessage != "")
+    If (_repeatingMessage != "" && repository.showReminderMessages)
         Debug.Notification(_repeatingMessage)
         RegisterForSingleUpdate(10)
     EndIf
@@ -1126,8 +1126,7 @@ Function ShowRepeatingMessage(string messageToShow)
     _repeatingMessage = messageToShow
     if repository.showReminderMessages
         Debug.Notification(_repeatingMessage)
-    else
-        RegisterForSingleUpdate(0)
+        RegisterForSingleUpdate(10)
     endIf
 EndFunction
 
